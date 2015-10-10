@@ -21,7 +21,7 @@ public class HiMock {
             return (Class<T>) enhancer.createClass();
         } catch (IllegalStateException ex) {
             if (ex.getMessage().contains("is not an interface")) {
-                throw new CannotMockClassException();
+                throw new CannotMockClassException(mockedInterface);
             }
         }
 
