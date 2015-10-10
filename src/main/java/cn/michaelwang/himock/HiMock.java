@@ -11,12 +11,20 @@ public class HiMock {
     }
 
     private <T> Class<T> proxyClass(Class<T> mockedInterface) {
-        Enhancer enhancer = new Enhancer();
-        enhancer.setSuperclass(Object.class);
-        enhancer.setInterfaces(new Class<?>[]{mockedInterface});
-        enhancer.setCallbackTypes(new Class[]{net.sf.cglib.proxy.InvocationHandler.class});
+        try {
+            Enhancer enhancer = new Enhancer();
+            enhancer.setSuperclass(Object.class);
+            enhancer.setInterfaces(new Class<?>[]{mockedInterface});
+            enhancer.setCallbackTypes(new Class[]{net.sf.cglib.proxy.InvocationHandler.class});
 
-        //noinspection unchecked
-        return (Class<T>) enhancer.createClass();
+            //noinspection unchecked
+            return (Class<T>) enhancer.createClass();
+        } catch (IllegalStateException ex) {
+            if (ex.getMessage().contains("is not an interface")) {
+                throw new CannotMockClassException();
+            }
+        }
+
+        return null;
     }
 }
