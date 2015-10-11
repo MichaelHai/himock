@@ -27,4 +27,7 @@ public class HiMock {
 
         return null;
     }
+
+    public void verify() {
+    }
 }
