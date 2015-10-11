@@ -1,6 +1,5 @@
 package cn.michaelwang.himock;
 
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,9 +41,9 @@ public class HiMockTest {
         mock.verify();
     }
 
-    @Test
-    @Ignore
+    @Test(expected = MockExpectationFailedException.class)
     public void testNotCalledExpectationShouldFail() {
+
         DummyInterface dummy = mock.mock(DummyInterface.class);
 
         mock.expect(dummy).doNothing();

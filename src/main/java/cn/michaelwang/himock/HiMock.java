@@ -4,11 +4,18 @@ import net.sf.cglib.proxy.Enhancer;
 import org.objenesis.Objenesis;
 import org.objenesis.ObjenesisStd;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HiMock {
+    private static final int NORMAL = 0;
+    private static final int EXPECT = 1;
+
+    private List<String> expectedInvocations = new ArrayList<>();
+    private List<String> actuallyInvocation = new ArrayList<>();
+    private int state = NORMAL;
+
     public <T> T mock(Class<T> mockedInterface) {
         Objenesis objenesis = new ObjenesisStd();
         T mock = objenesis.newInstance(proxyClass(mockedInterface));
@@ -17,6 +24,16 @@ public class HiMock {
         T mock1 = (T) Proxy.newProxyInstance(mockedInterface.getClassLoader(),
                 new Class<?>[]{mockedInterface},
                 (proxy, method, args) -> {
+                    switch (state) {
+                        case NORMAL:
+                            actuallyInvocation.add(method.getName());
+                            break;
+                        case EXPECT:
+                            expectedInvocations.add(method.getName());
+                            state = NORMAL;
+                            break;
+                    }
+
                     return null;
                 });
 
@@ -43,9 +60,15 @@ public class HiMock {
     }
 
     public void verify() {
+        actuallyInvocation.forEach((invocation) -> expectedInvocations.remove(invocation));
+        if (!expectedInvocations.isEmpty()) {
+            throw new MockExpectationFailedException();
+        }
     }
 
     public <T> T expect(T mock) {
+        state = EXPECT;
+
         return mock;
     }
 }
