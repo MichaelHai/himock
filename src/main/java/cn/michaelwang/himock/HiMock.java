@@ -60,7 +60,13 @@ public class HiMock {
     }
 
     public void verify() {
-        actuallyInvocation.forEach((invocation) -> expectedInvocations.remove(invocation));
+        actuallyInvocation.forEach((invocation) -> {
+            if (expectedInvocations.contains(invocation)) {
+                expectedInvocations.remove(invocation);
+            } else {
+                throw new MockExpectationFailedException();
+            }
+        });
         if (!expectedInvocations.isEmpty()) {
             throw new MockExpectationFailedException();
         }

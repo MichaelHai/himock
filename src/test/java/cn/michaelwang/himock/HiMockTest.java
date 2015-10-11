@@ -50,6 +50,15 @@ public class HiMockTest {
 
         mock.verify();
     }
+
+    @Test(expected = MockExpectationFailedException.class)
+    public void testUnexpectedInvocationShouldFail() {
+        DummyInterface dummy = mock.mock(DummyInterface.class);
+
+        dummy.doNothing();
+
+        mock.verify();
+    }
 }
 
 
