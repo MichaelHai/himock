@@ -3,7 +3,7 @@ package cn.michaelwang.himock;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 public class HiMockTest {
 
@@ -43,7 +43,6 @@ public class HiMockTest {
 
     @Test(expected = MockExpectationFailedException.class)
     public void testNotCalledExpectationShouldFail() {
-
         DummyInterface dummy = mock.mock(DummyInterface.class);
 
         mock.expect(dummy).doNothing();

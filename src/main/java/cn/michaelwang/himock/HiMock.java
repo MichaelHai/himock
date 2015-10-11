@@ -1,9 +1,6 @@
 package cn.michaelwang.himock;
 
-import net.sf.cglib.proxy.Enhancer;
-import org.objenesis.Objenesis;
-import org.objenesis.ObjenesisStd;
-
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +14,9 @@ public class HiMock {
     private int state = NORMAL;
 
     public <T> T mock(Class<T> mockedInterface) {
-        Objenesis objenesis = new ObjenesisStd();
-        T mock = objenesis.newInstance(proxyClass(mockedInterface));
+        if (!mockedInterface.isInterface()) {
+                throw new CannotMockClassException(mockedInterface);
+        }
 
         @SuppressWarnings("unchecked")
         T mock1 = (T) Proxy.newProxyInstance(mockedInterface.getClassLoader(),
@@ -26,14 +24,13 @@ public class HiMock {
                 (proxy, method, args) -> {
                     switch (state) {
                         case NORMAL:
-                            actuallyInvocation.add(method.getName());
+                            actuallyInvocation.add(getInvocationName(method));
                             break;
                         case EXPECT:
-                            expectedInvocations.add(method.getName());
+                            expectedInvocations.add(getInvocationName(method));
                             state = NORMAL;
                             break;
                     }
-
                     return null;
                 });
 
@@ -41,22 +38,8 @@ public class HiMock {
         return mock1;
     }
 
-    private <T> Class<T> proxyClass(Class<T> mockedInterface) {
-        try {
-            Enhancer enhancer = new Enhancer();
-            enhancer.setSuperclass(Object.class);
-            enhancer.setInterfaces(new Class<?>[]{mockedInterface});
-            enhancer.setCallbackTypes(new Class[]{net.sf.cglib.proxy.InvocationHandler.class});
-
-            //noinspection unchecked
-            return (Class<T>) enhancer.createClass();
-        } catch (IllegalStateException ex) {
-            if (ex.getMessage().contains("is not an interface")) {
-                throw new CannotMockClassException(mockedInterface);
-            }
-        }
-
-        return null;
+    public String getInvocationName(Method method) {
+        return method.getDeclaringClass().getCanonicalName() + "." + method.getName() + "()";
     }
 
     public void verify() {
@@ -64,11 +47,11 @@ public class HiMock {
             if (expectedInvocations.contains(invocation)) {
                 expectedInvocations.remove(invocation);
             } else {
-                throw new MockExpectationFailedException();
+                throw new UnexpectedInvocationException(actuallyInvocation);
             }
         });
         if (!expectedInvocations.isEmpty()) {
-            throw new MockExpectationFailedException();
+            throw new ExpectationInvocationNotSatisfiedException(expectedInvocations);
         }
     }
 
