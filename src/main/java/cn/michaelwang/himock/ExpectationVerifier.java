@@ -9,46 +9,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ExpectationVerifier {
-    private abstract class MockState {
-        protected final ExpectationVerifier context;
-
-        protected MockState(ExpectationVerifier expectationVerifier) {
-            this.context = expectationVerifier;
-        }
-
-        abstract void handle(String method);
+    private interface MockState {
+        void handle(String method);
     }
 
-    private class NormalState extends MockState {
-        public NormalState(ExpectationVerifier expectationVerifier) {
-            super(expectationVerifier);
-        }
-
+    private class NormalState implements MockState {
         @Override
         public void handle(String method) {
-            context.actuallyInvocation.add(method);
+            actuallyInvocation.add(method);
         }
     }
 
-    private class ExpectState extends MockState {
-        public ExpectState(ExpectationVerifier expectationVerifier) {
-            super(expectationVerifier);
-        }
+    private class ExpectState implements MockState {
 
         @Override
         public void handle(String method) {
             expectedInvocations.add(method);
-            state = new NormalState(context);
+            state = new NormalState();
         }
     }
 
-    private MockState state = new NormalState(this);
+    private MockState state = new NormalState();
 
     private List<String> expectedInvocations = new ArrayList<>();
     private List<String> actuallyInvocation = new ArrayList<>();
 
     public void beginExpect() {
-        this.state = new ExpectState(this);
+        this.state = new ExpectState();
     }
 
     public void methodCalled(String method) {
