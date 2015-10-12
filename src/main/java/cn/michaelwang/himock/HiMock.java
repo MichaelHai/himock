@@ -1,5 +1,6 @@
 package cn.michaelwang.himock;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 public class HiMock {
@@ -7,10 +8,20 @@ public class HiMock {
 
     public <T> T mock(Class<T> mockedInterface) {
         if (!mockedInterface.isInterface()) {
-                throw new MockNoninterfaceException(mockedInterface);
+            throw new MockNoninterfaceException(mockedInterface);
         }
 
         return createMock(mockedInterface);
+    }
+
+    public <T> T expect(T mock) {
+        expectationVerifier.beginExpect();
+
+        return mock;
+    }
+
+    public void verify() {
+        expectationVerifier.verify();
     }
 
     @SuppressWarnings("unchecked")
@@ -19,18 +30,12 @@ public class HiMock {
                 mockedInterface.getClassLoader(),
                 new Class<?>[]{mockedInterface},
                 (proxy, method, args) -> {
-                    expectationVerifier.methodCalled(method);
+                    expectationVerifier.methodCalled(getInvocationName(method));
                     return null;
                 });
     }
 
-    public void verify() {
-        expectationVerifier.verify();
-    }
-
-    public <T> T expect(T mock) {
-        expectationVerifier.beginExpect();
-
-        return mock;
+    private String getInvocationName(Method method) {
+        return method.getDeclaringClass().getCanonicalName() + "." + method.getName() + "()";
     }
 }

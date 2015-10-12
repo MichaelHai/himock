@@ -16,20 +16,20 @@ public class ExpectationVerifier {
 
     private int state = NORMAL;
 
-    public void methodCalled(Method method) {
+    public void beginExpect() {
+        this.state = EXPECT;
+    }
+
+    public void methodCalled(String method) {
         switch (state) {
             case NORMAL:
-                actuallyInvocation.add(getInvocationName(method));
+                actuallyInvocation.add(method);
                 break;
             case EXPECT:
-                expectedInvocations.add(getInvocationName(method));
+                expectedInvocations.add(method);
                 state = NORMAL;
                 break;
         }
-    }
-
-    public String getInvocationName(Method method) {
-        return method.getDeclaringClass().getCanonicalName() + "." + method.getName() + "()";
     }
 
     public void verify() {
@@ -43,9 +43,5 @@ public class ExpectationVerifier {
         if (!expectedInvocations.isEmpty()) {
             throw new ExpectedInvocationNotSatisfiedException(expectedInvocations);
         }
-    }
-
-    public void beginExpect() {
-        this.state = EXPECT;
     }
 }
