@@ -3,33 +3,52 @@ package cn.michaelwang.himock;
 import cn.michaelwang.himock.report.ExpectedInvocationNotSatisfiedException;
 import cn.michaelwang.himock.report.UnexpectedInvocationCalledException;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ExpectationVerifier {
-    static final int NORMAL = 0;
-    static final int EXPECT = 1;
+    private interface MockState {
+        void handle(String method);
+    }
+
+    private class NormalState implements MockState {
+        private ExpectationVerifier context;
+
+        public NormalState(ExpectationVerifier expectationVerifier) {
+            this.context = expectationVerifier;
+        }
+
+        @Override
+        public void handle(String method) {
+            context.actuallyInvocation.add(method);
+        }
+    }
+
+    private class ExpectState implements MockState {
+        private ExpectationVerifier context;
+
+        public ExpectState(ExpectationVerifier expectationVerifier) {
+            this.context = expectationVerifier;
+        }
+
+        @Override
+        public void handle(String method) {
+            expectedInvocations.add(method);
+            state = new NormalState(context);
+        }
+    }
+
+    private MockState state = new NormalState(this);
 
     private List<String> expectedInvocations = new ArrayList<>();
     private List<String> actuallyInvocation = new ArrayList<>();
 
-    private int state = NORMAL;
-
     public void beginExpect() {
-        this.state = EXPECT;
+        this.state = new ExpectState(this);
     }
 
     public void methodCalled(String method) {
-        switch (state) {
-            case NORMAL:
-                actuallyInvocation.add(method);
-                break;
-            case EXPECT:
-                expectedInvocations.add(method);
-                state = NORMAL;
-                break;
-        }
+        state.handle(method);
     }
 
     public void verify() {
