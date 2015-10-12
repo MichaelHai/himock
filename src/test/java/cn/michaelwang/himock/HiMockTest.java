@@ -1,6 +1,5 @@
 package cn.michaelwang.himock;
 
-import cn.michaelwang.himock.report.VerificationFailedException;
 import cn.michaelwang.himock.report.VerificationFailedReporter;
 import org.junit.Before;
 import org.junit.Test;
