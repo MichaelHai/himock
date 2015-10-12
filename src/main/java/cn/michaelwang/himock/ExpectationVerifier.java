@@ -7,15 +7,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ExpectationVerifier {
-    private interface MockState {
-        void handle(String method);
+    private abstract class MockState {
+        protected final ExpectationVerifier context;
+
+        protected MockState(ExpectationVerifier expectationVerifier) {
+            this.context = expectationVerifier;
+        }
+
+        abstract void handle(String method);
     }
 
-    private class NormalState implements MockState {
-        private ExpectationVerifier context;
-
+    private class NormalState extends MockState {
         public NormalState(ExpectationVerifier expectationVerifier) {
-            this.context = expectationVerifier;
+            super(expectationVerifier);
         }
 
         @Override
@@ -24,11 +28,9 @@ public class ExpectationVerifier {
         }
     }
 
-    private class ExpectState implements MockState {
-        private ExpectationVerifier context;
-
+    private class ExpectState extends MockState {
         public ExpectState(ExpectationVerifier expectationVerifier) {
-            this.context = expectationVerifier;
+            super(expectationVerifier);
         }
 
         @Override
