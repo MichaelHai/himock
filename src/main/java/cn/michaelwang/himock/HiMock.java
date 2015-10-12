@@ -21,27 +21,33 @@ public class HiMock {
                 throw new MockNoninterfaceException(mockedInterface);
         }
 
-        @SuppressWarnings("unchecked")
-        T mock1 = (T) Proxy.newProxyInstance(mockedInterface.getClassLoader(),
-                new Class<?>[]{mockedInterface},
-                (proxy, method, args) -> {
-                    switch (state) {
-                        case NORMAL:
-                            actuallyInvocation.add(getInvocationName(method));
-                            break;
-                        case EXPECT:
-                            expectedInvocations.add(getInvocationName(method));
-                            state = NORMAL;
-                            break;
-                    }
-                    return null;
-                });
-
-
-        return mock1;
+        return createMock(mockedInterface);
     }
 
-    public String getInvocationName(Method method) {
+    @SuppressWarnings("unchecked")
+    private <T> T createMock(Class<T> mockedInterface) {
+        return (T) Proxy.newProxyInstance(
+                mockedInterface.getClassLoader(),
+                new Class<?>[]{mockedInterface},
+                (proxy, method, args) -> {
+                    methodCalled(method);
+                    return null;
+                });
+    }
+
+    private void methodCalled(Method method) {
+        switch (state) {
+            case NORMAL:
+                actuallyInvocation.add(getInvocationName(method));
+                break;
+            case EXPECT:
+                expectedInvocations.add(getInvocationName(method));
+                state = NORMAL;
+                break;
+        }
+    }
+
+    private String getInvocationName(Method method) {
         return method.getDeclaringClass().getCanonicalName() + "." + method.getName() + "()";
     }
 
