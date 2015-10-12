@@ -1,6 +1,7 @@
 package cn.michaelwang.himock;
 
 import cn.michaelwang.himock.report.VerificationFailedException;
+import cn.michaelwang.himock.report.VerificationFailedReporter;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,7 +43,7 @@ public class HiMockTest {
         mock.verify();
     }
 
-    @Test(expected = VerificationFailedException.class)
+    @Test(expected = VerificationFailedReporter.class)
     public void testNotCalledExpectationShouldFail() {
         MockedInterface dummy = mock.mock(MockedInterface.class);
 
@@ -51,7 +52,7 @@ public class HiMockTest {
         mock.verify();
     }
 
-    @Test(expected = VerificationFailedException.class)
+    @Test(expected = VerificationFailedReporter.class)
     public void testUnexpectedInvocationShouldFail() {
         MockedInterface dummy = mock.mock(MockedInterface.class);
 

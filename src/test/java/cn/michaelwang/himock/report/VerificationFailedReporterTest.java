@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class VerificationFailedExceptionTest {
+public class VerificationFailedReporterTest {
     private HiMock mock;
 
     @Before
@@ -23,7 +23,7 @@ public class VerificationFailedExceptionTest {
 
         try {
             mock.verify();
-        } catch (VerificationFailedException ex) {
+        } catch (VerificationFailedReporter ex) {
             assertEquals(ex.getMessage(),
                     "Verification failed: \n" +
                             "\texpected invocation not satisfied: \n" +
@@ -39,7 +39,7 @@ public class VerificationFailedExceptionTest {
 
         try {
             mock.verify();
-        } catch (VerificationFailedException ex) {
+        } catch (VerificationFailedReporter ex) {
             assertEquals(ex.getMessage(),
                     "Verification failed: \n" +
                             "\tunexpected invocation called: \n" +

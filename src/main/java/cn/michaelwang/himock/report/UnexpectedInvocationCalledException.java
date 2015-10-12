@@ -11,8 +11,7 @@ public class UnexpectedInvocationCalledException extends VerificationFailedExcep
 
     @Override
     public String getMessage() {
-        String message = super.getMessage() +
-                "\tunexpected invocation called: ";
+        String message = "\tunexpected invocation called: ";
         for (String name : actuallyInvocation) {
             message += "\n\t\t" + name;
         }

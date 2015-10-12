@@ -2,6 +2,8 @@ package cn.michaelwang.himock;
 
 import cn.michaelwang.himock.report.ExpectedInvocationNotSatisfiedException;
 import cn.michaelwang.himock.report.UnexpectedInvocationCalledException;
+import cn.michaelwang.himock.report.VerificationFailedException;
+import cn.michaelwang.himock.report.VerificationFailedReporter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,15 +56,22 @@ public class ExpectationVerifier {
     }
 
     public void verify() {
-        actuallyInvocation.forEach((invocation) -> {
+        List<VerificationFailedException> exceptions = new ArrayList<>();
+
+        for (String invocation: actuallyInvocation) {
             if (expectedInvocations.contains(invocation)) {
                 expectedInvocations.remove(invocation);
             } else {
-                throw new UnexpectedInvocationCalledException(actuallyInvocation);
+                exceptions.add(new UnexpectedInvocationCalledException(actuallyInvocation));
             }
-        });
+        }
+
         if (!expectedInvocations.isEmpty()) {
-            throw new ExpectedInvocationNotSatisfiedException(expectedInvocations);
+            exceptions.add(new ExpectedInvocationNotSatisfiedException(expectedInvocations));
+        }
+
+        if (!exceptions.isEmpty()) {
+            throw new VerificationFailedReporter(exceptions);
         }
     }
 }

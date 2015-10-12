@@ -11,8 +11,7 @@ public class ExpectedInvocationNotSatisfiedException extends VerificationFailedE
 
     @Override
     public String getMessage() {
-        String message = super.getMessage() +
-                "\texpected invocation not satisfied: ";
+        String message = "\texpected invocation not satisfied: ";
         for (String name : functionName) {
             message += "\n\t\t" + name;
         }
