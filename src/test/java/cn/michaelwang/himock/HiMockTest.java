@@ -1,5 +1,6 @@
 package cn.michaelwang.himock;
 
+import cn.michaelwang.himock.report.VerificationFailedException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,7 +20,7 @@ public class HiMockTest {
         assertNotNull("mockedObject should not be null", mockedObject);
     }
 
-    @Test(expected = CannotMockClassException.class)
+    @Test(expected = MockNoninterfaceException.class)
     public void testClassCannotBeMocked() {
         class DummyClass{}
         mock.mock(DummyClass.class);
@@ -32,7 +33,7 @@ public class HiMockTest {
 
     @Test
     public void testVerifyCalledInvocationShouldPass() {
-        DummyInterface dummy = mock.mock(DummyInterface.class);
+        MockedInterface dummy = mock.mock(MockedInterface.class);
 
         mock.expect(dummy).doNothing();
 
@@ -41,26 +42,21 @@ public class HiMockTest {
         mock.verify();
     }
 
-    @Test(expected = MockExpectationFailedException.class)
+    @Test(expected = VerificationFailedException.class)
     public void testNotCalledExpectationShouldFail() {
-        DummyInterface dummy = mock.mock(DummyInterface.class);
+        MockedInterface dummy = mock.mock(MockedInterface.class);
 
         mock.expect(dummy).doNothing();
 
         mock.verify();
     }
 
-    @Test(expected = MockExpectationFailedException.class)
+    @Test(expected = VerificationFailedException.class)
     public void testUnexpectedInvocationShouldFail() {
-        DummyInterface dummy = mock.mock(DummyInterface.class);
+        MockedInterface dummy = mock.mock(MockedInterface.class);
 
         dummy.doNothing();
 
         mock.verify();
     }
-}
-
-
-interface DummyInterface {
-    void doNothing();
 }

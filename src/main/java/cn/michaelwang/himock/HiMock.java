@@ -1,5 +1,8 @@
 package cn.michaelwang.himock;
 
+import cn.michaelwang.himock.report.ExpectedInvocationNotSatisfiedException;
+import cn.michaelwang.himock.report.UnexpectedInvocationCalledException;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
@@ -15,7 +18,7 @@ public class HiMock {
 
     public <T> T mock(Class<T> mockedInterface) {
         if (!mockedInterface.isInterface()) {
-                throw new CannotMockClassException(mockedInterface);
+                throw new MockNoninterfaceException(mockedInterface);
         }
 
         @SuppressWarnings("unchecked")
@@ -47,11 +50,11 @@ public class HiMock {
             if (expectedInvocations.contains(invocation)) {
                 expectedInvocations.remove(invocation);
             } else {
-                throw new UnexpectedInvocationException(actuallyInvocation);
+                throw new UnexpectedInvocationCalledException(actuallyInvocation);
             }
         });
         if (!expectedInvocations.isEmpty()) {
-            throw new ExpectationInvocationNotSatisfiedException(expectedInvocations);
+            throw new ExpectedInvocationNotSatisfiedException(expectedInvocations);
         }
     }
 

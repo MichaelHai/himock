@@ -1,10 +1,10 @@
 package cn.michaelwang.himock;
 
-public class CannotMockClassException extends RuntimeException {
+public class MockNoninterfaceException extends RuntimeException {
 
     private Class<?> mockedClass;
 
-    public CannotMockClassException(Class<?> mockedClass) {
+    public MockNoninterfaceException(Class<?> mockedClass) {
         this.mockedClass = mockedClass;
     }
 

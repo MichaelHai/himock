@@ -4,13 +4,13 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class CannotMockClassExceptionTest {
+public class MockNoninterfaceExceptionTest {
     @Test
     public void testCannotMockClassExceptionShouldContainsMockedClassInformation() {
         HiMock mock = new HiMock();
         try {
             mock.mock(String.class);
-        } catch (CannotMockClassException ex) {
+        } catch (MockNoninterfaceException ex) {
             assertEquals("the exception should contains the failed mocked class information", String.class, ex.getMockedClass());
         }
     }
@@ -20,7 +20,7 @@ public class CannotMockClassExceptionTest {
         HiMock mock = new HiMock();
         try {
             mock.mock(String.class);
-        } catch (CannotMockClassException ex) {
+        } catch (MockNoninterfaceException ex) {
             assertEquals("java.lang.String is not an interface and can(should) not be mocked.", ex.getMessage());
         }
     }
