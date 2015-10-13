@@ -33,11 +33,11 @@ public class ExpectationVerifier {
     private List<String> expectedInvocations = new ArrayList<>();
     private List<String> actuallyInvocation = new ArrayList<>();
 
-    public void beginExpect() {
+    public void expectStart() {
         this.state = new ExpectState();
     }
 
-    public void endExpect() {
+    public void expectEnd() {
         this.state = new NormalState();
     }
 

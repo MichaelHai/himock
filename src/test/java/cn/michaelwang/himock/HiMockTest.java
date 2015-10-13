@@ -35,7 +35,7 @@ public class HiMockTest {
     public void testVerifyCalledInvocationShouldPass() {
         MockedInterface dummy = mock.mock(MockedInterface.class);
 
-        mock.expect();
+        mock.expectStart();
         dummy.doNothing();
         mock.expectEnd();
 
@@ -48,7 +48,7 @@ public class HiMockTest {
     public void testNotCalledExpectationShouldFail() {
         MockedInterface dummy = mock.mock(MockedInterface.class);
 
-        mock.expect();
+        mock.expectStart();
         dummy.doNothing();
         mock.expectEnd();
 

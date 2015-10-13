@@ -14,12 +14,12 @@ public class HiMock {
         return createMock(mockedInterface);
     }
 
-    public void expect() {
-        expectationVerifier.beginExpect();
+    public void expectStart() {
+        expectationVerifier.expectStart();
     }
 
     public void expectEnd() {
-        expectationVerifier.endExpect();
+        expectationVerifier.expectEnd();
     }
 
     @FunctionalInterface
@@ -28,7 +28,7 @@ public class HiMock {
     }
 
     public void expect(Expectation expectation) {
-        expect();
+        expectStart();
         expectation.expect();
         expectEnd();
     }
