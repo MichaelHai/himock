@@ -8,13 +8,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class HiMockTest {
-
     private HiMock mock;
 
     @Before
     public void init() {
         mock = new HiMock();
     }
+
     @Test
     public void testMockObjectCanBeCreated() {
         MockedInterface mockedObject = mock.mock(MockedInterface.class);

@@ -1,7 +1,7 @@
 package cn.michaelwang.himock;
 
-import cn.michaelwang.himock.report.ExpectedInvocationNotSatisfiedException;
-import cn.michaelwang.himock.report.UnexpectedInvocationCalledException;
+import cn.michaelwang.himock.report.ExpectedInvocationNotHappenedException;
+import cn.michaelwang.himock.report.UnexpectedInvocationHappenedException;
 import cn.michaelwang.himock.report.VerificationFailedException;
 import cn.michaelwang.himock.report.VerificationFailedReporter;
 
@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ExpectationVerifier {
+public class InvocationRecorder {
     private interface MockState {
         Object methodCalled(String method);
 
@@ -74,12 +74,12 @@ public class ExpectationVerifier {
                 expectedInvocations.remove(invocation);
                 returnValues.remove(invocation);
             } else {
-                exceptions.add(new UnexpectedInvocationCalledException(actuallyInvocation));
+                exceptions.add(new UnexpectedInvocationHappenedException(actuallyInvocation));
             }
         }
 
         if (!expectedInvocations.isEmpty()) {
-            exceptions.add(new ExpectedInvocationNotSatisfiedException(expectedInvocations));
+            exceptions.add(new ExpectedInvocationNotHappenedException(expectedInvocations));
         }
 
         if (!exceptions.isEmpty()) {

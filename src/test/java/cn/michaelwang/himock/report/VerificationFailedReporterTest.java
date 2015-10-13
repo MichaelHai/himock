@@ -28,7 +28,7 @@ public class VerificationFailedReporterTest {
         } catch (VerificationFailedReporter ex) {
             assertEquals(ex.getMessage(),
                     "Verification failed: \n" +
-                            "\texpected invocation not satisfied: \n" +
+                            "\texpected invocation not happened: \n" +
                             "\t\tcn.michaelwang.himock.MockedInterface.doNothing()");
         }
     }
@@ -44,7 +44,7 @@ public class VerificationFailedReporterTest {
         } catch (VerificationFailedReporter ex) {
             assertEquals(ex.getMessage(),
                     "Verification failed: \n" +
-                            "\tunexpected invocation called: \n" +
+                            "\tunexpected invocation happened: \n" +
                             "\t\tcn.michaelwang.himock.MockedInterface.doNothing()");
         }
     }
