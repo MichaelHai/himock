@@ -30,6 +30,8 @@ public class VerificationFailedReporterTest {
                     "Verification failed: \n" +
                             "\texpected invocation not happened: \n" +
                             "\t\tcn.michaelwang.himock.MockedInterface.doNothing()");
+            assertEquals(1, ex.getStackTrace().length);
+            assertEquals("testNotCalledExpectationShouldProvideErrorInformation", ex.getStackTrace()[0].getMethodName());
         }
     }
 
@@ -46,7 +48,8 @@ public class VerificationFailedReporterTest {
                     "Verification failed: \n" +
                             "\tunexpected invocation happened: \n" +
                             "\t\tcn.michaelwang.himock.MockedInterface.doNothing()");
+            assertEquals(1, ex.getStackTrace().length);
+            assertEquals("testUnExpectedInvocationShouldProvideErrorInformation", ex.getStackTrace()[0].getMethodName());
         }
     }
-
 }
