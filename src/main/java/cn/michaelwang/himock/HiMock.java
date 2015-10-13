@@ -14,10 +14,12 @@ public class HiMock {
         return createMock(mockedInterface);
     }
 
-    public <T> T expect(T mock) {
+    public void expect() {
         expectationVerifier.beginExpect();
+    }
 
-        return mock;
+    public void expectEnd() {
+        expectationVerifier.endExpect();
     }
 
     public void verify() {

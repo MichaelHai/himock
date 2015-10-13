@@ -19,7 +19,9 @@ public class VerificationFailedReporterTest {
     public void testNotCalledExpectationShouldProvideErrorInformation() {
         MockedInterface dummy = mock.mock(MockedInterface.class);
 
-        mock.expect(dummy).doNothing();
+        mock.expect();
+        dummy.doNothing();
+        mock.expectEnd();
 
         try {
             mock.verify();

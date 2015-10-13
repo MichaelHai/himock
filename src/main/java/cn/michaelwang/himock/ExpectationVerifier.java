@@ -25,7 +25,6 @@ public class ExpectationVerifier {
         @Override
         public void handle(String method) {
             expectedInvocations.add(method);
-            state = new NormalState();
         }
     }
 
@@ -36,6 +35,10 @@ public class ExpectationVerifier {
 
     public void beginExpect() {
         this.state = new ExpectState();
+    }
+
+    public void endExpect() {
+        this.state = new NormalState();
     }
 
     public void methodCalled(String method) {
