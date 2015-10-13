@@ -35,7 +35,9 @@ public class HiMockTest {
     public void testVerifyCalledInvocationShouldPass() {
         MockedInterface dummy = mock.mock(MockedInterface.class);
 
-        mock.expect(dummy).doNothing();
+        mock.expectStart();
+        dummy.doNothing();
+        mock.expectEnd();
 
         dummy.doNothing();
 
@@ -46,7 +48,9 @@ public class HiMockTest {
     public void testNotCalledExpectationShouldFail() {
         MockedInterface dummy = mock.mock(MockedInterface.class);
 
-        mock.expect(dummy).doNothing();
+        mock.expectStart();
+        dummy.doNothing();
+        mock.expectEnd();
 
         mock.verify();
     }
@@ -54,6 +58,20 @@ public class HiMockTest {
     @Test(expected = VerificationFailedReporter.class)
     public void testUnexpectedInvocationShouldFail() {
         MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        dummy.doNothing();
+
+        mock.verify();
+    }
+
+    @Test
+    public void testLambdaSyntax() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        //noinspection CodeBlock2Expr
+        mock.expect(() -> {
+            dummy.doNothing();
+        });
 
         dummy.doNothing();
 

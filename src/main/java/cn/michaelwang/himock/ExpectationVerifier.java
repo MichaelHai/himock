@@ -25,7 +25,6 @@ public class ExpectationVerifier {
         @Override
         public void handle(String method) {
             expectedInvocations.add(method);
-            state = new NormalState();
         }
     }
 
@@ -34,8 +33,12 @@ public class ExpectationVerifier {
     private List<String> expectedInvocations = new ArrayList<>();
     private List<String> actuallyInvocation = new ArrayList<>();
 
-    public void beginExpect() {
+    public void expectStart() {
         this.state = new ExpectState();
+    }
+
+    public void expectEnd() {
+        this.state = new NormalState();
     }
 
     public void methodCalled(String method) {

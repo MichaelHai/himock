@@ -14,10 +14,23 @@ public class HiMock {
         return createMock(mockedInterface);
     }
 
-    public <T> T expect(T mock) {
-        expectationVerifier.beginExpect();
+    public void expectStart() {
+        expectationVerifier.expectStart();
+    }
 
-        return mock;
+    public void expectEnd() {
+        expectationVerifier.expectEnd();
+    }
+
+    @FunctionalInterface
+    interface Expectation {
+        void expect();
+    }
+
+    public void expect(Expectation expectation) {
+        expectStart();
+        expectation.expect();
+        expectEnd();
     }
 
     public void verify() {
