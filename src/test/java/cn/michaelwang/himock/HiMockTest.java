@@ -4,6 +4,7 @@ import cn.michaelwang.himock.report.VerificationFailedReporter;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class HiMockTest {
@@ -76,5 +77,33 @@ public class HiMockTest {
         dummy.doNothing();
 
         mock.verify();
+    }
+
+    @Test
+    public void testExpectReturnPrimitiveType() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        mock.expect(() -> {
+            dummy.returnInt();
+            mock.willReturn(1);
+        });
+
+        int returnValue = dummy.returnInt();
+
+        assertEquals(1, returnValue);
+    }
+
+    @Test
+    public void testExpectReturnBooleanType() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        mock.expect(() -> {
+            dummy.returnBoolean();
+            mock.willReturn(true);
+        });
+
+        boolean returnValue = dummy.returnBoolean();
+
+        assertEquals(true, returnValue);
     }
 }

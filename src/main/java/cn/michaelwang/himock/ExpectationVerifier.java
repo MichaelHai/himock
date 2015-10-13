@@ -6,25 +6,41 @@ import cn.michaelwang.himock.report.VerificationFailedException;
 import cn.michaelwang.himock.report.VerificationFailedReporter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ExpectationVerifier {
     private interface MockState {
-        void handle(String method);
+        Object methodCalled(String method);
+
+        <T> void lastCallReturn(T returnValue);
     }
 
     private class NormalState implements MockState {
         @Override
-        public void handle(String method) {
+        public Object methodCalled(String method) {
             actuallyInvocation.add(method);
+            return returnValues.get(method);
+        }
+
+        @Override
+        public <T> void lastCallReturn(T returnValue) {
+            throw new IllegalMockProcessException();
         }
     }
 
     private class ExpectState implements MockState {
+        @Override
+        public Object methodCalled(String method) {
+            expectedInvocations.add(method);
+            return null;
+        }
 
         @Override
-        public void handle(String method) {
-            expectedInvocations.add(method);
+        public <T> void lastCallReturn(T returnValue) {
+            String lastCall = expectedInvocations.get(expectedInvocations.size()-1);
+            returnValues.put(lastCall, returnValue);
         }
     }
 
@@ -32,6 +48,7 @@ public class ExpectationVerifier {
 
     private List<String> expectedInvocations = new ArrayList<>();
     private List<String> actuallyInvocation = new ArrayList<>();
+    private Map<String, Object> returnValues = new HashMap<>();
 
     public void expectStart() {
         this.state = new ExpectState();
@@ -41,8 +58,12 @@ public class ExpectationVerifier {
         this.state = new NormalState();
     }
 
-    public void methodCalled(String method) {
-        state.handle(method);
+    public Object methodCalled(String method) {
+        return state.methodCalled(method);
+    }
+
+    public <T> void lastCallReturn(T returnValue) {
+        state.lastCallReturn(returnValue);
     }
 
     public void verify() {
@@ -51,6 +72,7 @@ public class ExpectationVerifier {
         for (String invocation: actuallyInvocation) {
             if (expectedInvocations.contains(invocation)) {
                 expectedInvocations.remove(invocation);
+                returnValues.remove(invocation);
             } else {
                 exceptions.add(new UnexpectedInvocationCalledException(actuallyInvocation));
             }
