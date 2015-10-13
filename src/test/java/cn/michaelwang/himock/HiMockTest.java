@@ -63,4 +63,18 @@ public class HiMockTest {
 
         mock.verify();
     }
+
+    @Test
+    public void testLambdaSyntax() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        //noinspection CodeBlock2Expr
+        mock.expect(() -> {
+            dummy.doNothing();
+        });
+
+        dummy.doNothing();
+
+        mock.verify();
+    }
 }

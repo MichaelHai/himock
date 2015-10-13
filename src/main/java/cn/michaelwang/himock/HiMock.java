@@ -22,6 +22,17 @@ public class HiMock {
         expectationVerifier.endExpect();
     }
 
+    @FunctionalInterface
+    interface Expectation {
+        void expect();
+    }
+
+    public void expect(Expectation expectation) {
+        expect();
+        expectation.expect();
+        expectEnd();
+    }
+
     public void verify() {
         expectationVerifier.verify();
     }
