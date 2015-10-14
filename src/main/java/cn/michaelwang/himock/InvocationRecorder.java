@@ -46,11 +46,16 @@ public class InvocationRecorder {
         @Override
         public <T> void lastCallReturn(T returnValue) {
             String lastCall = expectedInvocations.get(expectedInvocations.size()-1);
-            Class<?> returnType = returnTypes.get(lastCall);
-            if (isSuitableType(returnValue.getClass(), returnType)) {
-                returnValues.put(lastCall, returnValue);
-            } else {
+
+            if (returnValues.containsKey(lastCall)) {
                 throw new IllegalMockProcessException();
+            } else {
+                Class<?> returnType = returnTypes.get(lastCall);
+                if (isSuitableType(returnValue.getClass(), returnType)) {
+                    returnValues.put(lastCall, returnValue);
+                } else {
+                    throw new IllegalMockProcessException();
+                }
             }
         }
     }
@@ -111,7 +116,7 @@ public class InvocationRecorder {
     }
 
     private boolean isSuitableType(Class<?> thisType, Class<?> targetType) {
-        if (thisType.isInstance(targetType)) {
+        if (targetType.isAssignableFrom(thisType)) {
             return true;
         } else if (targetType.isPrimitive()) {
             String thisTypeName = thisType.getName();

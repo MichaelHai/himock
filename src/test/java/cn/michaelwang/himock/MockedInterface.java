@@ -5,4 +5,5 @@ public interface MockedInterface {
 
     int returnInt();
     boolean returnBoolean();
+    Object returnObject();
 }
