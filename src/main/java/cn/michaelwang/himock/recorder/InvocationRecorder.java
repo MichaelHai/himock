@@ -1,6 +1,5 @@
 package cn.michaelwang.himock.recorder;
 
-import cn.michaelwang.himock.IllegalMockProcessException;
 import cn.michaelwang.himock.report.VerificationFailedException;
 
 import java.util.ArrayList;

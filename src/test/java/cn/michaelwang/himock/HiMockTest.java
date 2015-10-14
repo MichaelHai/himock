@@ -1,5 +1,6 @@
 package cn.michaelwang.himock;
 
+import cn.michaelwang.himock.recorder.IllegalMockProcessException;
 import cn.michaelwang.himock.report.VerificationFailedReporter;
 import org.junit.Before;
 import org.junit.Test;
