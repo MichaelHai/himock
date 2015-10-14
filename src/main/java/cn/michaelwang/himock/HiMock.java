@@ -1,5 +1,7 @@
 package cn.michaelwang.himock;
 
+import cn.michaelwang.himock.recorder.InvocationRecorder;
+
 public class HiMock {
     private final InvocationRecorder invocationRecorder = new InvocationRecorder();
 
@@ -19,11 +21,6 @@ public class HiMock {
         invocationRecorder.expectEnd();
     }
 
-    @FunctionalInterface
-    interface Expectation {
-        void expect();
-    }
-
     public void expect(Expectation expectation) {
         expectStart();
         expectation.expect();
@@ -36,5 +33,10 @@ public class HiMock {
 
     public void verify() {
         invocationRecorder.verify();
+    }
+
+    @FunctionalInterface
+    interface Expectation {
+        void expect();
     }
 }

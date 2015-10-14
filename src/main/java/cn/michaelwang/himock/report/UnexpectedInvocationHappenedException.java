@@ -1,19 +1,21 @@
 package cn.michaelwang.himock.report;
 
+import cn.michaelwang.himock.recorder.InvocationRecord;
+
 import java.util.List;
 
 public class UnexpectedInvocationHappenedException extends VerificationFailedException {
-    private List<String> actuallyInvocation;
+    private List<InvocationRecord> actuallyInvocation;
 
-    public UnexpectedInvocationHappenedException(List<String> actuallyInvocation) {
+    public UnexpectedInvocationHappenedException(List<InvocationRecord> actuallyInvocation) {
         this.actuallyInvocation = actuallyInvocation;
     }
 
     @Override
     public String getMessage() {
         String message = "\tunexpected invocation happened: ";
-        for (String name : actuallyInvocation) {
-            message += "\n\t\t" + name;
+        for (InvocationRecord invocationRecord : actuallyInvocation) {
+            message += "\n\t\t" + invocationRecord.getInvocation();
         }
 
         return message;

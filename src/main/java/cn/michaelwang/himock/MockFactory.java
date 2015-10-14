@@ -1,10 +1,15 @@
 package cn.michaelwang.himock;
 
+import cn.michaelwang.himock.recorder.InvocationRecorder;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 public class MockFactory {
     private static MockFactory instance;
+
+    private MockFactory() {
+    }
 
     public static MockFactory getInstance() {
         if (instance == null) {
@@ -13,8 +18,6 @@ public class MockFactory {
 
         return instance;
     }
-
-    private MockFactory() {}
 
     @SuppressWarnings("unchecked")
     public <T> T createMock(Class<T> mockedInterface, InvocationRecorder invocationRecorder) {

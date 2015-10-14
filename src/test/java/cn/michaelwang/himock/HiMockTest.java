@@ -23,7 +23,8 @@ public class HiMockTest {
 
     @Test(expected = MockNoninterfaceException.class)
     public void testClassCannotBeMocked() {
-        class DummyClass{}
+        class DummyClass {
+        }
         mock.mock(DummyClass.class);
     }
 

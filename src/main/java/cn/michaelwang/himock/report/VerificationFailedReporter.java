@@ -18,7 +18,7 @@ public class VerificationFailedReporter extends RuntimeException {
 
     private String constructMessage(List<VerificationFailedException> exceptions) {
         message = "Verification failed: ";
-        for (VerificationFailedException ex: exceptions) {
+        for (VerificationFailedException ex : exceptions) {
             message += "\n";
             message += ex.getMessage();
         }
