@@ -1,6 +1,6 @@
-package cn.michaelwang.himock.report;
+package cn.michaelwang.himock.recorder;
 
-import cn.michaelwang.himock.recorder.InvocationRecord;
+import cn.michaelwang.himock.report.VerificationFailedException;
 
 import java.util.List;
 

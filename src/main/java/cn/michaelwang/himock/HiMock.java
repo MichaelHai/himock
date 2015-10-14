@@ -1,6 +1,10 @@
 package cn.michaelwang.himock;
 
 import cn.michaelwang.himock.recorder.InvocationRecorder;
+import cn.michaelwang.himock.report.VerificationFailedException;
+import cn.michaelwang.himock.report.VerificationFailedReporter;
+
+import java.util.List;
 
 public class HiMock {
     private final InvocationRecorder invocationRecorder = new InvocationRecorder();
@@ -32,7 +36,11 @@ public class HiMock {
     }
 
     public void verify() {
-        invocationRecorder.verify();
+        List<VerificationFailedException> reports = invocationRecorder.verify();
+
+        if (!reports.isEmpty()) {
+            throw new VerificationFailedReporter(reports);
+        }
     }
 
     @FunctionalInterface

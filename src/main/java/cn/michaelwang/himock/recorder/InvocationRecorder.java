@@ -1,10 +1,7 @@
 package cn.michaelwang.himock.recorder;
 
 import cn.michaelwang.himock.IllegalMockProcessException;
-import cn.michaelwang.himock.report.ExpectedInvocationNotHappenedException;
-import cn.michaelwang.himock.report.UnexpectedInvocationHappenedException;
 import cn.michaelwang.himock.report.VerificationFailedException;
-import cn.michaelwang.himock.report.VerificationFailedReporter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +27,7 @@ public class InvocationRecorder {
         state.lastCallReturn(returnValue);
     }
 
-    public void verify() {
+    public List<VerificationFailedException> verify() {
         List<VerificationFailedException> exceptions = new ArrayList<>();
 
         for (InvocationRecord invocation : actuallyInvocation) {
@@ -45,9 +42,7 @@ public class InvocationRecorder {
             exceptions.add(new ExpectedInvocationNotHappenedException(expectedInvocations));
         }
 
-        if (!exceptions.isEmpty()) {
-            throw new VerificationFailedReporter(exceptions);
-        }
+        return exceptions;
     }
 
     private interface MockState {
