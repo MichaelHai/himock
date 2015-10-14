@@ -21,25 +21,7 @@ public class MockFactory {
         return (T) Proxy.newProxyInstance(
                 mockedInterface.getClassLoader(),
                 new Class<?>[]{mockedInterface},
-                (proxy, method, args) -> {
-                    Object returnValue = invocationRecorder.methodCalled(getInvocationName(method));
-                    if (returnValue == null) {
-                        return nullValue(method.getReturnType());
-                    } else {
-                        return returnValue;
-                    }
-                });
-    }
-
-    private Object nullValue(Class<?> returnType) {
-        if (returnType.isPrimitive()) {
-            if (returnType.getName().equals("boolean")) {
-                return false;
-            }
-            return 0;
-        }
-
-        return null;
+                (proxy, method, args) -> invocationRecorder.methodCalled(getInvocationName(method), method.getReturnType()));
     }
 
     private String getInvocationName(Method method) {

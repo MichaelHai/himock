@@ -1,8 +1,5 @@
 package cn.michaelwang.himock;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class HiMock {
     private final InvocationRecorder invocationRecorder = new InvocationRecorder();
 
