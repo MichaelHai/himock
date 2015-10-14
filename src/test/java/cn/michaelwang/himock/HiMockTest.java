@@ -1,15 +1,13 @@
 package cn.michaelwang.himock;
 
-import cn.michaelwang.himock.recorder.IllegalMockProcessException;
 import cn.michaelwang.himock.report.VerificationFailedReporter;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class HiMockTest {
-    private HiMock mock;
+    protected HiMock mock;
 
     @Before
     public void init() {
@@ -79,90 +77,5 @@ public class HiMockTest {
         dummy.doNothing();
 
         mock.verify();
-    }
-
-    @Test
-    public void testExpectReturnPrimitiveType() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
-
-        mock.expect(() -> {
-            dummy.returnInt();
-            mock.willReturn(1);
-        });
-
-        int returnValue = dummy.returnInt();
-
-        assertEquals(1, returnValue);
-    }
-
-    @Test
-    public void testExpectReturnBooleanType() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
-
-        mock.expect(() -> {
-            dummy.returnBoolean();
-            mock.willReturn(true);
-        });
-
-        boolean returnValue = dummy.returnBoolean();
-
-        assertEquals(true, returnValue);
-    }
-
-    @Test(expected = IllegalMockProcessException.class)
-    public void testNoReturnShouldThrowException() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
-
-        mock.expect(() -> {
-            dummy.doNothing();
-            mock.willReturn(1);
-        });
-
-        dummy.doNothing();
-    }
-
-    @Test
-    public void testExpectReturnObjectType() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
-
-        String expectedReturn = "to return";
-        mock.expect(() -> {
-            dummy.returnObject();
-            mock.willReturn(expectedReturn);
-        });
-
-        Object returnValue = dummy.returnObject();
-
-        assertEquals(expectedReturn, returnValue);
-    }
-
-    @Test(expected = IllegalMockProcessException.class)
-    public void testCannotSetReturnTwice() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
-
-        mock.expect(() -> {
-            dummy.returnInt();
-            mock.willReturn(1);
-            mock.willReturn(2);
-        });
-    }
-
-    @Test
-    public void testNoExpectationShouldReturnDefaultValue() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
-
-        mock.expect(() -> {
-            dummy.returnInt();
-            dummy.returnBoolean();
-            dummy.returnObject();
-        });
-
-        int intReturnValue = dummy.returnInt();
-        boolean booleanReturnValue = dummy.returnBoolean();
-        Object objectReturnValue = dummy.returnObject();
-
-        assertEquals(0, intReturnValue);
-        assertEquals(false, booleanReturnValue);
-        assertEquals(null, objectReturnValue);
     }
 }
