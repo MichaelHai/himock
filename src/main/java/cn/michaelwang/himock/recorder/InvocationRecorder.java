@@ -3,6 +3,7 @@ package cn.michaelwang.himock.recorder;
 import cn.michaelwang.himock.report.VerificationFailedException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class InvocationRecorder {
@@ -18,8 +19,8 @@ public class InvocationRecorder {
         this.state = new NormalState();
     }
 
-    public Object methodCalled(String method, Class<?> returnType) {
-        return state.methodCalled(method, returnType);
+    public Object methodCalled(String method, Class<?> returnType, Class<?>[] parameterTypes, Object[] args) {
+        return state.methodCalled(method, returnType, parameterTypes, args);
     }
 
     public <T> void lastCallReturn(T returnValue) {
@@ -45,18 +46,21 @@ public class InvocationRecorder {
     }
 
     private interface MockState {
-        Object methodCalled(String method, Class<?> returnType);
+        Object methodCalled(String method, Class<?> returnType, Class<?>[] parameterTypes, Object[] args);
 
         <T> void lastCallReturn(T returnValue);
     }
 
     private class NormalState implements MockState {
         @Override
-        public Object methodCalled(String method, Class<?> returnType) {
-            actuallyInvocation.add(new InvocationRecord(method, returnType));
+        public Object methodCalled(String method, Class<?> returnType, Class<?>[] parameterTypes, Object[] args) {
+            actuallyInvocation.add(new InvocationRecord(method, returnType, parameterTypes, args));
             return expectedInvocations.stream()
-                    .filter(invocationRecord -> invocationRecord.getInvocation().equals(method))
-                    .findFirst().orElse(new InvocationRecord(null, returnType))
+                    .filter(invocationRecord ->
+                                    invocationRecord.getInvocation().equals(method)
+                                            && Arrays.equals(invocationRecord.getParameters(), args)
+                    )
+                    .findFirst().orElse(new InvocationRecord(null, returnType, parameterTypes, args))
                     .getReturnValue();
         }
 
@@ -68,8 +72,8 @@ public class InvocationRecorder {
 
     private class ExpectState implements MockState {
         @Override
-        public Object methodCalled(String method, Class<?> returnType) {
-            InvocationRecord record = new InvocationRecord(method, returnType);
+        public Object methodCalled(String method, Class<?> returnType, Class<?>[] parameterTypes, Object[] args) {
+            InvocationRecord record = new InvocationRecord(method, returnType, parameterTypes, args);
             expectedInvocations.add(record);
             return record.getReturnValue();
         }

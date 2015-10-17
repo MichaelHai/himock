@@ -1,14 +1,21 @@
 package cn.michaelwang.himock.recorder;
 
+import java.util.Arrays;
+
 public class InvocationRecord {
     private String invocation;
 
     private Object returnValue;
     private Class<?> returnType;
 
-    InvocationRecord(String invocation, Class<?> returnType) {
+    private Class<?>[] parameterTypes;
+    private Object[] args;
+
+    InvocationRecord(String invocation, Class<?> returnType, Class<?>[] parameterTypes, Object[] args) {
         this.invocation = invocation;
         this.returnType = returnType;
+        this.parameterTypes = parameterTypes;
+        this.args = args;
     }
 
     public String getInvocation() {
@@ -29,6 +36,10 @@ public class InvocationRecord {
         } else {
             throw new ReturnTypeIsNotSuitableException();
         }
+    }
+
+    public Object[] getParameters() {
+        return args;
     }
 
     private Object nullValue() {
@@ -63,7 +74,8 @@ public class InvocationRecord {
 
     @Override
     public int hashCode() {
-        return super.hashCode() + invocation.hashCode() + returnType.hashCode();
+        return super.hashCode() + invocation.hashCode() + returnType.hashCode()
+                + args.hashCode();
     }
 
     @Override
@@ -71,7 +83,8 @@ public class InvocationRecord {
         if (obj instanceof InvocationRecord) {
             InvocationRecord toCompare = (InvocationRecord) obj;
             return invocation.equals(toCompare.invocation)
-                    && returnType.equals(toCompare.returnType);
+                    && returnType.equals(toCompare.returnType)
+                    && Arrays.equals(args, toCompare.args);
         }
 
         return false;

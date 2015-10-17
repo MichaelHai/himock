@@ -24,7 +24,7 @@ public class MockFactory {
         return (T) Proxy.newProxyInstance(
                 mockedInterface.getClassLoader(),
                 new Class<?>[]{mockedInterface},
-                (proxy, method, args) -> invocationRecorder.methodCalled(getInvocationName(method), method.getReturnType()));
+                (proxy, method, args) -> invocationRecorder.methodCalled(getInvocationName(method), method.getReturnType(), method.getParameterTypes(), args));
     }
 
     private String getInvocationName(Method method) {
