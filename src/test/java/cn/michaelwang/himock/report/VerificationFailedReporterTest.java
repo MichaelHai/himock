@@ -37,6 +37,27 @@ public class VerificationFailedReporterTest {
     }
 
     @Test
+    public void testNotCalledExpectationShouldProvideErrorInformationWithArgs() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        mock.expect(() -> {
+            dummy.withObjectParameters("o1", "o2");
+        });
+
+        try {
+            mock.verify();
+        } catch (VerificationFailedReporter ex) {
+            assertEquals("Verification failed:\n" +
+                            "\texpected invocation not happened:\n" +
+                            "\t\tcn.michaelwang.himock.MockedInterface.withObjectParameters(o1, o2)",
+                    ex.getMessage());
+            assertEquals(1, ex.getStackTrace().length);
+            assertEquals("testNotCalledExpectationShouldProvideErrorInformationWithArgs", ex.getStackTrace()[0].getMethodName());
+        }
+
+    }
+
+    @Test
     public void testUnExpectedInvocationShouldProvideErrorInformation() {
         MockedInterface dummy = mock.mock(MockedInterface.class);
 
@@ -52,6 +73,25 @@ public class VerificationFailedReporterTest {
             assertEquals(1, ex.getStackTrace().length);
             assertEquals("testUnExpectedInvocationShouldProvideErrorInformation", ex.getStackTrace()[0].getMethodName());
         }
+    }
+
+    @Test
+    public void testUnexpectedInvocationShouldProvideErrorInformationWithArgs() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        dummy.withObjectParameters("o1", "o2");
+
+        try {
+            mock.verify();
+        } catch (VerificationFailedReporter ex) {
+            assertEquals("Verification failed:\n" +
+                            "\tunexpected invocation happened:\n" +
+                            "\t\tcn.michaelwang.himock.MockedInterface.withObjectParameters(o1, o2)",
+                    ex.getMessage());
+            assertEquals(1, ex.getStackTrace().length);
+            assertEquals("testUnexpectedInvocationShouldProvideErrorInformationWithArgs", ex.getStackTrace()[0].getMethodName());
+        }
+
     }
 
     @Test
