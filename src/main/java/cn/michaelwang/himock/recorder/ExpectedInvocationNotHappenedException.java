@@ -13,9 +13,9 @@ public class ExpectedInvocationNotHappenedException extends VerificationFailedEx
 
     @Override
     public String getMessage() {
-        String message = "\texpected invocation not happened: ";
+        String message = "\texpected invocation not happened:";
         for (InvocationRecord invocation : functionName) {
-            message += "\n\t\t" + invocation.getInvocation();
+            message += "\n\t\t" + invocation.getInvocationMessage();
         }
 
         return message;

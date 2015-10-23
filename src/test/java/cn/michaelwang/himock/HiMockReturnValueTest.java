@@ -90,4 +90,18 @@ public class HiMockReturnValueTest extends HiMockTest {
         assertEquals(false, booleanReturnValue);
         assertEquals(null, objectReturnValue);
     }
+
+    @Test(expected = IllegalMockProcessException.class)
+    public void testCannotSetNotSuitableTypeValue() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        mock.expect(() -> {
+            dummy.returnInt();
+            mock.willReturn(true);
+        });
+
+        dummy.returnInt();
+
+        mock.verify();
+    }
 }

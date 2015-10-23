@@ -5,11 +5,12 @@ import cn.michaelwang.himock.report.VerificationFailedException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class InvocationRecorder {
     private MockState state = new NormalState();
     private List<InvocationRecord> expectedInvocations = new ArrayList<>();
-    private List<InvocationRecord> actuallyInvocation = new ArrayList<>();
+    private List<InvocationRecord> actuallyInvocations = new ArrayList<>();
 
     public void expectStart() {
         this.state = new ExpectState();
@@ -30,14 +31,22 @@ public class InvocationRecorder {
     public List<VerificationFailedException> verify() {
         List<VerificationFailedException> exceptions = new ArrayList<>();
 
-        for (InvocationRecord invocation : actuallyInvocation) {
-            if (expectedInvocations.contains(invocation)) {
-                expectedInvocations.remove(invocation);
+        actuallyInvocations.forEach((actuallyInvocation) -> {
+            if (expectedInvocations.contains(actuallyInvocation)) {
+                expectedInvocations.remove(actuallyInvocation);
             } else {
-                exceptions.add(new UnexpectedInvocationHappenedException(actuallyInvocation));
-            }
-        }
+                Optional<InvocationRecord> expectedInvocation = expectedInvocations.stream()
+                        .filter((invocation) -> invocation.getMethodName().equals(actuallyInvocation.getMethodName()))
+                        .findFirst();
 
+                if (expectedInvocation.isPresent()) {
+                    exceptions.add(new ParametersNotMatchException(actuallyInvocation, expectedInvocation.get()));
+                    expectedInvocations.remove(expectedInvocation.get());
+                } else {
+                    exceptions.add(new UnexpectedInvocationHappenedException(actuallyInvocations));
+                }
+            }
+        });
         if (!expectedInvocations.isEmpty()) {
             exceptions.add(new ExpectedInvocationNotHappenedException(expectedInvocations));
         }
@@ -54,13 +63,13 @@ public class InvocationRecorder {
     private class NormalState implements MockState {
         @Override
         public Object methodCalled(String method, Class<?> returnType, Class<?>[] parameterTypes, Object[] args) {
-            actuallyInvocation.add(new InvocationRecord(method, returnType, parameterTypes, args));
+            actuallyInvocations.add(new InvocationRecord(method, returnType, args));
             return expectedInvocations.stream()
                     .filter(invocationRecord ->
-                                    invocationRecord.getInvocation().equals(method)
+                                    invocationRecord.getMethodName().equals(method)
                                             && Arrays.equals(invocationRecord.getParameters(), args)
                     )
-                    .findFirst().orElse(new InvocationRecord(null, returnType, parameterTypes, args))
+                    .findFirst().orElse(new InvocationRecord(null, returnType, args))
                     .getReturnValue();
         }
 
@@ -73,7 +82,7 @@ public class InvocationRecorder {
     private class ExpectState implements MockState {
         @Override
         public Object methodCalled(String method, Class<?> returnType, Class<?>[] parameterTypes, Object[] args) {
-            InvocationRecord record = new InvocationRecord(method, returnType, parameterTypes, args);
+            InvocationRecord record = new InvocationRecord(method, returnType, args);
             expectedInvocations.add(record);
             return record.getReturnValue();
         }

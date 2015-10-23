@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
+@SuppressWarnings("CodeBlock2Expr")
 public class VerificationFailedReporterTest {
     private HiMock mock;
 
@@ -26,10 +27,10 @@ public class VerificationFailedReporterTest {
         try {
             mock.verify();
         } catch (VerificationFailedReporter ex) {
-            assertEquals(ex.getMessage(),
-                    "Verification failed: \n" +
-                            "\texpected invocation not happened: \n" +
-                            "\t\tcn.michaelwang.himock.MockedInterface.doNothing()");
+            assertEquals("Verification failed:\n" +
+                            "\texpected invocation not happened:\n" +
+                            "\t\tcn.michaelwang.himock.MockedInterface.doNothing()",
+                    ex.getMessage());
             assertEquals(1, ex.getStackTrace().length);
             assertEquals("testNotCalledExpectationShouldProvideErrorInformation", ex.getStackTrace()[0].getMethodName());
         }
@@ -44,12 +45,34 @@ public class VerificationFailedReporterTest {
         try {
             mock.verify();
         } catch (VerificationFailedReporter ex) {
-            assertEquals(ex.getMessage(),
-                    "Verification failed: \n" +
-                            "\tunexpected invocation happened: \n" +
-                            "\t\tcn.michaelwang.himock.MockedInterface.doNothing()");
+            assertEquals("Verification failed:\n" +
+                            "\tunexpected invocation happened:\n" +
+                            "\t\tcn.michaelwang.himock.MockedInterface.doNothing()",
+                    ex.getMessage());
             assertEquals(1, ex.getStackTrace().length);
             assertEquals("testUnExpectedInvocationShouldProvideErrorInformation", ex.getStackTrace()[0].getMethodName());
+        }
+    }
+
+    @Test
+    public void testUnExpectedParameterShouldProvideErrorInformation() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        mock.expect(() -> {
+            dummy.withObjectParameters("o1", "o2");
+        });
+
+        dummy.withObjectParameters("o1", "o3");
+
+        try {
+            mock.verify();
+        } catch (VerificationFailedReporter ex) {
+            assertEquals("Verification failed:\n" +
+                            "\tinvocation with unexpected parameters:\n" +
+                            "\t\tmethod called:\tcn.michaelwang.himock.MockedInterface.withObjectParameters\n" +
+                            "\t\tparameters expected:\to1\to2\n" +
+                            "\t\tparameters actually:\to1\to3",
+                    ex.getMessage());
         }
     }
 }

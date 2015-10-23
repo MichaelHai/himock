@@ -44,7 +44,7 @@ public class HiMock {
     }
 
     @FunctionalInterface
-    interface Expectation {
+    public interface Expectation {
         void expect();
     }
 }

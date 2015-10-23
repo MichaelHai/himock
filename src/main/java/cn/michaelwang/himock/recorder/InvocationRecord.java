@@ -1,25 +1,25 @@
 package cn.michaelwang.himock.recorder;
 
+import cn.michaelwang.himock.Utils;
+
 import java.util.Arrays;
 
 public class InvocationRecord {
-    private String invocation;
+    private String methodName;
 
     private Object returnValue;
     private Class<?> returnType;
 
-    private Class<?>[] parameterTypes;
     private Object[] args;
 
-    InvocationRecord(String invocation, Class<?> returnType, Class<?>[] parameterTypes, Object[] args) {
-        this.invocation = invocation;
+    InvocationRecord(String methodName, Class<?> returnType, Object[] args) {
+        this.methodName = methodName;
         this.returnType = returnType;
-        this.parameterTypes = parameterTypes;
         this.args = args;
     }
 
-    public String getInvocation() {
-        return invocation;
+    public String getMethodName() {
+        return methodName;
     }
 
     public Object getReturnValue() {
@@ -40,6 +40,21 @@ public class InvocationRecord {
 
     public Object[] getParameters() {
         return args;
+    }
+
+    public String getInvocationMessage() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(Utils.removeParenthesesInFunctionName(methodName));
+        sb.append("(");
+        if (args != null) {
+            for (Object parameter: args) {
+                sb.append(parameter);
+                sb.append(", ");
+            }
+            sb.delete(sb.lastIndexOf(","), sb.length());
+        }
+        sb.append(")");
+        return sb.toString();
     }
 
     private Object nullValue() {
@@ -74,15 +89,19 @@ public class InvocationRecord {
 
     @Override
     public int hashCode() {
-        return super.hashCode() + invocation.hashCode() + returnType.hashCode()
-                + args.hashCode();
+        int hashCode = super.hashCode() + methodName.hashCode() + returnType.hashCode();
+        for (Object arg: args) {
+            hashCode += arg.hashCode();
+        }
+
+        return hashCode;
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof InvocationRecord) {
             InvocationRecord toCompare = (InvocationRecord) obj;
-            return invocation.equals(toCompare.invocation)
+            return methodName.equals(toCompare.methodName)
                     && returnType.equals(toCompare.returnType)
                     && Arrays.equals(args, toCompare.args);
         }
