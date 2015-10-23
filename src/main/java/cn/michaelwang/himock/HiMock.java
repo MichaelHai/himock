@@ -1,30 +1,28 @@
 package cn.michaelwang.himock;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
+import cn.michaelwang.himock.recorder.InvocationRecorder;
+import cn.michaelwang.himock.report.VerificationFailedException;
+import cn.michaelwang.himock.report.VerificationFailedReporter;
+
+import java.util.List;
 
 public class HiMock {
-    private final ExpectationVerifier expectationVerifier = new ExpectationVerifier();
+    private final InvocationRecorder invocationRecorder = new InvocationRecorder();
 
     public <T> T mock(Class<T> mockedInterface) {
         if (!mockedInterface.isInterface()) {
             throw new MockNoninterfaceException(mockedInterface);
         }
 
-        return createMock(mockedInterface);
+        return MockFactory.getInstance().createMock(mockedInterface, invocationRecorder);
     }
 
     public void expectStart() {
-        expectationVerifier.expectStart();
+        invocationRecorder.expectStart();
     }
 
     public void expectEnd() {
-        expectationVerifier.expectEnd();
-    }
-
-    @FunctionalInterface
-    interface Expectation {
-        void expect();
+        invocationRecorder.expectEnd();
     }
 
     public void expect(Expectation expectation) {
@@ -33,22 +31,20 @@ public class HiMock {
         expectEnd();
     }
 
+    public <T> void willReturn(T returnValue) {
+        invocationRecorder.lastCallReturn(returnValue);
+    }
+
     public void verify() {
-        expectationVerifier.verify();
+        List<VerificationFailedException> reports = invocationRecorder.verify();
+
+        if (!reports.isEmpty()) {
+            throw new VerificationFailedReporter(reports);
+        }
     }
 
-    @SuppressWarnings("unchecked")
-    private <T> T createMock(Class<T> mockedInterface) {
-        return (T) Proxy.newProxyInstance(
-                mockedInterface.getClassLoader(),
-                new Class<?>[]{mockedInterface},
-                (proxy, method, args) -> {
-                    expectationVerifier.methodCalled(getInvocationName(method));
-                    return null;
-                });
-    }
-
-    private String getInvocationName(Method method) {
-        return method.getDeclaringClass().getCanonicalName() + "." + method.getName() + "()";
+    @FunctionalInterface
+    public interface Expectation {
+        void expect();
     }
 }

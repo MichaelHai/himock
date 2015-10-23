@@ -7,13 +7,13 @@ import org.junit.Test;
 import static org.junit.Assert.assertNotNull;
 
 public class HiMockTest {
-
-    private HiMock mock;
+    protected HiMock mock;
 
     @Before
     public void init() {
         mock = new HiMock();
     }
+
     @Test
     public void testMockObjectCanBeCreated() {
         MockedInterface mockedObject = mock.mock(MockedInterface.class);
@@ -22,7 +22,8 @@ public class HiMockTest {
 
     @Test(expected = MockNoninterfaceException.class)
     public void testClassCannotBeMocked() {
-        class DummyClass{}
+        class DummyClass {
+        }
         mock.mock(DummyClass.class);
     }
 
