@@ -1,4 +1,6 @@
 package cn.michaelwang.himock.recorder;
 
-public class ReturnValueAlreadySetException extends Exception {
+import cn.michaelwang.himock.report.MockProcessErrorException;
+
+public class ReturnValueAlreadySetException extends MockProcessErrorException {
 }

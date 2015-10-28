@@ -29,13 +29,15 @@ public class InvocationRecord {
         return returnValue == null ? nullValue() : returnValue;
     }
 
-    public void setReturnValue(Object returnValue) throws ReturnValueAlreadySetException, ReturnTypeIsNotSuitableException {
+    public void setReturnValue(Object returnValue) {
         if (this.returnValue != null) {
             throw new ReturnValueAlreadySetException();
         }
 
         if (isSuitableType(returnValue.getClass(), returnType)) {
             this.returnValue = returnValue;
+        } else if (returnType == Void.TYPE) {
+            throw new NoReturnTypeException(methodName);
         } else {
             throw new ReturnTypeIsNotSuitableException();
         }
@@ -50,12 +52,8 @@ public class InvocationRecord {
     }
 
     public String getInvocationRecordDetail() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("\t\t");
-        sb.append(getInvocationMessage());
-        sb.append("\n");
-        sb.append(getInvocationStackTrace());
-        return sb.toString();
+        return "\t\t" + getInvocationMessage() + "\n"
+                + getInvocationStackTrace();
     }
 
     public String getInvocationStackTrace() {

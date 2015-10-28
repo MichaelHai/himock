@@ -3,24 +3,22 @@ package cn.michaelwang.himock.report;
 import java.util.List;
 
 public class VerificationFailedReporter extends HiMockReporter {
-    private String message;
+    List<VerificationFailedException> exceptions;
 
     public VerificationFailedReporter(List<VerificationFailedException> exceptions) {
-        constructMessage(exceptions);
+        this.exceptions = exceptions;
     }
 
     @Override
     public String getMessage() {
-        return message;
-    }
+        StringBuilder sb = new StringBuilder();
+        sb.append("Verification failed:");
 
-    private String constructMessage(List<VerificationFailedException> exceptions) {
-        message = "Verification failed:";
         for (VerificationFailedException ex : exceptions) {
-            message += "\n";
-            message += ex.getMessage();
+            sb.append("\n");
+            sb.append(ex.getMessage());
         }
 
-        return message;
+        return sb.toString();
     }
 }

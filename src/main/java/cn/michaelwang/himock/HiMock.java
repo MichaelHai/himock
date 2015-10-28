@@ -12,8 +12,7 @@ public class HiMock {
 
     public <T> T mock(Class<T> mockedInterface) {
         if (!mockedInterface.isInterface()) {
-            Exception ex = new MockNoninterfaceException(mockedInterface);
-            throw new MockProcessErrorReporter(ex);
+            throw new MockProcessErrorReporter(new MockNoninterfaceException(mockedInterface));
         }
 
         return MockFactory.getInstance().createMock(mockedInterface, invocationRecorder);

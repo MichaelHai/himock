@@ -13,11 +13,14 @@ public class UnexpectedInvocationHappenedException extends VerificationFailedExc
 
     @Override
     public String getMessage() {
-        String message = "\tunexpected invocation happened:";
+        StringBuilder sb = new StringBuilder();
+        sb.append("\tunexpected invocation happened:");
+
         for (InvocationRecord invocationRecord : actuallyInvocation) {
-            message += invocationRecord.getInvocationRecordDetail();
+            sb.append("\n");
+            sb.append(invocationRecord.getInvocationRecordDetail());
         }
 
-        return message;
+        return sb.toString();
     }
 }

@@ -1,5 +1,6 @@
 package cn.michaelwang.himock.recorder;
 
+import cn.michaelwang.himock.report.MockProcessErrorException;
 import cn.michaelwang.himock.report.MockProcessErrorReporter;
 import cn.michaelwang.himock.report.VerificationFailedException;
 
@@ -76,7 +77,7 @@ public class InvocationRecorder {
 
         @Override
         public <T> void lastCallReturn(T returnValue) {
-            throw new MockProcessErrorReporter(new Exception());
+            throw new MockProcessErrorReporter(new MockProcessErrorException());
         }
     }
 
@@ -92,7 +93,7 @@ public class InvocationRecorder {
         public <T> void lastCallReturn(T returnValue) {
             try {
                 expectedInvocations.get(expectedInvocations.size() - 1).setReturnValue(returnValue);
-            } catch (ReturnValueAlreadySetException | ReturnTypeIsNotSuitableException e) {
+            } catch (MockProcessErrorException e) {
                 throw new MockProcessErrorReporter(e);
             }
         }

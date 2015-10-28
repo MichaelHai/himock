@@ -1,6 +1,8 @@
 package cn.michaelwang.himock;
 
-public class MockNoninterfaceException extends RuntimeException {
+import cn.michaelwang.himock.report.MockProcessErrorException;
+
+public class MockNoninterfaceException extends MockProcessErrorException {
 
     private Class<?> mockedClass;
 
@@ -10,7 +12,7 @@ public class MockNoninterfaceException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return "\tonly interface can(should) be mocked:\n" +
-                "\t\tclass being mocked: " + mockedClass.getName();
+        return "\tonly interface can(should) be mocked:\n"
+                + "\t\tclass being mocked: " + mockedClass.getName();
     }
 }

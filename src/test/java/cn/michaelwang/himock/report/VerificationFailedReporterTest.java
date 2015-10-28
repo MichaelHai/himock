@@ -5,6 +5,7 @@ import cn.michaelwang.himock.MockedInterface;
 import org.junit.Before;
 import org.junit.Test;
 
+import static junit.framework.Assert.failNotEquals;
 import static org.junit.Assert.assertEquals;
 
 @SuppressWarnings("CodeBlock2Expr")
@@ -23,8 +24,8 @@ public class VerificationFailedReporterTest {
             mock.mock(String.class);
         } catch (MockProcessErrorReporter ex) {
             assertEquals("Mock Process Error:\n" +
-                    "\tonly interface can(should) be mocked:\n" +
-                    "\t\tclass being mocked: java.lang.String",
+                            "\tonly interface can(should) be mocked:\n" +
+                            "\t\tclass being mocked: java.lang.String",
                     ex.getMessage());
             assertEquals(1, ex.getStackTrace().length);
             assertEquals("testCannotMockClassExceptionShouldContainsMockedClassInformationAndGenerateProperMessage", ex.getStackTrace()[0].getMethodName());
@@ -42,10 +43,10 @@ public class VerificationFailedReporterTest {
         try {
             mock.verify();
         } catch (VerificationFailedReporter ex) {
-            assertEquals("Verification failed:\n" +
+            assertStringEqualWithWildcardCharacter("Verification failed:\n" +
                             "\texpected invocation not happened:\n" +
                             "\t\tcn.michaelwang.himock.MockedInterface.doNothing()\n" +
-                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.testNotCalledExpectationShouldProvideErrorInformation(VerificationFailedReporterTest.java:39)",
+                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.testNotCalledExpectationShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)",
                     ex.getMessage());
             assertEquals(1, ex.getStackTrace().length);
             assertEquals("testNotCalledExpectationShouldProvideErrorInformation", ex.getStackTrace()[0].getMethodName());
@@ -63,11 +64,11 @@ public class VerificationFailedReporterTest {
         try {
             mock.verify();
         } catch (VerificationFailedReporter ex) {
-            assertEquals("Verification failed:\n" +
+            assertStringEqualWithWildcardCharacter("Verification failed:\n" +
                             "\texpected invocation not happened:\n" +
                             "\t\tcn.michaelwang.himock.MockedInterface.withObjectParameters(o1, o2)\n" +
-                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.lambda$testNotCalledExpectationShouldProvideErrorInformationWithArgs$0(VerificationFailedReporterTest.java:60)\n" +
-                            "\t\t   at cn.michaelwang.himock.report.VerificationFailedReporterTest.testNotCalledExpectationShouldProvideErrorInformationWithArgs(VerificationFailedReporterTest.java:59)",
+                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.lambda$testNotCalledExpectationShouldProvideErrorInformationWithArgs$?(VerificationFailedReporterTest.java:?)\n" +
+                            "\t\t   at cn.michaelwang.himock.report.VerificationFailedReporterTest.testNotCalledExpectationShouldProvideErrorInformationWithArgs(VerificationFailedReporterTest.java:?)",
                     ex.getMessage());
             assertEquals(1, ex.getStackTrace().length);
             assertEquals("testNotCalledExpectationShouldProvideErrorInformationWithArgs", ex.getStackTrace()[0].getMethodName());
@@ -84,10 +85,10 @@ public class VerificationFailedReporterTest {
         try {
             mock.verify();
         } catch (VerificationFailedReporter ex) {
-            assertEquals("Verification failed:\n" +
+            assertStringEqualWithWildcardCharacter("Verification failed:\n" +
                             "\tunexpected invocation happened:\n" +
                             "\t\tcn.michaelwang.himock.MockedInterface.doNothing()\n" +
-                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.testUnexpectedInvocationShouldProvideErrorInformation(VerificationFailedReporterTest.java:82)",
+                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.testUnexpectedInvocationShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)",
                     ex.getMessage());
             assertEquals(1, ex.getStackTrace().length);
             assertEquals("testUnexpectedInvocationShouldProvideErrorInformation", ex.getStackTrace()[0].getMethodName());
@@ -103,15 +104,33 @@ public class VerificationFailedReporterTest {
         try {
             mock.verify();
         } catch (VerificationFailedReporter ex) {
-            assertEquals("Verification failed:\n" +
+            assertStringEqualWithWildcardCharacter("Verification failed:\n" +
                             "\tunexpected invocation happened:\n" +
                             "\t\tcn.michaelwang.himock.MockedInterface.withObjectParameters(o1, o2)\n" +
-                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.testUnexpectedInvocationShouldProvideErrorInformationWithArgs(VerificationFailedReporterTest.java:101)",
+                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.testUnexpectedInvocationShouldProvideErrorInformationWithArgs(VerificationFailedReporterTest.java:?)",
                     ex.getMessage());
             assertEquals(1, ex.getStackTrace().length);
             assertEquals("testUnexpectedInvocationShouldProvideErrorInformationWithArgs", ex.getStackTrace()[0].getMethodName());
         }
 
+    }
+
+    @Test
+    public void testNoReturnShouldProvideErrorInformation() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        try {
+            mock.expect(() -> {
+                dummy.doNothing();
+                mock.willReturn(1);
+            });
+        } catch(MockProcessErrorReporter reporter) {
+            assertEquals("Mock Process Error:\n" +
+                            "\tinvocation expected has no return value: cn.michaelwang.himock.MockedInterface.doNothing()",
+                    reporter.getMessage());
+        }
+
+        dummy.doNothing();
     }
 
     @Test
@@ -127,17 +146,33 @@ public class VerificationFailedReporterTest {
         try {
             mock.verify();
         } catch (VerificationFailedReporter ex) {
-            assertEquals("Verification failed:\n" +
+            assertStringEqualWithWildcardCharacter("Verification failed:\n" +
                             "\tinvocation with unexpected parameters:\n" +
                             "\t\tmethod called:\tcn.michaelwang.himock.MockedInterface.withObjectParameters\n" +
                             "\t\tparameters expected:\to1\to2\n" +
-                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.lambda$testUnexpectedParameterShouldProvideErrorInformation$1(VerificationFailedReporterTest.java:122)\n" +
-                            "\t\t   at cn.michaelwang.himock.report.VerificationFailedReporterTest.testUnexpectedParameterShouldProvideErrorInformation(VerificationFailedReporterTest.java:121)\n" +
+                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.lambda$testUnexpectedParameterShouldProvideErrorInformation$?(VerificationFailedReporterTest.java:?)\n" +
+                            "\t\t   at cn.michaelwang.himock.report.VerificationFailedReporterTest.testUnexpectedParameterShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)\n" +
                             "\t\tparameters actually:\to1\to3\n" +
-                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.testUnexpectedParameterShouldProvideErrorInformation(VerificationFailedReporterTest.java:125)",
+                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.testUnexpectedParameterShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)",
                     ex.getMessage());
             assertEquals(1, ex.getStackTrace().length);
             assertEquals("testUnexpectedParameterShouldProvideErrorInformation", ex.getStackTrace()[0].getMethodName());
+        }
+    }
+
+    private void assertStringEqualWithWildcardCharacter(String expected, String actually) {
+        String[] splitted = expected.split("\\?");
+
+        int start;
+        int end = 0;
+        for (String sub: splitted) {
+            start = actually.indexOf(sub, end);
+            end = start + sub.length();
+
+            if (start == -1) {
+                failNotEquals(null, expected, actually);
+                return;
+            }
         }
     }
 }

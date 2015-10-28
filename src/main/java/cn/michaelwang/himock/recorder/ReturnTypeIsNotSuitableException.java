@@ -1,4 +1,6 @@
 package cn.michaelwang.himock.recorder;
 
-public class ReturnTypeIsNotSuitableException extends Exception {
+import cn.michaelwang.himock.report.MockProcessErrorException;
+
+public class ReturnTypeIsNotSuitableException extends MockProcessErrorException {
 }
