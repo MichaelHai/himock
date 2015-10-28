@@ -28,6 +28,8 @@ public class ParametersNotMatchException extends VerificationFailedException {
             sb.append("\t");
             sb.append(parameter);
         }
+
+        sb.append(expectedInvocation.getInvocationStackTrace());
         sb.append("\n");
 
         sb.append("\t\tparameters actually:");
@@ -35,6 +37,8 @@ public class ParametersNotMatchException extends VerificationFailedException {
             sb.append("\t");
             sb.append(parameter);
         }
+
+        sb.append(actuallyInvocation.getInvocationStackTrace());
 
         return sb.toString();
     }

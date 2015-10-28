@@ -131,7 +131,10 @@ public class VerificationFailedReporterTest {
                             "\tinvocation with unexpected parameters:\n" +
                             "\t\tmethod called:\tcn.michaelwang.himock.MockedInterface.withObjectParameters\n" +
                             "\t\tparameters expected:\to1\to2\n" +
-                            "\t\tparameters actually:\to1\to3",
+                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.lambda$testUnexpectedParameterShouldProvideErrorInformation$1(VerificationFailedReporterTest.java:122)\n" +
+                            "\t\t   at cn.michaelwang.himock.report.VerificationFailedReporterTest.testUnexpectedParameterShouldProvideErrorInformation(VerificationFailedReporterTest.java:121)\n" +
+                            "\t\tparameters actually:\to1\to3\n" +
+                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.testUnexpectedParameterShouldProvideErrorInformation(VerificationFailedReporterTest.java:125)",
                     ex.getMessage());
             assertEquals(1, ex.getStackTrace().length);
             assertEquals("testUnexpectedParameterShouldProvideErrorInformation", ex.getStackTrace()[0].getMethodName());

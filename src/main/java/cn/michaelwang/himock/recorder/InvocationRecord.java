@@ -51,7 +51,12 @@ public class InvocationRecord {
 
     public String getInvocationRecordDetail() {
         String detail = "\n\t\t" + getInvocationMessage();
-        detail += "\n\t\t-> ";
+        detail += getInvocationStackTrace();
+        return detail;
+    }
+
+    public String getInvocationStackTrace() {
+        String detail = "\n\t\t-> ";
         StackTraceElement[] traces = getStackTraces();
         StackTraceElement[] filteredTraces = Utils.simplifyTheStackTraces(traces);
         StringBuilder sb = new StringBuilder();
