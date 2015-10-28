@@ -1,4 +1,6 @@
 package cn.michaelwang.himock.report;
 
-public class VerificationFailedException extends RuntimeException {
+import cn.michaelwang.himock.HiMockException;
+
+public class VerificationFailedException extends HiMockException {
 }

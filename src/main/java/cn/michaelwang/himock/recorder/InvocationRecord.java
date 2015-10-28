@@ -12,10 +12,13 @@ public class InvocationRecord {
 
     private Object[] args;
 
+    private StackTraceElement[] stackTraceElements;
+
     InvocationRecord(String methodName, Class<?> returnType, Object[] args) {
         this.methodName = methodName;
         this.returnType = returnType;
         this.args = args;
+        this.stackTraceElements = new Exception().getStackTrace();
     }
 
     public String getMethodName() {
@@ -55,6 +58,10 @@ public class InvocationRecord {
         }
         sb.append(")");
         return sb.toString();
+    }
+
+    public StackTraceElement[] getStackTraces() {
+        return stackTraceElements;
     }
 
     private Object nullValue() {
