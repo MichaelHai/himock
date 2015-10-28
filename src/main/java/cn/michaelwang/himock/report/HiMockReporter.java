@@ -1,10 +1,11 @@
 package cn.michaelwang.himock.report;
 
 import cn.michaelwang.himock.HiMockException;
+import cn.michaelwang.himock.Utils;
 
 public class HiMockReporter extends HiMockException {
     protected HiMockReporter() {
-        StackTraceElement[] newTraces = simplifyTheStackTraces(this.getStackTrace());
+        StackTraceElement[] newTraces = Utils.simplifyTheStackTraces(this.getStackTrace());
         this.setStackTrace(newTraces);
     }
 }

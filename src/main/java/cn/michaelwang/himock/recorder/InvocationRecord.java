@@ -45,12 +45,33 @@ public class InvocationRecord {
         return args;
     }
 
-    public String getInvocationMessage() {
+    public StackTraceElement[] getStackTraces() {
+        return stackTraceElements;
+    }
+
+    public String getInvocationRecordDetail() {
+        String detail = "\n\t\t" + getInvocationMessage();
+        detail += "\n\t\t-> ";
+        StackTraceElement[] traces = getStackTraces();
+        StackTraceElement[] filteredTraces = Utils.simplifyTheStackTraces(traces);
+        StringBuilder sb = new StringBuilder();
+        for (StackTraceElement trace : filteredTraces) {
+            sb.append("\t\t   at ");
+            sb.append(trace.toString());
+            sb.append("\n");
+        }
+        sb.delete(0, 5);
+        sb.delete(sb.length() - 1, sb.length());
+        detail += sb.toString();
+        return detail;
+    }
+
+    private String getInvocationMessage() {
         StringBuilder sb = new StringBuilder();
         sb.append(Utils.removeParenthesesInFunctionName(methodName));
         sb.append("(");
         if (args != null) {
-            for (Object parameter: args) {
+            for (Object parameter : args) {
                 sb.append(parameter);
                 sb.append(", ");
             }
@@ -58,10 +79,6 @@ public class InvocationRecord {
         }
         sb.append(")");
         return sb.toString();
-    }
-
-    public StackTraceElement[] getStackTraces() {
-        return stackTraceElements;
     }
 
     private Object nullValue() {
@@ -97,7 +114,7 @@ public class InvocationRecord {
     @Override
     public int hashCode() {
         int hashCode = super.hashCode() + methodName.hashCode() + returnType.hashCode();
-        for (Object arg: args) {
+        for (Object arg : args) {
             hashCode += arg.hashCode();
         }
 
