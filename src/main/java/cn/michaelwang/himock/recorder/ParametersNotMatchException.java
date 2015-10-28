@@ -28,6 +28,7 @@ public class ParametersNotMatchException extends VerificationFailedException {
             sb.append("\t");
             sb.append(parameter);
         }
+        sb.append("\n");
 
         sb.append(expectedInvocation.getInvocationStackTrace());
         sb.append("\n");
@@ -37,6 +38,7 @@ public class ParametersNotMatchException extends VerificationFailedException {
             sb.append("\t");
             sb.append(parameter);
         }
+        sb.append("\n");
 
         sb.append(actuallyInvocation.getInvocationStackTrace());
 

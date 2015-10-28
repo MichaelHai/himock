@@ -50,25 +50,28 @@ public class InvocationRecord {
     }
 
     public String getInvocationRecordDetail() {
-        String detail = "\n\t\t" + getInvocationMessage();
-        detail += getInvocationStackTrace();
-        return detail;
+        StringBuilder sb = new StringBuilder();
+        sb.append("\t\t");
+        sb.append(getInvocationMessage());
+        sb.append("\n");
+        sb.append(getInvocationStackTrace());
+        return sb.toString();
     }
 
     public String getInvocationStackTrace() {
-        String detail = "\n\t\t-> ";
+        StringBuilder sb = new StringBuilder();
+        sb.append("\t\t-> ");
+
         StackTraceElement[] traces = getStackTraces();
         StackTraceElement[] filteredTraces = Utils.simplifyTheStackTraces(traces);
-        StringBuilder sb = new StringBuilder();
         for (StackTraceElement trace : filteredTraces) {
             sb.append("\t\t   at ");
             sb.append(trace.toString());
             sb.append("\n");
         }
-        sb.delete(0, 5);
+        sb.delete(5, 10);
         sb.delete(sb.length() - 1, sb.length());
-        detail += sb.toString();
-        return detail;
+        return sb.toString();
     }
 
     private String getInvocationMessage() {
