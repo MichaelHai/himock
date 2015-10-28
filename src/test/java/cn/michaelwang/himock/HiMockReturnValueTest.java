@@ -1,6 +1,6 @@
 package cn.michaelwang.himock;
 
-import cn.michaelwang.himock.recorder.IllegalMockProcessException;
+import cn.michaelwang.himock.report.MockProcessErrorReporter;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -34,7 +34,7 @@ public class HiMockReturnValueTest extends HiMockTest {
         assertEquals(true, returnValue);
     }
 
-    @Test(expected = IllegalMockProcessException.class)
+    @Test(expected = MockProcessErrorReporter.class)
     public void testNoReturnShouldThrowException() {
         MockedInterface dummy = mock.mock(MockedInterface.class);
 
@@ -61,7 +61,7 @@ public class HiMockReturnValueTest extends HiMockTest {
         assertEquals(expectedReturn, returnValue);
     }
 
-    @Test(expected = IllegalMockProcessException.class)
+    @Test(expected = MockProcessErrorReporter.class)
     public void testCannotSetReturnTwice() {
         MockedInterface dummy = mock.mock(MockedInterface.class);
 
@@ -91,7 +91,7 @@ public class HiMockReturnValueTest extends HiMockTest {
         assertEquals(null, objectReturnValue);
     }
 
-    @Test(expected = IllegalMockProcessException.class)
+    @Test(expected = MockProcessErrorReporter.class)
     public void testCannotSetNotSuitableTypeValue() {
         MockedInterface dummy = mock.mock(MockedInterface.class);
 

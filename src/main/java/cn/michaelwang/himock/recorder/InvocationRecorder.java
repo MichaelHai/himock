@@ -1,5 +1,6 @@
 package cn.michaelwang.himock.recorder;
 
+import cn.michaelwang.himock.report.MockProcessErrorReporter;
 import cn.michaelwang.himock.report.VerificationFailedException;
 
 import java.util.ArrayList;
@@ -92,7 +93,7 @@ public class InvocationRecorder {
             try {
                 expectedInvocations.get(expectedInvocations.size() - 1).setReturnValue(returnValue);
             } catch (ReturnValueAlreadySetException | ReturnTypeIsNotSuitableException e) {
-                throw new IllegalMockProcessException();
+                throw new MockProcessErrorReporter(e);
             }
         }
     }

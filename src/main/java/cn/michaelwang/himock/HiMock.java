@@ -1,6 +1,7 @@
 package cn.michaelwang.himock;
 
 import cn.michaelwang.himock.recorder.InvocationRecorder;
+import cn.michaelwang.himock.report.MockProcessErrorReporter;
 import cn.michaelwang.himock.report.VerificationFailedException;
 import cn.michaelwang.himock.report.VerificationFailedReporter;
 
@@ -11,7 +12,8 @@ public class HiMock {
 
     public <T> T mock(Class<T> mockedInterface) {
         if (!mockedInterface.isInterface()) {
-            throw new MockNoninterfaceException(mockedInterface);
+            Exception ex = new MockNoninterfaceException(mockedInterface);
+            throw new MockProcessErrorReporter(ex);
         }
 
         return MockFactory.getInstance().createMock(mockedInterface, invocationRecorder);

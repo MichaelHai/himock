@@ -8,12 +8,9 @@ public class MockNoninterfaceException extends RuntimeException {
         this.mockedClass = mockedClass;
     }
 
-    public Class<?> getMockedClass() {
-        return mockedClass;
-    }
-
     @Override
     public String getMessage() {
-        return mockedClass.getName() + " is not an interface and can(should) not be mocked.";
+        return "\tonly interface can(should) be mocked:\n" +
+                "\t\tclass being mocked: " + mockedClass.getName();
     }
 }

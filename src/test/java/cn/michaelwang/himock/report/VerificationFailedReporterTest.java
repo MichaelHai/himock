@@ -17,6 +17,21 @@ public class VerificationFailedReporterTest {
     }
 
     @Test
+    public void testCannotMockClassExceptionShouldContainsMockedClassInformationAndGenerateProperMessage() {
+        HiMock mock = new HiMock();
+        try {
+            mock.mock(String.class);
+        } catch (MockProcessErrorReporter ex) {
+            assertEquals("Mock Process Error:\n" +
+                    "\tonly interface can(should) be mocked:\n" +
+                    "\t\tclass being mocked: java.lang.String",
+                    ex.getMessage());
+            assertEquals(1, ex.getStackTrace().length);
+            assertEquals("testCannotMockClassExceptionShouldContainsMockedClassInformationAndGenerateProperMessage", ex.getStackTrace()[0].getMethodName());
+        }
+    }
+
+    @Test
     public void testNotCalledExpectationShouldProvideErrorInformation() {
         MockedInterface dummy = mock.mock(MockedInterface.class);
 

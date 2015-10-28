@@ -1,5 +1,6 @@
 package cn.michaelwang.himock;
 
+import cn.michaelwang.himock.report.MockProcessErrorReporter;
 import cn.michaelwang.himock.report.VerificationFailedReporter;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +21,7 @@ public class HiMockTest {
         assertNotNull("mockedObject should not be null", mockedObject);
     }
 
-    @Test(expected = MockNoninterfaceException.class)
+    @Test(expected = MockProcessErrorReporter.class)
     public void testClassCannotBeMocked() {
         class DummyClass {
         }
