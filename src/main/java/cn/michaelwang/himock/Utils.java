@@ -33,4 +33,21 @@ public class Utils {
         return newTraces;
     }
 
+    public static String buildStackTraceInformation(StackTraceElement[] traces, String startWith) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(startWith);
+        sb.append("-> ");
+
+        StackTraceElement[] filteredTraces = Utils.simplifyTheStackTraces(traces);
+        for (StackTraceElement trace : filteredTraces) {
+            sb.append(startWith);
+            sb.append("   at ");
+            sb.append(trace.toString());
+            sb.append("\n");
+        }
+        sb.delete(startWith.length() + 3, startWith.length() * 2 + 6);
+        sb.delete(sb.length() - 1, sb.length());
+        return sb.toString();
+    }
+
 }

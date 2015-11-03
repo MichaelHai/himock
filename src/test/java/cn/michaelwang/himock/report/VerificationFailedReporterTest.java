@@ -27,8 +27,6 @@ public class VerificationFailedReporterTest {
                             "\tonly interface can(should) be mocked:\n" +
                             "\t\tclass being mocked: java.lang.String",
                     ex.getMessage());
-            assertEquals(1, ex.getStackTrace().length);
-            assertEquals("testCannotMockClassExceptionShouldContainsMockedClassInformationAndGenerateProperMessage", ex.getStackTrace()[0].getMethodName());
         }
     }
 
@@ -48,8 +46,6 @@ public class VerificationFailedReporterTest {
                             "\t\tcn.michaelwang.himock.MockedInterface.doNothing()\n" +
                             "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.testNotCalledExpectationShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)",
                     ex.getMessage());
-            assertEquals(1, ex.getStackTrace().length);
-            assertEquals("testNotCalledExpectationShouldProvideErrorInformation", ex.getStackTrace()[0].getMethodName());
         }
     }
 
@@ -70,8 +66,6 @@ public class VerificationFailedReporterTest {
                             "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.lambda$testNotCalledExpectationShouldProvideErrorInformationWithArgs$?(VerificationFailedReporterTest.java:?)\n" +
                             "\t\t   at cn.michaelwang.himock.report.VerificationFailedReporterTest.testNotCalledExpectationShouldProvideErrorInformationWithArgs(VerificationFailedReporterTest.java:?)",
                     ex.getMessage());
-            assertEquals(1, ex.getStackTrace().length);
-            assertEquals("testNotCalledExpectationShouldProvideErrorInformationWithArgs", ex.getStackTrace()[0].getMethodName());
         }
 
     }
@@ -90,8 +84,6 @@ public class VerificationFailedReporterTest {
                             "\t\tcn.michaelwang.himock.MockedInterface.doNothing()\n" +
                             "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.testUnexpectedInvocationShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)",
                     ex.getMessage());
-            assertEquals(1, ex.getStackTrace().length);
-            assertEquals("testUnexpectedInvocationShouldProvideErrorInformation", ex.getStackTrace()[0].getMethodName());
         }
     }
 
@@ -109,8 +101,6 @@ public class VerificationFailedReporterTest {
                             "\t\tcn.michaelwang.himock.MockedInterface.withObjectParameters(o1, o2)\n" +
                             "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.testUnexpectedInvocationShouldProvideErrorInformationWithArgs(VerificationFailedReporterTest.java:?)",
                     ex.getMessage());
-            assertEquals(1, ex.getStackTrace().length);
-            assertEquals("testUnexpectedInvocationShouldProvideErrorInformationWithArgs", ex.getStackTrace()[0].getMethodName());
         }
 
     }
@@ -124,13 +114,40 @@ public class VerificationFailedReporterTest {
                 dummy.doNothing();
                 mock.willReturn(1);
             });
-        } catch(MockProcessErrorReporter reporter) {
-            assertEquals("Mock Process Error:\n" +
-                            "\tinvocation expected has no return value: cn.michaelwang.himock.MockedInterface.doNothing()",
+        } catch (MockProcessErrorReporter reporter) {
+            assertStringEqualWithWildcardCharacter("Mock Process Error:\n" +
+                            "\tinvocation expected has no return value:\n" +
+                            "\t\tcn.michaelwang.himock.MockedInterface.doNothing()\n" +
+                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.lambda$testNoReturnShouldProvideErrorInformation$?(VerificationFailedReporterTest.java:?)\n" +
+                            "\t\t   at cn.michaelwang.himock.report.VerificationFailedReporterTest.testNoReturnShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)",
                     reporter.getMessage());
         }
 
         dummy.doNothing();
+    }
+
+    @Test
+    public void testSetReturnTwiceShouldProvideErrorInformation() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        try {
+            mock.expect(() -> {
+                dummy.returnInt();
+                mock.willReturn(1);
+                mock.willReturn(2);
+            });
+        } catch (MockProcessErrorReporter reporter) {
+            assertStringEqualWithWildcardCharacter("Mock Process Error:\n" +
+                            "\treturn value has been set:\n" +
+                            "\t\tmethod setting return value: cn.michaelwang.himock.MockedInterface.returnInt()\n" +
+                            "\t\treturn value already set:\t1\n" +
+                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.lambda$testSetReturnTwiceShouldProvideErrorInformation$?(VerificationFailedReporterTest.java:?)\n" +
+                            "\t\t   at cn.michaelwang.himock.report.VerificationFailedReporterTest.testSetReturnTwiceShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)\n" +
+                            "\t\treturn value set again:\t2\n" +
+                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.lambda$testSetReturnTwiceShouldProvideErrorInformation$?(VerificationFailedReporterTest.java:?)\n" +
+                            "\t\t   at cn.michaelwang.himock.report.VerificationFailedReporterTest.testSetReturnTwiceShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)",
+                    reporter.getMessage());
+        }
     }
 
     @Test
@@ -155,8 +172,6 @@ public class VerificationFailedReporterTest {
                             "\t\tparameters actually:\to1\to3\n" +
                             "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.testUnexpectedParameterShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)",
                     ex.getMessage());
-            assertEquals(1, ex.getStackTrace().length);
-            assertEquals("testUnexpectedParameterShouldProvideErrorInformation", ex.getStackTrace()[0].getMethodName());
         }
     }
 
@@ -165,7 +180,7 @@ public class VerificationFailedReporterTest {
 
         int start;
         int end = 0;
-        for (String sub: splitted) {
+        for (String sub : splitted) {
             start = actually.indexOf(sub, end);
             end = start + sub.length();
 
@@ -173,6 +188,10 @@ public class VerificationFailedReporterTest {
                 failNotEquals(null, expected, actually);
                 return;
             }
+        }
+
+        for (int i = end; i < actually.length(); i++) {
+            assertEquals('?', actually.charAt(i));
         }
     }
 }

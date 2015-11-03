@@ -3,14 +3,21 @@ package cn.michaelwang.himock.recorder;
 import cn.michaelwang.himock.report.MockProcessErrorException;
 
 public class NoReturnTypeException extends MockProcessErrorException {
-    private final String method;
+    private final InvocationRecord invocation;
 
-    public NoReturnTypeException(String method) {
-        this.method = method;
+    public NoReturnTypeException(InvocationRecord invocation) {
+        this.invocation = invocation;
     }
 
     @Override
     public String getMessage() {
-        return "\tinvocation expected has no return value: " + method;
+        StringBuilder sb = new StringBuilder();
+        sb.append("\tinvocation expected has no return value:\n");
+        sb.append("\t\t");
+        sb.append(invocation.getMethodName());
+        sb.append("\n");
+
+        sb.append(invocation.getSetReturnStackTrace());
+        return sb.toString();
     }
 }

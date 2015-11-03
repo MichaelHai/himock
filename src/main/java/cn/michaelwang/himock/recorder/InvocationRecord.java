@@ -9,6 +9,7 @@ public class InvocationRecord {
 
     private Object returnValue;
     private Class<?> returnType;
+    private StackTraceElement[] setReturnStackTrace;
 
     private Object[] args;
 
@@ -29,15 +30,16 @@ public class InvocationRecord {
         return returnValue == null ? nullValue() : returnValue;
     }
 
-    public void setReturnValue(Object returnValue) {
+    public void setReturnValue(Object toSet) {
         if (this.returnValue != null) {
-            throw new ReturnValueAlreadySetException();
+            throw new ReturnValueAlreadySetException(this, toSet);
         }
 
-        if (isSuitableType(returnValue.getClass(), returnType)) {
-            this.returnValue = returnValue;
+        this.setReturnStackTrace = new Exception().getStackTrace();
+        if (isSuitableType(toSet.getClass(), returnType)) {
+            this.returnValue = toSet;
         } else if (returnType == Void.TYPE) {
-            throw new NoReturnTypeException(methodName);
+            throw new NoReturnTypeException(this);
         } else {
             throw new ReturnTypeIsNotSuitableException();
         }
@@ -47,8 +49,8 @@ public class InvocationRecord {
         return args;
     }
 
-    public StackTraceElement[] getStackTraces() {
-        return stackTraceElements;
+    public String getSetReturnStackTrace() {
+        return Utils.buildStackTraceInformation(setReturnStackTrace, "\t\t");
     }
 
     public String getInvocationRecordDetail() {
@@ -57,19 +59,7 @@ public class InvocationRecord {
     }
 
     public String getInvocationStackTrace() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("\t\t-> ");
-
-        StackTraceElement[] traces = getStackTraces();
-        StackTraceElement[] filteredTraces = Utils.simplifyTheStackTraces(traces);
-        for (StackTraceElement trace : filteredTraces) {
-            sb.append("\t\t   at ");
-            sb.append(trace.toString());
-            sb.append("\n");
-        }
-        sb.delete(5, 10);
-        sb.delete(sb.length() - 1, sb.length());
-        return sb.toString();
+        return Utils.buildStackTraceInformation(stackTraceElements, "\t\t");
     }
 
     private String getInvocationMessage() {
