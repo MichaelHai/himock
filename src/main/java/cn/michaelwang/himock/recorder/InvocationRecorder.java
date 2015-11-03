@@ -77,7 +77,7 @@ public class InvocationRecorder {
 
         @Override
         public <T> void lastCallReturn(T returnValue) {
-            throw new MockProcessErrorReporter(new MockProcessErrorException());
+            throw new MockProcessErrorReporter(new ExpectReturnOutsideExpectException());
         }
     }
 

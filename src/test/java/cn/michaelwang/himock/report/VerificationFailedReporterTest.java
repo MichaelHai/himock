@@ -152,6 +152,18 @@ public class VerificationFailedReporterTest {
     }
 
     @Test
+    public void testSetReturnValueOutsideExpectShouldProvideErrorInformation() {
+        try {
+            mock.willReturn(1);
+        } catch (MockProcessErrorReporter reporter) {
+            assertStringEqualWithWildcardCharacter("Mock Process Error:\n" +
+                            "\treturn value cannot be set outside expectation:\n" +
+                            "\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.testSetReturnValueOutsideExpectShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)",
+                    reporter.getMessage());
+        }
+    }
+
+    @Test
     public void testUnexpectedParameterShouldProvideErrorInformation() {
         MockedInterface dummy = mock.mock(MockedInterface.class);
 

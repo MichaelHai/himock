@@ -104,4 +104,9 @@ public class HiMockReturnValueTest extends HiMockTest {
 
         mock.verify();
     }
+
+    @Test(expected = MockProcessErrorReporter.class)
+    public void testCannotSetReturnValueOutsideExpect() {
+        mock.willReturn(1);
+    }
 }
