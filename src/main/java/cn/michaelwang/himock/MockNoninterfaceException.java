@@ -12,7 +12,14 @@ public class MockNoninterfaceException extends MockProcessErrorException {
 
     @Override
     public String getMessage() {
-        return "\tonly interface can(should) be mocked:\n"
-                + "\t\tclass being mocked: " + mockedClass.getName();
+        StringBuilder sb = new StringBuilder();
+        sb.append("\tonly interface can(should) be mocked:\n");
+        sb.append("\t\tclass being mocked: ");
+        sb.append(mockedClass.getName());
+        sb.append("\n");
+
+        sb.append(Utils.buildStackTraceInformation(getStackTrace(), "\t\t"));
+
+        return sb.toString();
     }
 }
