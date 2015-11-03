@@ -26,8 +26,8 @@ public class InvocationRecorder {
         return state.methodCalled(method, returnType, parameterTypes, args);
     }
 
-    public <T> void lastCallReturn(T returnValue) {
-        state.lastCallReturn(returnValue);
+    public <T> void lastCallReturn(T returnValue, Class<?> type) {
+        state.lastCallReturn(returnValue, type);
     }
 
     public List<VerificationFailedException> verify() {
@@ -59,7 +59,7 @@ public class InvocationRecorder {
     private interface MockState {
         Object methodCalled(String method, Class<?> returnType, Class<?>[] parameterTypes, Object[] args);
 
-        <T> void lastCallReturn(T returnValue);
+        <T> void lastCallReturn(T returnValue, Class<?> type);
     }
 
     private class NormalState implements MockState {
@@ -76,7 +76,7 @@ public class InvocationRecorder {
         }
 
         @Override
-        public <T> void lastCallReturn(T returnValue) {
+        public <T> void lastCallReturn(T returnValue, Class<?> type) {
             throw new MockProcessErrorReporter(new ExpectReturnOutsideExpectException());
         }
     }
@@ -90,9 +90,9 @@ public class InvocationRecorder {
         }
 
         @Override
-        public <T> void lastCallReturn(T returnValue) {
+        public <T> void lastCallReturn(T returnValue, Class<?> type) {
             try {
-                expectedInvocations.get(expectedInvocations.size() - 1).setReturnValue(returnValue);
+                expectedInvocations.get(expectedInvocations.size() - 1).setReturnValue(returnValue, type);
             } catch (MockProcessErrorException e) {
                 throw new MockProcessErrorReporter(e);
             }

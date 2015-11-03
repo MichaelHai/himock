@@ -152,6 +152,33 @@ public class VerificationFailedReporterTest {
     }
 
     @Test
+    public void testSetNotSuitableTypeValueShouldProvideErrorInformation() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        try {
+            mock.expect(() -> {
+                dummy.returnInt();
+                mock.willReturn(true);
+            });
+
+            dummy.returnInt();
+
+            mock.verify();
+        } catch (MockProcessErrorReporter reporter) {
+            assertStringEqualWithWildcardCharacter("Mock Process Error:\n" +
+                            "\treturn value type is not match:\n" +
+                            "\t\tmethod setting return value: cn.michaelwang.himock.MockedInterface.returnInt()\n" +
+                            "\t\treturn type expected:\tint\n" +
+                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.lambda$testSetNotSuitableTypeValueShouldProvideErrorInformation$?(VerificationFailedReporterTest.java:?)\n" +
+                            "\t\t   at cn.michaelwang.himock.report.VerificationFailedReporterTest.testSetNotSuitableTypeValueShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)\n" +
+                            "\t\treturn type being set:\tboolean\n" +
+                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.lambda$testSetNotSuitableTypeValueShouldProvideErrorInformation$?(VerificationFailedReporterTest.java:?)\n" +
+                            "\t\t   at cn.michaelwang.himock.report.VerificationFailedReporterTest.testSetNotSuitableTypeValueShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)",
+                    reporter.getMessage());
+        }
+    }
+
+    @Test
     public void testSetReturnValueOutsideExpectShouldProvideErrorInformation() {
         try {
             mock.willReturn(1);

@@ -30,7 +30,7 @@ public class InvocationRecord {
         return returnValue == null ? nullValue() : returnValue;
     }
 
-    public void setReturnValue(Object toSet) {
+    public void setReturnValue(Object toSet, Class<?> toSetType) {
         if (this.returnValue != null) {
             throw new ReturnValueAlreadySetException(this, toSet);
         }
@@ -41,7 +41,7 @@ public class InvocationRecord {
         } else if (returnType == Void.TYPE) {
             throw new NoReturnTypeException(this);
         } else {
-            throw new ReturnTypeIsNotSuitableException();
+            throw new ReturnTypeIsNotSuitableException(this, toSetType);
         }
     }
 
@@ -60,6 +60,10 @@ public class InvocationRecord {
 
     public String getInvocationStackTrace() {
         return Utils.buildStackTraceInformation(stackTraceElements, "\t\t");
+    }
+
+    public Class<?> getReturnType() {
+        return returnType;
     }
 
     private String getInvocationMessage() {

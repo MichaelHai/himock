@@ -33,7 +33,46 @@ public class HiMock {
     }
 
     public <T> void willReturn(T returnValue) {
-        invocationRecorder.lastCallReturn(returnValue);
+        invocationRecorder.lastCallReturn(returnValue, returnValue.getClass());
+    }
+
+    public void willReturn(boolean returnValue) {
+        invocationRecorder.lastCallReturn(returnValue, boolean.class);
+    }
+
+    @SuppressWarnings("unused") // simple function not tested
+    public void willReturn(byte returnValue) {
+        invocationRecorder.lastCallReturn(returnValue, byte.class);
+    }
+
+    @SuppressWarnings("unused") // simple function not tested
+    public void willReturn(char returnValue) {
+        invocationRecorder.lastCallReturn(returnValue, char.class);
+    }
+
+    @SuppressWarnings("unused") // simple function not tested
+    public void willReturn(short returnValue) {
+        invocationRecorder.lastCallReturn(returnValue, short.class);
+    }
+
+    @SuppressWarnings("unused") // simple function not tested
+    public void willReturn(int returnValue) {
+        invocationRecorder.lastCallReturn(returnValue, int.class);
+    }
+
+    @SuppressWarnings("unused") // simple function not tested
+    public void willReturn(long returnValue) {
+        invocationRecorder.lastCallReturn(returnValue, long.class);
+    }
+
+    @SuppressWarnings("unused") // simple function not tested
+    public void willReturn(float returnValue) {
+        invocationRecorder.lastCallReturn(returnValue, float.class);
+    }
+
+    @SuppressWarnings("unused") // simple function not tested
+    public void willReturn(double returnValue) {
+        invocationRecorder.lastCallReturn(returnValue, double.class);
     }
 
     public void verify() {
