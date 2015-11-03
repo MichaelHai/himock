@@ -1,15 +1,15 @@
 package cn.michaelwang.himock.report;
 
 public class MockProcessErrorReporter extends HiMockReporter {
-    private final Exception ex;
+    private final MockProcessErrorException ex;
 
     public MockProcessErrorReporter(MockProcessErrorException ex) {
         this.ex = ex;
     }
 
     @Override
-    public String getMessage() {
-        return "Mock Process Error:\n"
-                + ex.getMessage();
+    public void buildReport(ReportBuilder reportBuilder) {
+        reportBuilder.appendLine("Mock Process Error:");
+        reportBuilder.buildNextLevel(() -> ex.buildReport(reportBuilder));
     }
 }

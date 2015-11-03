@@ -1,7 +1,5 @@
 package cn.michaelwang.himock.recorder;
 
-import cn.michaelwang.himock.Utils;
-
 import java.util.Arrays;
 
 public class InvocationRecord {
@@ -49,36 +47,16 @@ public class InvocationRecord {
         return args;
     }
 
-    public String getSetReturnStackTrace() {
-        return Utils.buildStackTraceInformation(setReturnStackTrace, "\t\t");
+    public StackTraceElement[] getSetReturnStackTrace() {
+        return setReturnStackTrace;
     }
 
-    public String getInvocationRecordDetail() {
-        return "\t\t" + getInvocationMessage() + "\n"
-                + getInvocationStackTrace();
-    }
-
-    public String getInvocationStackTrace() {
-        return Utils.buildStackTraceInformation(stackTraceElements, "\t\t");
+    public StackTraceElement[] getInvocationStackTrace() {
+        return stackTraceElements;
     }
 
     public Class<?> getReturnType() {
         return returnType;
-    }
-
-    private String getInvocationMessage() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(Utils.removeParenthesesInFunctionName(methodName));
-        sb.append("(");
-        if (args != null) {
-            for (Object parameter : args) {
-                sb.append(parameter);
-                sb.append(", ");
-            }
-            sb.delete(sb.lastIndexOf(","), sb.length());
-        }
-        sb.append(")");
-        return sb.toString();
     }
 
     private Object nullValue() {

@@ -1,5 +1,7 @@
 package cn.michaelwang.himock.recorder;
 
+import cn.michaelwang.himock.Utils;
+import cn.michaelwang.himock.report.ReportBuilder;
 import cn.michaelwang.himock.report.VerificationFailedException;
 
 public class ParametersNotMatchException extends VerificationFailedException {
@@ -12,36 +14,15 @@ public class ParametersNotMatchException extends VerificationFailedException {
     }
 
     @Override
-    public String getMessage() {
-        StringBuilder sb = new StringBuilder();
-        String methodName = actuallyInvocation.getMethodName();
-        if (methodName.endsWith("()")) {
-            methodName = methodName.substring(0, methodName.length()-2);
-        }
-        sb.append("\tinvocation with unexpected parameters:\n");
-        sb.append("\t\tmethod called:\t");
-        sb.append(methodName);
-        sb.append("\n");
+    public void buildReport(ReportBuilder reportBuilder) {
+        reportBuilder.appendLine("invocation with unexpected parameters:");
 
-        sb.append("\t\tparameters expected:");
-        for (Object parameter: expectedInvocation.getParameters()) {
-            sb.append("\t");
-            sb.append(parameter);
-        }
-        sb.append("\n");
-
-        sb.append(expectedInvocation.getInvocationStackTrace());
-        sb.append("\n");
-
-        sb.append("\t\tparameters actually:");
-        for (Object parameter: actuallyInvocation.getParameters()) {
-            sb.append("\t");
-            sb.append(parameter);
-        }
-        sb.append("\n");
-
-        sb.append(actuallyInvocation.getInvocationStackTrace());
-
-        return sb.toString();
+        reportBuilder.buildNextLevel(() -> {
+            reportBuilder.appendLine("method called:\t", Utils.removeParenthesesInFunctionName(actuallyInvocation.getMethodName()));
+            reportBuilder.appendParameters("parameters expected:", expectedInvocation.getParameters());
+            reportBuilder.appendStackTrace(expectedInvocation.getInvocationStackTrace());
+            reportBuilder.appendParameters("parameters actually:", actuallyInvocation.getParameters());
+            reportBuilder.appendStackTrace(actuallyInvocation.getInvocationStackTrace());
+        });
     }
 }

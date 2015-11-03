@@ -1,7 +1,7 @@
 package cn.michaelwang.himock.recorder;
 
-import cn.michaelwang.himock.Utils;
 import cn.michaelwang.himock.report.MockProcessErrorException;
+import cn.michaelwang.himock.report.ReportBuilder;
 
 public class ReturnValueAlreadySetException extends MockProcessErrorException {
     private InvocationRecord invocationRecord;
@@ -13,25 +13,15 @@ public class ReturnValueAlreadySetException extends MockProcessErrorException {
     }
 
     @Override
-    public String getMessage() {
-        StringBuilder sb = new StringBuilder();
+    public void buildReport(ReportBuilder reportBuilder) {
+        reportBuilder.appendLine("return value has been set:");
 
-        sb.append("\treturn value has been set:\n");
-        sb.append("\t\tmethod setting return value: ");
-        sb.append(invocationRecord.getMethodName());
-        sb.append("\n");
-
-        sb.append("\t\treturn value already set:\t");
-        sb.append(invocationRecord.getReturnValue());
-        sb.append("\n");
-        sb.append(invocationRecord.getSetReturnStackTrace());
-        sb.append("\n");
-
-        sb.append("\t\treturn value set again:\t");
-        sb.append(setAgain);
-        sb.append("\n");
-        sb.append(Utils.buildStackTraceInformation(getStackTrace(), "\t\t"));
-
-        return sb.toString();
+        reportBuilder.buildNextLevel(() -> {
+            reportBuilder.appendLine("method setting return value: ", invocationRecord.getMethodName());
+            reportBuilder.appendLine("return value already set:\t", invocationRecord.getReturnValue());
+            reportBuilder.appendStackTrace(invocationRecord.getSetReturnStackTrace());
+            reportBuilder.appendLine("return value set again:\t", setAgain);
+            reportBuilder.appendStackTrace(getStackTrace());
+        });
     }
 }

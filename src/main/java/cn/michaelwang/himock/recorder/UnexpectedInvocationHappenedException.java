@@ -1,5 +1,6 @@
 package cn.michaelwang.himock.recorder;
 
+import cn.michaelwang.himock.report.ReportBuilder;
 import cn.michaelwang.himock.report.VerificationFailedException;
 
 import java.util.List;
@@ -12,15 +13,9 @@ public class UnexpectedInvocationHappenedException extends VerificationFailedExc
     }
 
     @Override
-    public String getMessage() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("\tunexpected invocation happened:");
+    public void buildReport(ReportBuilder reportBuilder) {
+        reportBuilder.appendLine("unexpected invocation happened:");
 
-        for (InvocationRecord invocationRecord : actuallyInvocation) {
-            sb.append("\n");
-            sb.append(invocationRecord.getInvocationRecordDetail());
-        }
-
-        return sb.toString();
+        reportBuilder.buildNextLevel(() -> actuallyInvocation.forEach(reportBuilder::appendInvocationDetail));
     }
 }

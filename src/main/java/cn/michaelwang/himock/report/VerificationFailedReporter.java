@@ -10,15 +10,11 @@ public class VerificationFailedReporter extends HiMockReporter {
     }
 
     @Override
-    public String getMessage() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Verification failed:");
+    public void buildReport(ReportBuilder reportBuilder) {
+        reportBuilder.appendLine("Verification failed:");
 
         for (VerificationFailedException ex : exceptions) {
-            sb.append("\n");
-            sb.append(ex.getMessage());
+            reportBuilder.buildNextLevel(() -> ex.buildReport(reportBuilder));
         }
-
-        return sb.toString();
     }
 }

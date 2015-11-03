@@ -1,26 +1,21 @@
 package cn.michaelwang.himock.recorder;
 
+import cn.michaelwang.himock.report.ReportBuilder;
 import cn.michaelwang.himock.report.VerificationFailedException;
 
 import java.util.List;
 
 public class ExpectedInvocationNotHappenedException extends VerificationFailedException {
-    private List<InvocationRecord> functionName;
+    private List<InvocationRecord> missedInvocations;
 
-    public ExpectedInvocationNotHappenedException(List<InvocationRecord> functionName) {
-        this.functionName = functionName;
+    public ExpectedInvocationNotHappenedException(List<InvocationRecord> missedInvocations) {
+        this.missedInvocations = missedInvocations;
     }
 
     @Override
-    public String getMessage() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("\texpected invocation not happened:");
+    public void buildReport(ReportBuilder reportBuilder) {
+        reportBuilder.appendLine("expected invocation not happened:");
 
-        for (InvocationRecord invocation : functionName) {
-            sb.append("\n");
-            sb.append(invocation.getInvocationRecordDetail());
-        }
-
-        return sb.toString();
+        reportBuilder.buildNextLevel(() -> missedInvocations.forEach(reportBuilder::appendInvocationDetail));
     }
 }

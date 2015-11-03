@@ -1,9 +1,10 @@
 package cn.michaelwang.himock.recorder;
 
-import cn.michaelwang.himock.Utils;
 import cn.michaelwang.himock.report.MockProcessErrorException;
+import cn.michaelwang.himock.report.ReportBuilder;
 
-public class ReturnTypeIsNotSuitableException extends MockProcessErrorException {private InvocationRecord invocationRecord;
+public class ReturnTypeIsNotSuitableException extends MockProcessErrorException {
+    private InvocationRecord invocationRecord;
     private Class<?> setAgain;
 
     public ReturnTypeIsNotSuitableException(InvocationRecord invocationRecord, Class<?> setAgain) {
@@ -12,25 +13,15 @@ public class ReturnTypeIsNotSuitableException extends MockProcessErrorException 
     }
 
     @Override
-    public String getMessage() {
-        StringBuilder sb = new StringBuilder();
+    public void buildReport(ReportBuilder reportBuilder) {
+        reportBuilder.appendLine("return value type is not match:");
 
-        sb.append("\treturn value type is not match:\n");
-        sb.append("\t\tmethod setting return value: ");
-        sb.append(invocationRecord.getMethodName());
-        sb.append("\n");
-
-        sb.append("\t\treturn type expected:\t");
-        sb.append(invocationRecord.getReturnType());
-        sb.append("\n");
-        sb.append(invocationRecord.getInvocationStackTrace());
-        sb.append("\n");
-
-        sb.append("\t\treturn type being set:\t");
-        sb.append(setAgain);
-        sb.append("\n");
-        sb.append(Utils.buildStackTraceInformation(getStackTrace(), "\t\t"));
-
-        return sb.toString();
+        reportBuilder.buildNextLevel(() -> {
+            reportBuilder.appendLine("method setting return value: ", invocationRecord.getMethodName());
+            reportBuilder.appendLine("return type expected:\t", invocationRecord.getReturnType());
+            reportBuilder.appendStackTrace(invocationRecord.getInvocationStackTrace());
+            reportBuilder.appendLine("return type being set:\t", setAgain);
+            reportBuilder.appendStackTrace(getStackTrace());
+        });
     }
 }

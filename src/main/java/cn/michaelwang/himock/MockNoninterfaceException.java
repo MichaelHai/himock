@@ -1,6 +1,7 @@
 package cn.michaelwang.himock;
 
 import cn.michaelwang.himock.report.MockProcessErrorException;
+import cn.michaelwang.himock.report.ReportBuilder;
 
 public class MockNoninterfaceException extends MockProcessErrorException {
 
@@ -11,15 +12,12 @@ public class MockNoninterfaceException extends MockProcessErrorException {
     }
 
     @Override
-    public String getMessage() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("\tonly interface can(should) be mocked:\n");
-        sb.append("\t\tclass being mocked: ");
-        sb.append(mockedClass.getName());
-        sb.append("\n");
+    public void buildReport(ReportBuilder reportBuilder) {
+        reportBuilder.appendLine("only interface can(should) be mocked:");
 
-        sb.append(Utils.buildStackTraceInformation(getStackTrace(), "\t\t"));
-
-        return sb.toString();
+        reportBuilder.buildNextLevel(() -> {
+            reportBuilder.appendLine("class being mocked: ", mockedClass.getName());
+            reportBuilder.appendStackTrace(getStackTrace());
+        });
     }
 }

@@ -26,7 +26,7 @@ public class VerificationFailedReporterTest {
             assertStringEqualWithWildcardCharacter("Mock Process Error:\n" +
                             "\tonly interface can(should) be mocked:\n" +
                             "\t\tclass being mocked: java.lang.String\n" +
-                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.testCannotMockClassExceptionShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)",
+                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.testCannotMockClassExceptionShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)\n",
                     ex.getMessage());
         }
     }
@@ -45,7 +45,7 @@ public class VerificationFailedReporterTest {
             assertStringEqualWithWildcardCharacter("Verification failed:\n" +
                             "\texpected invocation not happened:\n" +
                             "\t\tcn.michaelwang.himock.MockedInterface.doNothing()\n" +
-                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.testNotCalledExpectationShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)",
+                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.testNotCalledExpectationShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)\n",
                     ex.getMessage());
         }
     }
@@ -65,7 +65,7 @@ public class VerificationFailedReporterTest {
                             "\texpected invocation not happened:\n" +
                             "\t\tcn.michaelwang.himock.MockedInterface.withObjectParameters(o1, o2)\n" +
                             "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.lambda$testNotCalledExpectationShouldProvideErrorInformationWithArgs$?(VerificationFailedReporterTest.java:?)\n" +
-                            "\t\t   at cn.michaelwang.himock.report.VerificationFailedReporterTest.testNotCalledExpectationShouldProvideErrorInformationWithArgs(VerificationFailedReporterTest.java:?)",
+                            "\t\t   at cn.michaelwang.himock.report.VerificationFailedReporterTest.testNotCalledExpectationShouldProvideErrorInformationWithArgs(VerificationFailedReporterTest.java:?)\n",
                     ex.getMessage());
         }
 
@@ -83,7 +83,7 @@ public class VerificationFailedReporterTest {
             assertStringEqualWithWildcardCharacter("Verification failed:\n" +
                             "\tunexpected invocation happened:\n" +
                             "\t\tcn.michaelwang.himock.MockedInterface.doNothing()\n" +
-                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.testUnexpectedInvocationShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)",
+                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.testUnexpectedInvocationShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)\n",
                     ex.getMessage());
         }
     }
@@ -100,7 +100,7 @@ public class VerificationFailedReporterTest {
             assertStringEqualWithWildcardCharacter("Verification failed:\n" +
                             "\tunexpected invocation happened:\n" +
                             "\t\tcn.michaelwang.himock.MockedInterface.withObjectParameters(o1, o2)\n" +
-                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.testUnexpectedInvocationShouldProvideErrorInformationWithArgs(VerificationFailedReporterTest.java:?)",
+                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.testUnexpectedInvocationShouldProvideErrorInformationWithArgs(VerificationFailedReporterTest.java:?)\n",
                     ex.getMessage());
         }
 
@@ -120,7 +120,7 @@ public class VerificationFailedReporterTest {
                             "\tinvocation expected has no return value:\n" +
                             "\t\tcn.michaelwang.himock.MockedInterface.doNothing()\n" +
                             "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.lambda$testNoReturnShouldProvideErrorInformation$?(VerificationFailedReporterTest.java:?)\n" +
-                            "\t\t   at cn.michaelwang.himock.report.VerificationFailedReporterTest.testNoReturnShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)",
+                            "\t\t   at cn.michaelwang.himock.report.VerificationFailedReporterTest.testNoReturnShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)\n",
                     reporter.getMessage());
         }
 
@@ -146,7 +146,7 @@ public class VerificationFailedReporterTest {
                             "\t\t   at cn.michaelwang.himock.report.VerificationFailedReporterTest.testSetReturnTwiceShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)\n" +
                             "\t\treturn value set again:\t2\n" +
                             "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.lambda$testSetReturnTwiceShouldProvideErrorInformation$?(VerificationFailedReporterTest.java:?)\n" +
-                            "\t\t   at cn.michaelwang.himock.report.VerificationFailedReporterTest.testSetReturnTwiceShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)",
+                            "\t\t   at cn.michaelwang.himock.report.VerificationFailedReporterTest.testSetReturnTwiceShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)\n",
                     reporter.getMessage());
         }
     }
@@ -173,7 +173,7 @@ public class VerificationFailedReporterTest {
                             "\t\t   at cn.michaelwang.himock.report.VerificationFailedReporterTest.testSetNotSuitableTypeValueShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)\n" +
                             "\t\treturn type being set:\tboolean\n" +
                             "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.lambda$testSetNotSuitableTypeValueShouldProvideErrorInformation$?(VerificationFailedReporterTest.java:?)\n" +
-                            "\t\t   at cn.michaelwang.himock.report.VerificationFailedReporterTest.testSetNotSuitableTypeValueShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)",
+                            "\t\t   at cn.michaelwang.himock.report.VerificationFailedReporterTest.testSetNotSuitableTypeValueShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)\n",
                     reporter.getMessage());
         }
     }
@@ -185,7 +185,7 @@ public class VerificationFailedReporterTest {
         } catch (MockProcessErrorReporter reporter) {
             assertStringEqualWithWildcardCharacter("Mock Process Error:\n" +
                             "\treturn value cannot be set outside expectation:\n" +
-                            "\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.testSetReturnValueOutsideExpectShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)",
+                            "\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.testSetReturnValueOutsideExpectShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)\n",
                     reporter.getMessage());
         }
     }
@@ -210,7 +210,7 @@ public class VerificationFailedReporterTest {
                             "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.lambda$testUnexpectedParameterShouldProvideErrorInformation$?(VerificationFailedReporterTest.java:?)\n" +
                             "\t\t   at cn.michaelwang.himock.report.VerificationFailedReporterTest.testUnexpectedParameterShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)\n" +
                             "\t\tparameters actually:\to1\to3\n" +
-                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.testUnexpectedParameterShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)",
+                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.testUnexpectedParameterShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)\n",
                     ex.getMessage());
         }
     }
