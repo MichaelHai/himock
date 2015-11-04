@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;
 
+@SuppressWarnings("CodeBlock2Expr")
 public class HiMockTest {
     protected HiMock mock;
 
@@ -37,9 +38,9 @@ public class HiMockTest {
     public void testVerifyCalledInvocationShouldPass() {
         MockedInterface dummy = mock.mock(MockedInterface.class);
 
-        mock.expectStart();
-        dummy.doNothing();
-        mock.expectEnd();
+        mock.expect(() -> {
+            dummy.doNothing();
+        });
 
         dummy.doNothing();
 
@@ -50,9 +51,9 @@ public class HiMockTest {
     public void testNotCalledExpectationShouldFail() {
         MockedInterface dummy = mock.mock(MockedInterface.class);
 
-        mock.expectStart();
-        dummy.doNothing();
-        mock.expectEnd();
+        mock.expect(() -> {
+            dummy.doNothing();
+        });
 
         mock.verify();
     }
@@ -70,7 +71,6 @@ public class HiMockTest {
     public void testLambdaSyntax() {
         MockedInterface dummy = mock.mock(MockedInterface.class);
 
-        //noinspection CodeBlock2Expr
         mock.expect(() -> {
             dummy.doNothing();
         });

@@ -18,12 +18,9 @@ public class HiMock {
         return MockFactory.getInstance().createMock(mockedInterface, invocationRecorder);
     }
 
-    public void expectStart() {
-        invocationRecorder.expectStart();
-    }
-
-    public void expectEnd() {
-        invocationRecorder.expectEnd();
+    @FunctionalInterface
+    public interface Expectation {
+        void expect();
     }
 
     public void expect(Expectation expectation) {
@@ -83,8 +80,11 @@ public class HiMock {
         }
     }
 
-    @FunctionalInterface
-    public interface Expectation {
-        void expect();
+    private void expectStart() {
+        invocationRecorder.expectStart();
+    }
+
+    private void expectEnd() {
+        invocationRecorder.expectEnd();
     }
 }

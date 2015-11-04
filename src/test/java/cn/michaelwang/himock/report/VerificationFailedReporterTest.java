@@ -35,9 +35,9 @@ public class VerificationFailedReporterTest {
     public void testNotCalledExpectationShouldProvideErrorInformation() {
         MockedInterface dummy = mock.mock(MockedInterface.class);
 
-        mock.expectStart();
-        dummy.doNothing();
-        mock.expectEnd();
+        mock.expect(() -> {
+            dummy.doNothing();
+        });
 
         try {
             mock.verify();
@@ -45,7 +45,8 @@ public class VerificationFailedReporterTest {
             assertStringEqualWithWildcardCharacter("Verification failed:\n" +
                             "\texpected invocation not happened:\n" +
                             "\t\tcn.michaelwang.himock.MockedInterface.doNothing()\n" +
-                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.testNotCalledExpectationShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)\n",
+                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.lambda$testNotCalledExpectationShouldProvideErrorInformation$?(VerificationFailedReporterTest.java:?)\n" +
+                            "\t\t   at cn.michaelwang.himock.report.VerificationFailedReporterTest.testNotCalledExpectationShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)\n",
                     ex.getMessage());
         }
     }
