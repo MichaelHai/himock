@@ -216,6 +216,31 @@ public class VerificationFailedReporterTest {
         }
     }
 
+    @Test
+    public void testMultipleVerificationFailShouldProvideAllErrorInformation() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        mock.expect(() -> {
+            dummy.returnInt();
+        });
+
+        dummy.doNothing();
+
+        try {
+            mock.verify();
+        } catch (VerificationFailedReporter ex) {
+            assertStringEqualWithWildcardCharacter("Verification failed:\n" +
+                            "\tunexpected invocation happened:\n" +
+                            "\t\tcn.michaelwang.himock.MockedInterface.doNothing()\n" +
+                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.testMultipleVerificationFailShouldProvideAllErrorInformation(VerificationFailedReporterTest.java:?)\n" +
+                            "\texpected invocation not happened:\n" +
+                            "\t\tcn.michaelwang.himock.MockedInterface.returnInt()\n" +
+                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.lambda$testMultipleVerificationFailShouldProvideAllErrorInformation$?(VerificationFailedReporterTest.java:?)\n" +
+                            "\t\t   at cn.michaelwang.himock.report.VerificationFailedReporterTest.testMultipleVerificationFailShouldProvideAllErrorInformation(VerificationFailedReporterTest.java:?)\n",
+                    ex.getMessage());
+        }
+    }
+
     private void assertStringEqualWithWildcardCharacter(String expected, String actually) {
         String[] splitted = expected.split("\\?");
 
