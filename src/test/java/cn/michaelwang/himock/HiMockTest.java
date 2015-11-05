@@ -67,16 +67,4 @@ public class HiMockTest {
         mock.verify();
     }
 
-    @Test
-    public void testLambdaSyntax() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
-
-        mock.expect(() -> {
-            dummy.doNothing();
-        });
-
-        dummy.doNothing();
-
-        mock.verify();
-    }
 }
