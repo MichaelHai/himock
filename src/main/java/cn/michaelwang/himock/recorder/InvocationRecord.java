@@ -3,6 +3,7 @@ package cn.michaelwang.himock.recorder;
 import java.util.Arrays;
 
 public class InvocationRecord {
+    private int id;
     private String methodName;
 
     private Object returnValue;
@@ -13,11 +14,16 @@ public class InvocationRecord {
 
     private StackTraceElement[] stackTraceElements;
 
-    InvocationRecord(String methodName, Class<?> returnType, Object[] args) {
+    InvocationRecord(int id, String methodName, Class<?> returnType, Object[] args) {
+        this.id = id;
         this.methodName = methodName;
         this.returnType = returnType;
         this.args = args;
         this.stackTraceElements = new Exception().getStackTrace();
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getMethodName() {
@@ -91,7 +97,7 @@ public class InvocationRecord {
 
     @Override
     public int hashCode() {
-        int hashCode = super.hashCode() + methodName.hashCode() + returnType.hashCode();
+        int hashCode = super.hashCode() + id + methodName.hashCode() + returnType.hashCode();
         for (Object arg : args) {
             hashCode += arg.hashCode();
         }
@@ -103,7 +109,8 @@ public class InvocationRecord {
     public boolean equals(Object obj) {
         if (obj instanceof InvocationRecord) {
             InvocationRecord toCompare = (InvocationRecord) obj;
-            return methodName.equals(toCompare.methodName)
+            return id == toCompare.id
+                    && methodName.equals(toCompare.methodName)
                     && returnType.equals(toCompare.returnType)
                     && Arrays.equals(args, toCompare.args);
         }
