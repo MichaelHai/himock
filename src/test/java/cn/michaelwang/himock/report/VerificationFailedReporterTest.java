@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import static junit.framework.Assert.failNotEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 @SuppressWarnings("CodeBlock2Expr")
 public class VerificationFailedReporterTest {
@@ -28,7 +29,10 @@ public class VerificationFailedReporterTest {
                             "\t\tclass being mocked: java.lang.String\n" +
                             "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.testCannotMockClassExceptionShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)\n",
                     ex.getMessage());
+            return;
         }
+
+        fail("Exception is expected, the test should return in the catch block.");
     }
 
     @Test
@@ -48,7 +52,10 @@ public class VerificationFailedReporterTest {
                             "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.lambda$testNotCalledExpectationShouldProvideErrorInformation$?(VerificationFailedReporterTest.java:?)\n" +
                             "\t\t   at cn.michaelwang.himock.report.VerificationFailedReporterTest.testNotCalledExpectationShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)\n",
                     ex.getMessage());
+            return;
         }
+
+        fail("Exception is expected, the test should return in the catch block.");
     }
 
     @Test
@@ -68,42 +75,10 @@ public class VerificationFailedReporterTest {
                             "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.lambda$testNotCalledExpectationShouldProvideErrorInformationWithArgs$?(VerificationFailedReporterTest.java:?)\n" +
                             "\t\t   at cn.michaelwang.himock.report.VerificationFailedReporterTest.testNotCalledExpectationShouldProvideErrorInformationWithArgs(VerificationFailedReporterTest.java:?)\n",
                     ex.getMessage());
+            return;
         }
 
-    }
-
-    @Test
-    public void testUnexpectedInvocationShouldProvideErrorInformation() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
-
-        dummy.doNothing();
-
-        try {
-            mock.verify();
-        } catch (VerificationFailedReporter ex) {
-            assertStringEqualWithWildcardCharacter("Verification failed:\n" +
-                            "\tunexpected invocation happened:\n" +
-                            "\t\tcn.michaelwang.himock.MockedInterface.doNothing()\n" +
-                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.testUnexpectedInvocationShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)\n",
-                    ex.getMessage());
-        }
-    }
-
-    @Test
-    public void testUnexpectedInvocationShouldProvideErrorInformationWithArgs() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
-
-        dummy.withObjectParameters("o1", "o2");
-
-        try {
-            mock.verify();
-        } catch (VerificationFailedReporter ex) {
-            assertStringEqualWithWildcardCharacter("Verification failed:\n" +
-                            "\tunexpected invocation happened:\n" +
-                            "\t\tcn.michaelwang.himock.MockedInterface.withObjectParameters(o1, o2)\n" +
-                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.testUnexpectedInvocationShouldProvideErrorInformationWithArgs(VerificationFailedReporterTest.java:?)\n",
-                    ex.getMessage());
-        }
+        fail("Exception is expected, the test should return in the catch block.");
 
     }
 
@@ -123,9 +98,10 @@ public class VerificationFailedReporterTest {
                             "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.lambda$testNoReturnShouldProvideErrorInformation$?(VerificationFailedReporterTest.java:?)\n" +
                             "\t\t   at cn.michaelwang.himock.report.VerificationFailedReporterTest.testNoReturnShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)\n",
                     reporter.getMessage());
+            return;
         }
 
-        dummy.doNothing();
+        fail("Exception is expected, the test should return in the catch block.");
     }
 
     @Test
@@ -149,7 +125,10 @@ public class VerificationFailedReporterTest {
                             "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.lambda$testSetReturnTwiceShouldProvideErrorInformation$?(VerificationFailedReporterTest.java:?)\n" +
                             "\t\t   at cn.michaelwang.himock.report.VerificationFailedReporterTest.testSetReturnTwiceShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)\n",
                     reporter.getMessage());
+            return;
         }
+
+        fail("Exception is expected, the test should return in the catch block.");
     }
 
     @Test
@@ -176,7 +155,10 @@ public class VerificationFailedReporterTest {
                             "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.lambda$testSetNotSuitableTypeValueShouldProvideErrorInformation$?(VerificationFailedReporterTest.java:?)\n" +
                             "\t\t   at cn.michaelwang.himock.report.VerificationFailedReporterTest.testSetNotSuitableTypeValueShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)\n",
                     reporter.getMessage());
+            return;
         }
+
+        fail("Exception is expected, the test should return in the catch block.");
     }
 
     @Test
@@ -188,7 +170,10 @@ public class VerificationFailedReporterTest {
                             "\treturn value cannot be set outside expectation:\n" +
                             "\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.testSetReturnValueOutsideExpectShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)\n",
                     reporter.getMessage());
+            return;
         }
+
+        fail("Exception is expected, the test should return in the catch block.");
     }
 
     @Test
@@ -213,7 +198,10 @@ public class VerificationFailedReporterTest {
                             "\t\tparameters actually:\to1\to3\n" +
                             "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.testUnexpectedParameterShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)\n",
                     ex.getMessage());
+            return;
         }
+
+        fail("Exception is expected, the test should return in the catch block.");
     }
 
     @Test
@@ -230,15 +218,15 @@ public class VerificationFailedReporterTest {
             mock.verify();
         } catch (VerificationFailedReporter ex) {
             assertStringEqualWithWildcardCharacter("Verification failed:\n" +
-                            "\tunexpected invocation happened:\n" +
-                            "\t\tcn.michaelwang.himock.MockedInterface.doNothing()\n" +
-                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.testMultipleVerificationFailShouldProvideAllErrorInformation(VerificationFailedReporterTest.java:?)\n" +
                             "\texpected invocation not happened:\n" +
                             "\t\tcn.michaelwang.himock.MockedInterface.returnInt()\n" +
                             "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.lambda$testMultipleVerificationFailShouldProvideAllErrorInformation$?(VerificationFailedReporterTest.java:?)\n" +
                             "\t\t   at cn.michaelwang.himock.report.VerificationFailedReporterTest.testMultipleVerificationFailShouldProvideAllErrorInformation(VerificationFailedReporterTest.java:?)\n",
                     ex.getMessage());
+            return;
         }
+
+        fail("Exception is expected, the test should return in the catch block.");
     }
 
     private void assertStringEqualWithWildcardCharacter(String expected, String actually) {

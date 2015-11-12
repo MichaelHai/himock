@@ -61,12 +61,13 @@ public class HiMockTest {
         mock.verify();
     }
 
-    @Test(expected = VerificationFailedReporter.class)
-    public void testUnexpectedInvocationShouldFail() {
+    @Test
+    public void testUnexpectedInvocationShouldReturnDefaultValue() {
         MockedInterface dummy = mock.mock(MockedInterface.class);
 
-        dummy.doNothing();
+        int result = dummy.returnInt();
 
+        assertEquals(0, result);
         mock.verify();
     }
 

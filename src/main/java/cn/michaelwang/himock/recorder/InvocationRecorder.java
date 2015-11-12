@@ -51,10 +51,6 @@ public class InvocationRecorder {
             }
         }
 
-        if (!actuallyInvocations.isEmpty()) {
-            exceptions.add(new UnexpectedInvocationHappenedException(actuallyInvocations));
-        }
-
         if (!expectedInvocations.isEmpty()) {
             exceptions.add(new ExpectedInvocationNotHappenedException(expectedInvocations));
         }
