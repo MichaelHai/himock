@@ -5,6 +5,8 @@ import cn.michaelwang.himock.report.VerificationFailedReporter;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -119,4 +121,19 @@ public class HiMockTest {
         mock.verify();
     }
 
+    @Test
+    public void testTwoDifferentInterfaceCanBeMocked() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+        List<?> dummyList = mock.mock(List.class);
+
+        mock.expect(() -> {
+            dummy.doNothing();
+            dummyList.size(); mock.willReturn(10);
+        });
+
+        dummy.doNothing();
+        assertEquals(10, dummyList.size());
+
+        mock.verify();
+    }
 }
