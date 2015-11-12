@@ -72,6 +72,24 @@ public class HiMockTest {
     }
 
     @Test
+    public void testVerificationInvocationOnMockObject() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        dummy.doNothing();
+
+        mock.verify(() -> {
+            dummy.doNothing();
+        });
+    }
+
+    @Test(expected = MockProcessErrorReporter.class)
+    public void testExpectReturnInVerificationShouldFail() {
+        mock.verify(() -> {
+            mock.willReturn(1);
+        });
+    }
+
+    @Test
     public void testTwoMockObjectOfTheSameInterfaceBothExpectedAndCalledShouldPass() {
         MockedInterface dummy1 = mock.mock(MockedInterface.class);
         MockedInterface dummy2 = mock.mock(MockedInterface.class);

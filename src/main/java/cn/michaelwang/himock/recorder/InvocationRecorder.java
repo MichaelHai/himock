@@ -10,12 +10,21 @@ public class InvocationRecorder {
     private MockState state = new NormalState();
     private List<InvocationRecord> expectedInvocations = new ArrayList<>();
     private List<InvocationRecord> actuallyInvocations = new ArrayList<>();
+    private List<InvocationRecord> verificationInvocations = new ArrayList<>();
 
     public void expectStart() {
         this.state = new ExpectState();
     }
 
     public void expectEnd() {
+        this.state = new NormalState();
+    }
+
+    public void verificationStart() {
+        this.state = new VerificationState();
+    }
+
+    public void verificationEnd() {
         this.state = new NormalState();
     }
 
@@ -30,28 +39,30 @@ public class InvocationRecorder {
     public List<VerificationFailedException> verify() {
         List<VerificationFailedException> exceptions = new ArrayList<>();
 
+        verificationInvocations.addAll(expectedInvocations);
+
         Iterator<InvocationRecord> iterator = actuallyInvocations.iterator();
         while(iterator.hasNext()) {
             InvocationRecord actuallyInvocation = iterator.next();
 
-            if (expectedInvocations.contains(actuallyInvocation)) {
-                expectedInvocations.remove(actuallyInvocation);
+            if (verificationInvocations.contains(actuallyInvocation)) {
+                verificationInvocations.remove(actuallyInvocation);
                 iterator.remove();
             } else {
-                Optional<InvocationRecord> expectedInvocation = expectedInvocations.stream()
+                Optional<InvocationRecord> expectedInvocation = verificationInvocations.stream()
                         .filter((invocation) -> invocation.getMethodName().equals(actuallyInvocation.getMethodName()))
                         .filter((invocation) -> invocation.getId() == actuallyInvocation.getId())
                         .findFirst();
 
                 if (expectedInvocation.isPresent()) {
                     exceptions.add(new ParametersNotMatchException(actuallyInvocation, expectedInvocation.get()));
-                    expectedInvocations.remove(expectedInvocation.get());
+                    verificationInvocations.remove(expectedInvocation.get());
                     iterator.remove();
                 }
             }
         }
 
-        if (!expectedInvocations.isEmpty()) {
+        if (!verificationInvocations.isEmpty()) {
             exceptions.add(new ExpectedInvocationNotHappenedException(expectedInvocations));
         }
 
@@ -98,6 +109,21 @@ public class InvocationRecorder {
             } catch (MockProcessErrorException e) {
                 throw new MockProcessErrorReporter(e);
             }
+        }
+    }
+
+    private class VerificationState implements MockState {
+
+        @Override
+        public Object methodCalled(int id, String method, Class<?> returnType, Class<?>[] parameterTypes, Object[] args) {
+            InvocationRecord record = new InvocationRecord(id, method, returnType, args);
+            verificationInvocations.add(record);
+            return record.getReturnValue();
+        }
+
+        @Override
+        public <T> void lastCallReturn(T returnValue, Class<?> type) {
+            throw new MockProcessErrorReporter(new ExpectReturnOutsideExpectException());
         }
     }
 }
