@@ -90,6 +90,22 @@ public class HiMockTest {
     }
 
     @Test
+    public void testExpectedAndVerifiedWithOneInvocationShouldPass() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        mock.expect(() -> {
+            dummy.returnInt();
+            mock.willReturn(10);
+        });
+
+        assertEquals(10, dummy.returnInt());
+
+        mock.verify(() -> {
+            dummy.returnInt();
+        });
+    }
+
+    @Test
     public void testTwoMockObjectOfTheSameInterfaceBothExpectedAndCalledShouldPass() {
         MockedInterface dummy1 = mock.mock(MockedInterface.class);
         MockedInterface dummy2 = mock.mock(MockedInterface.class);

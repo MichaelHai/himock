@@ -39,7 +39,9 @@ public class InvocationRecorder {
     public List<VerificationFailedException> verify() {
         List<VerificationFailedException> exceptions = new ArrayList<>();
 
-        verificationInvocations.addAll(expectedInvocations);
+        expectedInvocations.stream()
+                .filter(invocation -> !verificationInvocations.contains(invocation))
+                .forEach(verificationInvocations::add);
 
         Iterator<InvocationRecord> iterator = actuallyInvocations.iterator();
         while(iterator.hasNext()) {
