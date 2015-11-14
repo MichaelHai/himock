@@ -61,13 +61,48 @@ public class HiMockTest {
         mock.verify();
     }
 
-    @Test(expected = VerificationFailedReporter.class)
-    public void testUnexpectedInvocationShouldFail() {
+    @Test
+    public void testUnexpectedInvocationShouldReturnDefaultValue() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        int result = dummy.returnInt();
+
+        assertEquals(0, result);
+        mock.verify();
+    }
+
+    @Test
+    public void testVerificationInvocationOnMockObject() {
         MockedInterface dummy = mock.mock(MockedInterface.class);
 
         dummy.doNothing();
 
-        mock.verify();
+        mock.verify(() -> {
+            dummy.doNothing();
+        });
+    }
+
+    @Test(expected = MockProcessErrorReporter.class)
+    public void testExpectReturnInVerificationShouldFail() {
+        mock.verify(() -> {
+            mock.willReturn(1);
+        });
+    }
+
+    @Test
+    public void testExpectedAndVerifiedWithOneInvocationShouldPass() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        mock.expect(() -> {
+            dummy.returnInt();
+            mock.willReturn(10);
+        });
+
+        assertEquals(10, dummy.returnInt());
+
+        mock.verify(() -> {
+            dummy.returnInt();
+        });
     }
 
     @Test

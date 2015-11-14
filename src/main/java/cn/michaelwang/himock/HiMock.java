@@ -79,6 +79,16 @@ public class HiMock {
             throw new VerificationFailedReporter(reports);
         }
     }
+    @FunctionalInterface
+    public interface Verification {
+        void verify();
+    }
+    public void verify(Verification verify) {
+        invocationRecorder.verificationStart();
+        verify.verify();
+        invocationRecorder.verificationEnd();
+        verify();
+    }
 
     private void expectStart() {
         invocationRecorder.expectStart();
