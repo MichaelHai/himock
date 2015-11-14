@@ -123,6 +123,40 @@ public class HiMockTest {
         mock.verify();
     }
 
+    @Test
+    public void testMockObjectOfTheSameInterfaceBothExpectedAndCalledShouldReturnCorrectly() {
+        MockedInterface dummy1 = mock.mock(MockedInterface.class);
+        MockedInterface dummy2 = mock.mock(MockedInterface.class);
+
+        mock.expect(() -> {
+            dummy1.returnInt();
+            mock.willReturn(10);
+            dummy2.returnInt();
+            mock.willReturn(1);
+        });
+
+        assertEquals(10, dummy1.returnInt());
+        assertEquals(1, dummy2.returnInt());
+        mock.verify();
+    }
+
+    @Test
+    public void testMockObjectOfTheSameInterfaceBothExpectedAndCalledInReverseOrderShouldReturnCorrectly() {
+        MockedInterface dummy1 = mock.mock(MockedInterface.class);
+        MockedInterface dummy2 = mock.mock(MockedInterface.class);
+
+        mock.expect(() -> {
+            dummy1.returnInt();
+            mock.willReturn(10);
+            dummy2.returnInt();
+            mock.willReturn(1);
+        });
+
+        assertEquals(1, dummy2.returnInt());
+        assertEquals(10, dummy1.returnInt());
+        mock.verify();
+    }
+
     @Test(expected = VerificationFailedReporter.class)
     public void testTwoMockObjectOfTheSameInterfaceBothExpectedAndOneCalledShouldFail() {
         MockedInterface dummy1 = mock.mock(MockedInterface.class);

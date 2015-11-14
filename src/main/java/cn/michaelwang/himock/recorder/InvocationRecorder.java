@@ -4,7 +4,10 @@ import cn.michaelwang.himock.report.MockProcessErrorException;
 import cn.michaelwang.himock.report.MockProcessErrorReporter;
 import cn.michaelwang.himock.report.VerificationFailedException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class InvocationRecorder {
@@ -82,12 +85,10 @@ public class InvocationRecorder {
     private class NormalState implements MockState {
         @Override
         public Object methodCalled(int id, String method, Class<?> returnType, Class<?>[] parameterTypes, Object[] args) {
-            actuallyInvocations.add(new InvocationRecord(id, method, returnType, args));
+            InvocationRecord invocation = new InvocationRecord(id, method, returnType, args);
+            actuallyInvocations.add(invocation);
             return expectedInvocations.stream()
-                    .filter(invocationRecord ->
-                            invocationRecord.getMethodName().equals(method)
-                                    && Arrays.equals(invocationRecord.getParameters(), args)
-                    )
+                    .filter(invocation::equals)
                     .findFirst().orElse(new InvocationRecord(id, null, returnType, args))
                     .getReturnValue();
         }
