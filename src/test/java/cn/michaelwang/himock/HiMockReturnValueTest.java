@@ -61,17 +61,6 @@ public class HiMockReturnValueTest extends HiMockTest {
         assertEquals(expectedReturn, returnValue);
     }
 
-    @Test(expected = MockProcessErrorReporter.class)
-    public void testCannotSetReturnTwice() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
-
-        mock.expect(() -> {
-            dummy.returnInt();
-            mock.willReturn(1);
-            mock.willReturn(2);
-        });
-    }
-
     @Test
     public void testNoExpectationShouldReturnDefaultValue() {
         MockedInterface dummy = mock.mock(MockedInterface.class);

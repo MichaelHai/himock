@@ -65,7 +65,7 @@ public class InvocationRecorder {
         }
 
         if (!verificationInvocations.isEmpty()) {
-            exceptions.add(new ExpectedInvocationNotHappenedException(expectedInvocations));
+            exceptions.add(new ExpectedInvocationNotHappenedException(verificationInvocations));
         }
 
         return exceptions;
@@ -97,17 +97,26 @@ public class InvocationRecorder {
     }
 
     private class ExpectState implements MockState {
+        private InvocationRecord lastCall;
         @Override
         public Object methodCalled(int id, String method, Class<?> returnType, Class<?>[] parameterTypes, Object[] args) {
             InvocationRecord record = new InvocationRecord(id, method, returnType, args);
-            expectedInvocations.add(record);
+            Optional<InvocationRecord> exist = expectedInvocations.stream().filter(record::equals).findFirst();
+
+            if (exist.isPresent()) {
+                lastCall = exist.get();
+            } else {
+                expectedInvocations.add(record);
+                lastCall = record;
+            }
+
             return record.getReturnValue();
         }
 
         @Override
         public <T> void lastCallReturn(T returnValue, Class<?> type) {
             try {
-                expectedInvocations.get(expectedInvocations.size() - 1).setReturnValue(returnValue, type);
+                lastCall.addReturnValue(returnValue, type);
             } catch (MockProcessErrorException e) {
                 throw new MockProcessErrorReporter(e);
             }

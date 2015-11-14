@@ -1,12 +1,14 @@
 package cn.michaelwang.himock.recorder;
 
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class InvocationRecord {
     private int id;
     private String methodName;
 
-    private Object returnValue;
+    private Queue<Object> returnValue = new LinkedList<>();
     private Class<?> returnType;
     private StackTraceElement[] setReturnStackTrace;
 
@@ -31,17 +33,13 @@ public class InvocationRecord {
     }
 
     public Object getReturnValue() {
-        return returnValue == null ? nullValue() : returnValue;
+        return returnValue.isEmpty() ? nullValue() : returnValue.poll();
     }
 
-    public void setReturnValue(Object toSet, Class<?> toSetType) {
-        if (this.returnValue != null) {
-            throw new ReturnValueAlreadySetException(this, toSet);
-        }
-
+    public void addReturnValue(Object toSet, Class<?> toSetType) {
         this.setReturnStackTrace = new Exception().getStackTrace();
         if (isSuitableType(toSet.getClass(), returnType)) {
-            this.returnValue = toSet;
+            returnValue.offer(toSet);
         } else if (returnType == Void.TYPE) {
             throw new NoReturnTypeException(this);
         } else {

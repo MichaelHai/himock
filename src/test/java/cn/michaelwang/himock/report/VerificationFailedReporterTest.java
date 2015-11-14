@@ -105,33 +105,6 @@ public class VerificationFailedReporterTest {
     }
 
     @Test
-    public void testSetReturnTwiceShouldProvideErrorInformation() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
-
-        try {
-            mock.expect(() -> {
-                dummy.returnInt();
-                mock.willReturn(1);
-                mock.willReturn(2);
-            });
-        } catch (MockProcessErrorReporter reporter) {
-            assertStringEqualWithWildcardCharacter("Mock Process Error:\n" +
-                            "\treturn value has been set:\n" +
-                            "\t\tmethod setting return value: cn.michaelwang.himock.MockedInterface.returnInt()\n" +
-                            "\t\treturn value already set:\t1\n" +
-                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.lambda$testSetReturnTwiceShouldProvideErrorInformation$?(VerificationFailedReporterTest.java:?)\n" +
-                            "\t\t   at cn.michaelwang.himock.report.VerificationFailedReporterTest.testSetReturnTwiceShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)\n" +
-                            "\t\treturn value set again:\t2\n" +
-                            "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.lambda$testSetReturnTwiceShouldProvideErrorInformation$?(VerificationFailedReporterTest.java:?)\n" +
-                            "\t\t   at cn.michaelwang.himock.report.VerificationFailedReporterTest.testSetReturnTwiceShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)\n",
-                    reporter.getMessage());
-            return;
-        }
-
-        fail("Exception is expected, the test should return in the catch block.");
-    }
-
-    @Test
     public void testSetNotSuitableTypeValueShouldProvideErrorInformation() {
         MockedInterface dummy = mock.mock(MockedInterface.class);
 

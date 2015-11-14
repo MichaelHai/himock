@@ -163,12 +163,28 @@ public class HiMockTest {
 
         mock.expect(() -> {
             dummy.doNothing();
-            dummyList.size(); mock.willReturn(10);
+            dummyList.size();
+            mock.willReturn(10);
         });
 
         dummy.doNothing();
         assertEquals(10, dummyList.size());
 
         mock.verify();
+    }
+
+    @Test
+    public void testMockTheSameMethodOnTheSameMockObjectShouldReturnCorrect() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        mock.expect(() -> {
+            dummy.returnInt();
+            mock.willReturn(10);
+            dummy.returnInt();
+            mock.willReturn(0);
+        });
+
+        assertEquals(10, dummy.returnInt());
+        assertEquals(0, dummy.returnInt());
     }
 }
