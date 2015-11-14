@@ -187,4 +187,19 @@ public class HiMockTest {
         assertEquals(10, dummy.returnInt());
         assertEquals(0, dummy.returnInt());
     }
+
+    @Test(expected = VerificationFailedReporter.class)
+    public void testMockTheSameMethodOnTheSameMockObjectButCalledOnceShouldFail() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        mock.expect(() -> {
+            dummy.returnInt();
+            mock.willReturn(10);
+            mock.willReturn(0);
+        });
+
+        assertEquals(10, dummy.returnInt());
+
+        mock.verify();
+    }
 }

@@ -98,4 +98,18 @@ public class HiMockReturnValueTest extends HiMockTest {
     public void testCannotSetReturnValueOutsideExpect() {
         mock.willReturn(1);
     }
+
+    @Test
+    public void testSetReturnTwiceShouldReturnCorrectlyInOrder() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        mock.expect(() -> {
+            dummy.returnInt();
+            mock.willReturn(10);
+            mock.willReturn(0);
+        });
+
+        assertEquals(10, dummy.returnInt());
+        assertEquals(0, dummy.returnInt());
+    }
 }

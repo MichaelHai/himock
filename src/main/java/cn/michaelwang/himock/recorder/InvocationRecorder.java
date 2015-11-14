@@ -5,6 +5,7 @@ import cn.michaelwang.himock.report.MockProcessErrorReporter;
 import cn.michaelwang.himock.report.VerificationFailedException;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class InvocationRecorder {
     private MockState state = new NormalState();
@@ -43,29 +44,30 @@ public class InvocationRecorder {
                 .filter(invocation -> !verificationInvocations.contains(invocation))
                 .forEach(verificationInvocations::add);
 
-        Iterator<InvocationRecord> iterator = actuallyInvocations.iterator();
-        while(iterator.hasNext()) {
-            InvocationRecord actuallyInvocation = iterator.next();
+        List<InvocationRecord> notCalled = verificationInvocations.stream()
+                .filter(invocationRecord ->
+                        !actuallyInvocations.contains(invocationRecord)
+                                || !invocationRecord.isAllReturned())
+                .collect(Collectors.toList());
 
-            if (verificationInvocations.contains(actuallyInvocation)) {
-                verificationInvocations.remove(actuallyInvocation);
-                iterator.remove();
-            } else {
-                Optional<InvocationRecord> expectedInvocation = verificationInvocations.stream()
-                        .filter((invocation) -> invocation.getMethodName().equals(actuallyInvocation.getMethodName()))
-                        .filter((invocation) -> invocation.getId() == actuallyInvocation.getId())
-                        .findFirst();
+        Iterator<InvocationRecord> iter = notCalled.iterator();
 
-                if (expectedInvocation.isPresent()) {
-                    exceptions.add(new ParametersNotMatchException(actuallyInvocation, expectedInvocation.get()));
-                    verificationInvocations.remove(expectedInvocation.get());
-                    iterator.remove();
-                }
+        while (iter.hasNext()) {
+            InvocationRecord invocationRecord = iter.next();
+            Optional<InvocationRecord> parameterDiff = actuallyInvocations.stream()
+                    .filter(actualInvocation -> !actualInvocation.equals(invocationRecord))
+                    .filter(actualInvocation -> actualInvocation.getId() == invocationRecord.getId())
+                    .filter(actualInvocation -> actualInvocation.getMethodName().equals(invocationRecord.getMethodName()))
+                    .findFirst();
+
+            if (parameterDiff.isPresent()) {
+                exceptions.add(new ParametersNotMatchException(parameterDiff.get(), invocationRecord));
+                iter.remove();
             }
         }
 
-        if (!verificationInvocations.isEmpty()) {
-            exceptions.add(new ExpectedInvocationNotHappenedException(verificationInvocations));
+        if (!notCalled.isEmpty()) {
+            exceptions.add(new ExpectedInvocationNotHappenedException(notCalled));
         }
 
         return exceptions;
@@ -83,8 +85,8 @@ public class InvocationRecorder {
             actuallyInvocations.add(new InvocationRecord(id, method, returnType, args));
             return expectedInvocations.stream()
                     .filter(invocationRecord ->
-                                    invocationRecord.getMethodName().equals(method)
-                                            && Arrays.equals(invocationRecord.getParameters(), args)
+                            invocationRecord.getMethodName().equals(method)
+                                    && Arrays.equals(invocationRecord.getParameters(), args)
                     )
                     .findFirst().orElse(new InvocationRecord(id, null, returnType, args))
                     .getReturnValue();
@@ -98,6 +100,7 @@ public class InvocationRecorder {
 
     private class ExpectState implements MockState {
         private InvocationRecord lastCall;
+
         @Override
         public Object methodCalled(int id, String method, Class<?> returnType, Class<?>[] parameterTypes, Object[] args) {
             InvocationRecord record = new InvocationRecord(id, method, returnType, args);

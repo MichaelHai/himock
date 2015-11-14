@@ -63,6 +63,10 @@ public class InvocationRecord {
         return returnType;
     }
 
+    public boolean isAllReturned() {
+        return returnValue.isEmpty();
+    }
+
     private Object nullValue() {
         if (returnType.isPrimitive()) {
             if (returnType.equals(Boolean.TYPE)) {
