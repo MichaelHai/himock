@@ -1,7 +1,6 @@
 package cn.michaelwang.himock.report;
 
-import cn.michaelwang.himock.Utils;
-import cn.michaelwang.himock.recorder.InvocationRecord;
+import cn.michaelwang.himock.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,11 +9,6 @@ public class ReportBuilder {
     private final String LEVEL_INDICATOR = "\t";
     private StringBuilder sb = new StringBuilder();
     private int level = 0;
-
-    @FunctionalInterface
-    public interface Level {
-        void buildLevel();
-    }
 
     public void buildNextLevel(Level level) {
         levelStart();
@@ -31,9 +25,9 @@ public class ReportBuilder {
         lineEnd();
     }
 
-    public void appendInvocationDetail(InvocationRecord invocationRecord) {
-        appendInvocationMessage(invocationRecord);
-        appendStackTrace(invocationRecord.getInvocationStackTrace());
+    public void appendInvocationDetail(String methodName, Object[] args, StackTraceElement[] stackTraceElements) {
+        appendInvocationMessage(methodName, args);
+        appendStackTrace(stackTraceElements);
     }
 
     public void appendStackTrace(StackTraceElement[] stackTrace) {
@@ -82,11 +76,10 @@ public class ReportBuilder {
         sb.append("\n");
     }
 
-    private void appendInvocationMessage(InvocationRecord invocationRecord) {
+    private void appendInvocationMessage(String methodName, Object[] args) {
         lineStart();
-        sb.append(Utils.removeParenthesesInFunctionName(invocationRecord.getMethodName()));
+        sb.append(Utils.removeParenthesesInFunctionName(methodName));
         sb.append("(");
-        Object[] args = invocationRecord.getParameters();
         if (args != null) {
             for (Object parameter : args) {
                 sb.append(parameter);
@@ -117,5 +110,10 @@ public class ReportBuilder {
         StackTraceElement[] newTraces = new StackTraceElement[usefulTraces.size()];
         usefulTraces.toArray(newTraces);
         return newTraces;
+    }
+
+    @FunctionalInterface
+    public interface Level {
+        void buildLevel();
     }
 }

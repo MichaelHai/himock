@@ -1,6 +1,4 @@
-package cn.michaelwang.himock;
-
-import cn.michaelwang.himock.report.Reportable;
+package cn.michaelwang.himock.report;
 
 public abstract class HiMockException extends RuntimeException implements Reportable {
 }

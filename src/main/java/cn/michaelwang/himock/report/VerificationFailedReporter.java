@@ -3,7 +3,7 @@ package cn.michaelwang.himock.report;
 import java.util.List;
 
 public class VerificationFailedReporter extends HiMockReporter {
-    List<VerificationFailedException> exceptions;
+    private List<VerificationFailedException> exceptions;
 
     public VerificationFailedReporter(List<VerificationFailedException> exceptions) {
         this.exceptions = exceptions;

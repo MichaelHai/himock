@@ -1,14 +1,15 @@
-package cn.michaelwang.himock.recorder;
+package cn.michaelwang.himock.verify;
 
-import cn.michaelwang.himock.Utils;
+import cn.michaelwang.himock.invocation.Invocation;
 import cn.michaelwang.himock.report.ReportBuilder;
 import cn.michaelwang.himock.report.VerificationFailedException;
+import cn.michaelwang.himock.utils.Utils;
 
 public class ParametersNotMatchException extends VerificationFailedException {
-    private InvocationRecord actuallyInvocation;
-    private InvocationRecord expectedInvocation;
+    private Invocation actuallyInvocation;
+    private Invocation expectedInvocation;
 
-    public ParametersNotMatchException(InvocationRecord actuallyInvocation, InvocationRecord expectedInvocation) {
+    public ParametersNotMatchException(Invocation actuallyInvocation, Invocation expectedInvocation) {
         this.actuallyInvocation = actuallyInvocation;
         this.expectedInvocation = expectedInvocation;
     }

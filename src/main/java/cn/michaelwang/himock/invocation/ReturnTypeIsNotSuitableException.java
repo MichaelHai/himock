@@ -1,13 +1,13 @@
-package cn.michaelwang.himock.recorder;
+package cn.michaelwang.himock.invocation;
 
 import cn.michaelwang.himock.report.MockProcessErrorException;
 import cn.michaelwang.himock.report.ReportBuilder;
 
 public class ReturnTypeIsNotSuitableException extends MockProcessErrorException {
-    private InvocationRecord invocationRecord;
+    private Invocation invocationRecord;
     private Class<?> setAgain;
 
-    public ReturnTypeIsNotSuitableException(InvocationRecord invocationRecord, Class<?> setAgain) {
+    public ReturnTypeIsNotSuitableException(Invocation invocationRecord, Class<?> setAgain) {
         this.invocationRecord = invocationRecord;
         this.setAgain = setAgain;
     }

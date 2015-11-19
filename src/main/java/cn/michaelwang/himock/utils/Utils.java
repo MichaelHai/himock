@@ -1,4 +1,4 @@
-package cn.michaelwang.himock;
+package cn.michaelwang.himock.utils;
 
 public class Utils {
     public static String removeParenthesesInFunctionName(String functionName) {

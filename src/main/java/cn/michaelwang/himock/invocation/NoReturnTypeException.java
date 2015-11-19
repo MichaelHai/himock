@@ -1,12 +1,12 @@
-package cn.michaelwang.himock.recorder;
+package cn.michaelwang.himock.invocation;
 
 import cn.michaelwang.himock.report.MockProcessErrorException;
 import cn.michaelwang.himock.report.ReportBuilder;
 
 public class NoReturnTypeException extends MockProcessErrorException {
-    private final InvocationRecord invocation;
+    private Invocation invocation;
 
-    public NoReturnTypeException(InvocationRecord invocation) {
+    public NoReturnTypeException(Invocation invocation) {
         this.invocation = invocation;
     }
 

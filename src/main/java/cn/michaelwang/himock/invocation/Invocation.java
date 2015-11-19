@@ -1,10 +1,10 @@
-package cn.michaelwang.himock.recorder;
+package cn.michaelwang.himock.invocation;
 
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class InvocationRecord {
+public class Invocation {
     private int id;
     private String methodName;
 
@@ -16,7 +16,7 @@ public class InvocationRecord {
 
     private StackTraceElement[] stackTraceElements;
 
-    InvocationRecord(int id, String methodName, Class<?> returnType, Object[] args) {
+    public Invocation(int id, String methodName, Class<?> returnType, Object[] args) {
         this.id = id;
         this.methodName = methodName;
         this.returnType = returnType;
@@ -100,8 +100,10 @@ public class InvocationRecord {
     @Override
     public int hashCode() {
         int hashCode = super.hashCode() + id + methodName.hashCode() + returnType.hashCode();
-        for (Object arg : args) {
-            hashCode += arg.hashCode();
+        if (args != null) {
+            for (Object arg : args) {
+                hashCode += arg.hashCode();
+            }
         }
 
         return hashCode;
@@ -109,8 +111,8 @@ public class InvocationRecord {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof InvocationRecord) {
-            InvocationRecord toCompare = (InvocationRecord) obj;
+        if (obj instanceof Invocation) {
+            Invocation toCompare = (Invocation) obj;
             return id == toCompare.id
                     && methodName.equals(toCompare.methodName)
                     && returnType.equals(toCompare.returnType)
