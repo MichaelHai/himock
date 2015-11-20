@@ -1,4 +1,4 @@
-package cn.michaelwang.himock.process;
+package cn.michaelwang.himock;
 
 import cn.michaelwang.himock.report.VerificationFailedException;
 
@@ -11,6 +11,8 @@ public interface MockProcessManager {
     void toNormalState();
 
     void toExpectState();
+
+    <T> T mock(Class<T> mockedInterface);
 
     <T> void lastCallReturn(T returnValue, Class<?> type);
 

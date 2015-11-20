@@ -1,4 +1,4 @@
-package cn.michaelwang.himock;
+package cn.michaelwang.himock.process;
 
 import cn.michaelwang.himock.report.MockProcessErrorException;
 import cn.michaelwang.himock.report.ReportBuilder;

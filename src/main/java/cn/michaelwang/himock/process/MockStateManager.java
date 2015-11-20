@@ -1,5 +1,6 @@
 package cn.michaelwang.himock.process;
 
+import cn.michaelwang.himock.MockProcessManager;
 import cn.michaelwang.himock.invocation.Invocation;
 import cn.michaelwang.himock.invocation.InvocationListener;
 import cn.michaelwang.himock.invocation.NullInvocation;
@@ -14,8 +15,15 @@ import java.util.List;
 public class MockStateManager implements MockProcessManager, InvocationListener {
     private MockState state = new NormalState();
 
-    private InvocationRecorder invocationRecorder = new InvocationRecorder();
-    private Verifier verifier = new Verifier();
+    private MockFactory mockFactory;
+    private InvocationRecorder invocationRecorder;
+    private Verifier verifier;
+
+    public MockStateManager(MockFactory mockFactory, InvocationRecorder invocationRecorder, Verifier verifier) {
+        this.mockFactory = mockFactory;
+        this.invocationRecorder = invocationRecorder;
+        this.verifier = verifier;
+    }
 
     @Override
     public void toVerifyState() {
@@ -33,8 +41,12 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
     }
 
     @Override
-    public Object methodCalled(Invocation invocation) {
-        return state.methodCalled(invocation);
+    public <T> T mock(Class<T> mockedInterface) {
+        if (!mockedInterface.isInterface()) {
+            throw new MockProcessErrorReporter(new MockNoninterfaceException(mockedInterface));
+        }
+
+        return mockFactory.createMock(mockedInterface, this);
     }
 
     @Override
@@ -45,6 +57,11 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
     @Override
     public List<VerificationFailedException> doVerify() {
         return verifier.verify(invocationRecorder.getActuallyInvocations());
+    }
+
+    @Override
+    public Object methodCalled(Invocation invocation) {
+        return state.methodCalled(invocation);
     }
 
     private interface MockState {

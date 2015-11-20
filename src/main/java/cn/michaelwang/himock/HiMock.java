@@ -1,22 +1,27 @@
 package cn.michaelwang.himock;
 
+import cn.michaelwang.himock.mockup.MockFactoryImpl;
+import cn.michaelwang.himock.process.MockFactory;
 import cn.michaelwang.himock.process.MockStateManager;
-import cn.michaelwang.himock.report.MockProcessErrorReporter;
+import cn.michaelwang.himock.record.InvocationRecorder;
 import cn.michaelwang.himock.report.VerificationFailedException;
 import cn.michaelwang.himock.report.VerificationFailedReporter;
+import cn.michaelwang.himock.verify.Verifier;
 
 import java.util.List;
 
 public class HiMock {
-    private MockStateManager mockProcessManager = new MockStateManager();
-    private MockFactory mockFactory = MockFactoryImpl.getInstance();
+    private MockProcessManager mockProcessManager;
+
+    public HiMock() {
+        MockFactory mockFactory = MockFactoryImpl.getInstance();
+        InvocationRecorder invocationRecorder = new InvocationRecorder();
+        Verifier verifier = new Verifier();
+        mockProcessManager = new MockStateManager(mockFactory, invocationRecorder, verifier);
+    }
 
     public <T> T mock(Class<T> mockedInterface) {
-        if (!mockedInterface.isInterface()) {
-            throw new MockProcessErrorReporter(new MockNoninterfaceException(mockedInterface));
-        }
-
-        return mockFactory.createMock(mockedInterface, mockProcessManager);
+        return mockProcessManager.mock(mockedInterface);
     }
 
     public void expect(Expectation expectation) {

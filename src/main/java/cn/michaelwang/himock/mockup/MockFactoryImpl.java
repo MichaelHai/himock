@@ -1,7 +1,8 @@
-package cn.michaelwang.himock;
+package cn.michaelwang.himock.mockup;
 
 import cn.michaelwang.himock.invocation.InvocationHandlerWithId;
 import cn.michaelwang.himock.invocation.InvocationListener;
+import cn.michaelwang.himock.process.MockFactory;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
