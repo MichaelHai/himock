@@ -2,7 +2,6 @@ package cn.michaelwang.himock;
 
 import cn.michaelwang.himock.report.MockProcessErrorReporter;
 import cn.michaelwang.himock.report.VerificationFailedReporter;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
@@ -11,13 +10,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 @SuppressWarnings("CodeBlock2Expr")
-public class HiMockTest {
-    protected HiMock mock;
-
-    @Before
-    public void init() {
-        mock = new HiMock();
-    }
+public class HiMockTest extends HiMockBaseTest {
 
     @Test
     public void testMockObjectCanBeCreated() {

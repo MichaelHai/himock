@@ -55,6 +55,11 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
     }
 
     @Override
+    public void lastReturnTimer(int times) {
+        state.lastReturnTimer(times);
+    }
+
+    @Override
     public List<VerificationFailedException> doVerify() {
         return verifier.verify(invocationRecorder.getActuallyInvocations());
     }
@@ -68,6 +73,8 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
         Object methodCalled(Invocation invocation);
 
         <T> void lastCallReturn(T returnValue, Class<?> type);
+
+        void lastReturnTimer(int times);
     }
 
     private class NormalState implements MockState {
@@ -80,10 +87,17 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
         public <T> void lastCallReturn(T returnValue, Class<?> type) {
             throw new MockProcessErrorReporter(new ExpectReturnOutsideExpectException());
         }
+
+        @Override
+        public void lastReturnTimer(int times) {
+            throw new MockProcessErrorReporter(new TimerOutsideExpectException());
+        }
     }
 
     private class ExpectState implements MockState {
         private Invocation lastCall;
+        private Object lastReturnValue;
+        private Class<?> lastReturnType;
 
         @Override
         public Object methodCalled(Invocation invocation) {
@@ -96,8 +110,17 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
         public <T> void lastCallReturn(T returnValue, Class<?> type) {
             try {
                 lastCall.addReturnValue(returnValue, type);
+                lastReturnValue = returnValue;
+                lastReturnType = type;
             } catch (MockProcessErrorException e) {
                 throw new MockProcessErrorReporter(e);
+            }
+        }
+
+        @Override
+        public void lastReturnTimer(int times) {
+            for (int i = 0; i < times-1; i++) {
+                lastCallReturn(lastReturnValue, lastReturnType);
             }
         }
     }
@@ -113,6 +136,11 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
         @Override
         public <T> void lastCallReturn(T returnValue, Class<?> type) {
             throw new MockProcessErrorReporter(new ExpectReturnOutsideExpectException());
+        }
+
+        @Override
+        public void lastReturnTimer(int times) {
+            throw new MockProcessErrorReporter(new TimerOutsideExpectException());
         }
     }
 }

@@ -4,7 +4,7 @@ import cn.michaelwang.himock.report.VerificationFailedReporter;
 import org.junit.Test;
 
 @SuppressWarnings("CodeBlock2Expr")
-public class HiMockParameterTest extends HiMockTest {
+public class HiMockParameterTest extends HiMockBaseTest {
     @Test
     public void testMockWithOneIntParameterAndCalledShouldPass() {
         MockedInterface dummy = mock.mock(MockedInterface.class);

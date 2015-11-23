@@ -30,47 +30,60 @@ public class HiMock {
         mockProcessManager.toNormalState();
     }
 
-    public <T> void willReturn(T returnValue) {
+    public <T> HiMock willReturn(T returnValue) {
         mockProcessManager.lastCallReturn(returnValue, returnValue.getClass());
+        return this;
     }
 
-    public void willReturn(boolean returnValue) {
+    public HiMock willReturn(boolean returnValue) {
         mockProcessManager.lastCallReturn(returnValue, boolean.class);
+        return this;
     }
 
     @SuppressWarnings("unused") // simple function not tested
-    public void willReturn(byte returnValue) {
+    public HiMock willReturn(byte returnValue) {
         mockProcessManager.lastCallReturn(returnValue, byte.class);
+        return this;
     }
 
     @SuppressWarnings("unused") // simple function not tested
-    public void willReturn(char returnValue) {
+    public HiMock willReturn(char returnValue) {
         mockProcessManager.lastCallReturn(returnValue, char.class);
+        return this;
     }
 
     @SuppressWarnings("unused") // simple function not tested
-    public void willReturn(short returnValue) {
+    public HiMock willReturn(short returnValue) {
         mockProcessManager.lastCallReturn(returnValue, short.class);
+        return this;
     }
 
     @SuppressWarnings("unused") // simple function not tested
-    public void willReturn(int returnValue) {
+    public HiMock willReturn(int returnValue) {
         mockProcessManager.lastCallReturn(returnValue, int.class);
+        return this;
     }
 
     @SuppressWarnings("unused") // simple function not tested
-    public void willReturn(long returnValue) {
+    public HiMock willReturn(long returnValue) {
         mockProcessManager.lastCallReturn(returnValue, long.class);
+        return this;
     }
 
     @SuppressWarnings("unused") // simple function not tested
-    public void willReturn(float returnValue) {
+    public HiMock willReturn(float returnValue) {
         mockProcessManager.lastCallReturn(returnValue, float.class);
+        return this;
     }
 
     @SuppressWarnings("unused") // simple function not tested
-    public void willReturn(double returnValue) {
+    public HiMock willReturn(double returnValue) {
         mockProcessManager.lastCallReturn(returnValue, double.class);
+        return this;
+    }
+
+    public void times(int times) {
+        mockProcessManager.lastReturnTimer(times);
     }
 
     public void verify() {

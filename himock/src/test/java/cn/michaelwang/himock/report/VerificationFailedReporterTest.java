@@ -1,8 +1,8 @@
 package cn.michaelwang.himock.report;
 
 import cn.michaelwang.himock.HiMock;
+import cn.michaelwang.himock.HiMockBaseTest;
 import cn.michaelwang.himock.MockedInterface;
-import org.junit.Before;
 import org.junit.Test;
 
 import static junit.framework.Assert.failNotEquals;
@@ -10,13 +10,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 @SuppressWarnings("CodeBlock2Expr")
-public class VerificationFailedReporterTest {
-    private HiMock mock;
-
-    @Before
-    public void init() {
-        mock = new HiMock();
-    }
+public class VerificationFailedReporterTest extends HiMockBaseTest {
 
     @Test
     public void testCannotMockClassExceptionShouldProvideErrorInformation() {
@@ -196,6 +190,21 @@ public class VerificationFailedReporterTest {
                             "\t\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.lambda$testMultipleVerificationFailShouldProvideAllErrorInformation$?(VerificationFailedReporterTest.java:?)\n" +
                             "\t\t   at cn.michaelwang.himock.report.VerificationFailedReporterTest.testMultipleVerificationFailShouldProvideAllErrorInformation(VerificationFailedReporterTest.java:?)\n",
                     ex.getMessage());
+            return;
+        }
+
+        fail("Exception is expected, the test should return in the catch block.");
+    }
+
+    @Test
+    public void testSetTimerOutExpectShouldProvideErrorInformation() {
+        try {
+            mock.times(3);
+        } catch (HiMockReporter reporter) {
+            assertStringEqualWithWildcardCharacter("Mock Process Error:\n" +
+                            "\ttimer cannot be set outside expectation:\n" +
+                            "\t-> at cn.michaelwang.himock.report.VerificationFailedReporterTest.testSetTimerOutExpectShouldProvideErrorInformation(VerificationFailedReporterTest.java:?)\n",
+                    reporter.getMessage());
             return;
         }
 
