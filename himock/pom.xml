@@ -6,6 +6,7 @@
 
     <groupId>cn.michaelwang.himock</groupId>
     <artifactId>himock</artifactId>
+    <packaging>pom</packaging>
     <version>0.1-SNAPSHOT</version>
 
     <build>
