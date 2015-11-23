@@ -20,5 +20,9 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
+        <dependency>
+            <groupId>cn.michaelwang.himock</groupId>
+            <artifactId>himock</artifactId>
+        </dependency>
     </dependencies>
 </project>
