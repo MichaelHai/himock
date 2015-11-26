@@ -14,4 +14,6 @@ public interface MockProcessManager {
     <T> void lastCallReturn(T returnValue, Class<?> type);
     void lastReturnTimer(int times);
     List<VerificationFailedException> doVerify();
+
+    void lastCallThrow(Throwable e);
 }

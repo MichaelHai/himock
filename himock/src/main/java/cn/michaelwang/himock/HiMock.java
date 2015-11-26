@@ -4,6 +4,7 @@ import cn.michaelwang.himock.mockup.MockFactoryImpl;
 import cn.michaelwang.himock.process.MockFactory;
 import cn.michaelwang.himock.process.MockStateManager;
 import cn.michaelwang.himock.record.InvocationRecorder;
+import cn.michaelwang.himock.report.HiMockReporter;
 import cn.michaelwang.himock.report.VerificationFailedException;
 import cn.michaelwang.himock.report.VerificationFailedReporter;
 import cn.michaelwang.himock.verify.Verifier;
@@ -26,7 +27,13 @@ public class HiMock {
 
     public void expect(Expectation expectation) {
         mockProcessManager.toExpectState();
-        expectation.expect();
+        try {
+            expectation.expect();
+        } catch (Throwable throwable) {
+            if (throwable instanceof HiMockReporter) {
+                throw (HiMockReporter)throwable;
+            }
+        }
         mockProcessManager.toNormalState();
     }
 
@@ -82,8 +89,14 @@ public class HiMock {
         return this;
     }
 
-    public void times(int times) {
+    public HiMock willThrow(Throwable e) {
+        mockProcessManager.lastCallThrow(e);
+        return this;
+    }
+
+    public HiMock times(int times) {
         mockProcessManager.lastReturnTimer(times);
+        return this;
     }
 
     public void verify() {
@@ -103,7 +116,7 @@ public class HiMock {
 
     @FunctionalInterface
     public interface Expectation {
-        void expect();
+        void expect() throws Throwable;
     }
 
     @FunctionalInterface

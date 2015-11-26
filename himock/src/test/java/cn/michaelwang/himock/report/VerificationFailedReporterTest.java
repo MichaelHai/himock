@@ -5,7 +5,6 @@ import cn.michaelwang.himock.HiMockBaseTest;
 import cn.michaelwang.himock.MockedInterface;
 import org.junit.Test;
 
-import static junit.framework.Assert.failNotEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -214,14 +213,23 @@ public class VerificationFailedReporterTest extends HiMockBaseTest {
     private void assertStringEqualWithWildcardCharacter(String expected, String actually) {
         String[] splitted = expected.split("\\?");
 
+        boolean first = true;
         int start;
         int end = 0;
         for (String sub : splitted) {
             start = actually.indexOf(sub, end);
             end = start + sub.length();
 
+            if (first) {
+                if (start != 0) {
+                    fail("expected:\n" + expected + "\n" + "actually:\n" + actually);
+                    return;
+                }
+                first = false;
+            }
+
             if (start == -1) {
-                failNotEquals(null, expected, actually);
+                fail("expected:\n" + expected + "\n" + "actually:\n" + actually);
                 return;
             }
         }
