@@ -4,6 +4,7 @@ import cn.michaelwang.himock.mockup.MockFactoryImpl;
 import cn.michaelwang.himock.process.MockFactory;
 import cn.michaelwang.himock.process.MockStateManager;
 import cn.michaelwang.himock.record.InvocationRecorder;
+import cn.michaelwang.himock.report.HiMockReporter;
 import cn.michaelwang.himock.report.VerificationFailedException;
 import cn.michaelwang.himock.report.VerificationFailedReporter;
 import cn.michaelwang.himock.verify.Verifier;
@@ -26,51 +27,76 @@ public class HiMock {
 
     public void expect(Expectation expectation) {
         mockProcessManager.toExpectState();
-        expectation.expect();
+        try {
+            expectation.expect();
+        } catch (Throwable throwable) {
+            if (throwable instanceof HiMockReporter) {
+                throw (HiMockReporter)throwable;
+            }
+        }
         mockProcessManager.toNormalState();
     }
 
-    public <T> void willReturn(T returnValue) {
+    public <T> HiMock willReturn(T returnValue) {
         mockProcessManager.lastCallReturn(returnValue, returnValue.getClass());
+        return this;
     }
 
-    public void willReturn(boolean returnValue) {
+    public HiMock willReturn(boolean returnValue) {
         mockProcessManager.lastCallReturn(returnValue, boolean.class);
+        return this;
     }
 
     @SuppressWarnings("unused") // simple function not tested
-    public void willReturn(byte returnValue) {
+    public HiMock willReturn(byte returnValue) {
         mockProcessManager.lastCallReturn(returnValue, byte.class);
+        return this;
     }
 
     @SuppressWarnings("unused") // simple function not tested
-    public void willReturn(char returnValue) {
+    public HiMock willReturn(char returnValue) {
         mockProcessManager.lastCallReturn(returnValue, char.class);
+        return this;
     }
 
     @SuppressWarnings("unused") // simple function not tested
-    public void willReturn(short returnValue) {
+    public HiMock willReturn(short returnValue) {
         mockProcessManager.lastCallReturn(returnValue, short.class);
+        return this;
     }
 
     @SuppressWarnings("unused") // simple function not tested
-    public void willReturn(int returnValue) {
+    public HiMock willReturn(int returnValue) {
         mockProcessManager.lastCallReturn(returnValue, int.class);
+        return this;
     }
 
     @SuppressWarnings("unused") // simple function not tested
-    public void willReturn(long returnValue) {
+    public HiMock willReturn(long returnValue) {
         mockProcessManager.lastCallReturn(returnValue, long.class);
+        return this;
     }
 
     @SuppressWarnings("unused") // simple function not tested
-    public void willReturn(float returnValue) {
+    public HiMock willReturn(float returnValue) {
         mockProcessManager.lastCallReturn(returnValue, float.class);
+        return this;
     }
 
     @SuppressWarnings("unused") // simple function not tested
-    public void willReturn(double returnValue) {
+    public HiMock willReturn(double returnValue) {
         mockProcessManager.lastCallReturn(returnValue, double.class);
+        return this;
+    }
+
+    public HiMock willThrow(Throwable e) {
+        mockProcessManager.lastCallThrow(e);
+        return this;
+    }
+
+    public HiMock times(int times) {
+        mockProcessManager.lastReturnTimer(times);
+        return this;
     }
 
     public void verify() {
@@ -90,7 +116,7 @@ public class HiMock {
 
     @FunctionalInterface
     public interface Expectation {
-        void expect();
+        void expect() throws Throwable;
     }
 
     @FunctionalInterface

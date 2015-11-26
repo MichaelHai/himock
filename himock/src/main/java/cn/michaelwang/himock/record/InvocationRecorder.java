@@ -11,7 +11,7 @@ public class InvocationRecorder {
     private List<Invocation> expectedInvocations = new ArrayList<>();
     private List<Invocation> actuallyInvocations = new ArrayList<>();
 
-    public Object actuallyCall(Invocation invocation) {
+    public Object actuallyCall(Invocation invocation) throws Throwable {
         actuallyInvocations.add(invocation);
         return expectedInvocations.stream()
                 .filter(invocation::equals)

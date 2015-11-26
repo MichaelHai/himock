@@ -14,4 +14,6 @@ public interface MockedInterface {
     void withMultipleIntParameters(int i, int i1);
 
     void withObjectParameters(String o1, String o2);
+
+    int throwException() throws UserException;
 }

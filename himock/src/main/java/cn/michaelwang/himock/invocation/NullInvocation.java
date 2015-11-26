@@ -4,4 +4,9 @@ public class NullInvocation extends Invocation {
     public NullInvocation(Class<?> returnType) {
         super(-1, null, returnType, null);
     }
+
+    @Override
+    public Object getReturnValue() {
+        return nullValue();
+    }
 }

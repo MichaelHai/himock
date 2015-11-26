@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class HiMockReturnValueTest extends HiMockTest {
+public class HiMockReturnValueTest extends HiMockBaseTest {
     @Test
     public void testExpectReturnIntType() {
         MockedInterface dummy = mock.mock(MockedInterface.class);

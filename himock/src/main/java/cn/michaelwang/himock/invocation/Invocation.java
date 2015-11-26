@@ -8,7 +8,8 @@ public class Invocation {
     private int id;
     private String methodName;
 
-    private Queue<Object> returnValue = new LinkedList<>();
+    private Queue<Answer> returnValue = new LinkedList<>();
+    private Answer lastAnswer;
     private Class<?> returnType;
     private StackTraceElement[] setReturnStackTrace;
 
@@ -32,19 +33,25 @@ public class Invocation {
         return methodName;
     }
 
-    public Object getReturnValue() {
-        return returnValue.isEmpty() ? nullValue() : returnValue.poll();
+    public Object getReturnValue() throws Throwable {
+        return returnValue.isEmpty() ? nullValue() : returnValue.poll().doAnswer();
     }
 
     public void addReturnValue(Object toSet, Class<?> toSetType) {
         this.setReturnStackTrace = new Exception().getStackTrace();
         if (isSuitableType(toSet.getClass(), returnType)) {
-            returnValue.offer(toSet);
+            lastAnswer = new ReturnAnswer(toSet);
+            returnValue.offer(lastAnswer);
         } else if (returnType == Void.TYPE) {
             throw new NoReturnTypeException(this);
         } else {
             throw new ReturnTypeIsNotSuitableException(this, toSetType);
         }
+    }
+
+    public void addException(Throwable toThrow) {
+        lastAnswer = new ThrowAnswer(toThrow);
+        returnValue.offer(lastAnswer);
     }
 
     public Object[] getParameters() {
@@ -67,7 +74,12 @@ public class Invocation {
         return returnValue.isEmpty();
     }
 
-    private Object nullValue() {
+    public void answerMore(int times) {
+        for (int i = 0; i < times; i++) {
+            returnValue.offer(lastAnswer);
+        }
+    }
+    protected Object nullValue() {
         if (returnType.isPrimitive()) {
             if (returnType.equals(Boolean.TYPE)) {
                 return false;
@@ -120,5 +132,34 @@ public class Invocation {
         }
 
         return false;
+    }
+
+    interface Answer {
+        Object doAnswer() throws Throwable;
+    }
+
+    class ReturnAnswer implements  Answer {
+        private Object returnValue;
+        ReturnAnswer(Object returnValue) {
+            this.returnValue = returnValue;
+        }
+
+        @Override
+        public Object doAnswer() {
+            return returnValue;
+        }
+    }
+
+    class ThrowAnswer implements Answer {
+        private Throwable toThrow;
+
+        ThrowAnswer(Throwable toThrow) {
+            this.toThrow = toThrow;
+        }
+
+        @Override
+        public Object doAnswer() throws Throwable {
+            throw toThrow;
+        }
     }
 }

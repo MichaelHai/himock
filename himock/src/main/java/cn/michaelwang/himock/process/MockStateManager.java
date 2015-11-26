@@ -55,30 +55,54 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
     }
 
     @Override
+    public void lastCallThrow(Throwable e) {
+        state.lastCallThrow(e);
+    }
+
+    @Override
+    public void lastReturnTimer(int times) {
+        state.lastReturnTimer(times);
+    }
+
+    @Override
     public List<VerificationFailedException> doVerify() {
         return verifier.verify(invocationRecorder.getActuallyInvocations());
     }
 
     @Override
-    public Object methodCalled(Invocation invocation) {
+    public Object methodCalled(Invocation invocation) throws Throwable {
         return state.methodCalled(invocation);
     }
 
     private interface MockState {
-        Object methodCalled(Invocation invocation);
+        Object methodCalled(Invocation invocation) throws Throwable;
 
         <T> void lastCallReturn(T returnValue, Class<?> type);
+
+        void lastReturnTimer(int times);
+
+        void lastCallThrow(Throwable e);
     }
 
     private class NormalState implements MockState {
         @Override
-        public Object methodCalled(Invocation invocation) {
+        public Object methodCalled(Invocation invocation) throws Throwable {
             return invocationRecorder.actuallyCall(invocation);
         }
 
         @Override
         public <T> void lastCallReturn(T returnValue, Class<?> type) {
             throw new MockProcessErrorReporter(new ExpectReturnOutsideExpectException());
+        }
+
+        @Override
+        public void lastCallThrow(Throwable e) {
+            throw new MockProcessErrorReporter(new ExpectThrowOutsideExpectException());
+        }
+
+        @Override
+        public void lastReturnTimer(int times) {
+            throw new MockProcessErrorReporter(new TimerOutsideExpectException());
         }
     }
 
@@ -100,6 +124,20 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
                 throw new MockProcessErrorReporter(e);
             }
         }
+
+        @Override
+        public void lastCallThrow(Throwable toThrow) {
+            try {
+                lastCall.addException(toThrow);
+            } catch (MockProcessErrorException e) {
+                throw new MockProcessErrorReporter(e);
+            }
+        }
+
+        @Override
+        public void lastReturnTimer(int times) {
+            lastCall.answerMore(times-1);
+        }
     }
 
     private class VerificationState implements MockState {
@@ -113,6 +151,16 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
         @Override
         public <T> void lastCallReturn(T returnValue, Class<?> type) {
             throw new MockProcessErrorReporter(new ExpectReturnOutsideExpectException());
+        }
+
+        @Override
+        public void lastCallThrow(Throwable e) {
+            throw new MockProcessErrorReporter(new ExpectThrowOutsideExpectException());
+        }
+
+        @Override
+        public void lastReturnTimer(int times) {
+            throw new MockProcessErrorReporter(new TimerOutsideExpectException());
         }
     }
 }
