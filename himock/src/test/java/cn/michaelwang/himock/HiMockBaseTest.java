@@ -14,11 +14,6 @@ public abstract class HiMockBaseTest {
         mock = new HiMock();
     }
 
-    @FunctionalInterface
-    interface TestProcess {
-        void doTest();
-    }
-
     protected void reportTest(TestProcess test, String expectedMessage) {
         try {
             test.doTest();
@@ -38,7 +33,6 @@ public abstract class HiMockBaseTest {
         int end = 0;
         for (String sub : splitted) {
             start = actually.indexOf(sub, end);
-            end = start + sub.length();
 
             if (first) {
                 if (start != 0) {
@@ -46,16 +40,29 @@ public abstract class HiMockBaseTest {
                     return;
                 }
                 first = false;
+            } else {
+                if (start == -1) {
+                    fail("expected:\n" + expected + "\n" + "actually:\n" + actually);
+                    return;
+                } else {
+                    String number = actually.substring(end, start);
+                    if ((!first) && !number.matches("[0-9]+")) {
+                        fail("expected:\n" + expected + "\n" + "actually:\n" + actually);
+                        return;
+                    }
+                }
             }
 
-            if (start == -1) {
-                fail("expected:\n" + expected + "\n" + "actually:\n" + actually);
-                return;
-            }
+            end = start + sub.length();
         }
 
         for (int i = end; i < actually.length(); i++) {
             assertEquals('?', actually.charAt(i));
         }
+    }
+
+    @FunctionalInterface
+    interface TestProcess {
+        void doTest();
     }
 }

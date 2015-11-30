@@ -1,6 +1,5 @@
 package cn.michaelwang.himock;
 
-import cn.michaelwang.himock.report.MockProcessErrorReporter;
 import cn.michaelwang.himock.report.VerificationFailedReporter;
 import org.junit.Test;
 
@@ -18,11 +17,17 @@ public class HiMockTest extends HiMockBaseTest {
         assertNotNull("mockedObject should not be null", mockedObject);
     }
 
-    @Test(expected = MockProcessErrorReporter.class)
+    @Test
     public void testClassCannotBeMocked() {
-        class DummyClass {
-        }
-        mock.mock(DummyClass.class);
+        reportTest(() -> {
+                    mock.mock(String.class);
+                }, "Mock Process Error:\n" +
+                        "\tonly interface can(should) be mocked:\n" +
+                        "\t\tclass being mocked: java.lang.String\n" +
+                        "\t\t-> at cn.michaelwang.himock.HiMockTest.lambda$testClassCannotBeMocked$?(HiMockTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockTest.testClassCannotBeMocked(HiMockTest.java:?)\n"
+        );
     }
 
     @Test
@@ -43,15 +48,43 @@ public class HiMockTest extends HiMockBaseTest {
         mock.verify();
     }
 
-    @Test(expected = VerificationFailedReporter.class)
+    @Test
     public void testNotCalledExpectationShouldFail() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        reportTest(() -> {
+                    MockedInterface dummy = mock.mock(MockedInterface.class);
 
-        mock.expect(() -> {
-            dummy.doNothing();
-        });
+                    mock.expect(() -> {
+                        dummy.doNothing();
+                    });
 
-        mock.verify();
+                    mock.verify();
+                }, "Verification failed:\n" +
+                        "\texpected invocation not happened:\n" +
+                        "\t\tcn.michaelwang.himock.MockedInterface.doNothing()\n" +
+                        "\t\t-> at cn.michaelwang.himock.HiMockTest.lambda$null$?(HiMockTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockTest.lambda$testNotCalledExpectationShouldFail$?(HiMockTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockTest.testNotCalledExpectationShouldFail(HiMockTest.java:?)\n"
+        );
+    }
+
+    @Test
+    public void testNotCalledExpectationWithArgs() {
+        reportTest(() -> {
+                    MockedInterface dummy = mock.mock(MockedInterface.class);
+
+                    mock.expect(() -> {
+                        dummy.withObjectParameters("o1", "o2");
+                    });
+                    mock.verify();
+                }, "Verification failed:\n" +
+                        "\texpected invocation not happened:\n" +
+                        "\t\tcn.michaelwang.himock.MockedInterface.withObjectParameters(o1, o2)\n" +
+                        "\t\t-> at cn.michaelwang.himock.HiMockTest.lambda$null$?(HiMockTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockTest.lambda$testNotCalledExpectationWithArgs$?(HiMockTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockTest.testNotCalledExpectationWithArgs(HiMockTest.java:?)\n"
+        );
     }
 
     @Test
@@ -72,13 +105,6 @@ public class HiMockTest extends HiMockBaseTest {
 
         mock.verify(() -> {
             dummy.doNothing();
-        });
-    }
-
-    @Test(expected = MockProcessErrorReporter.class)
-    public void testExpectReturnInVerificationShouldFail() {
-        mock.verify(() -> {
-            mock.willReturn(1);
         });
     }
 

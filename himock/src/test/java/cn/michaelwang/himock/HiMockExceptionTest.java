@@ -81,6 +81,7 @@ public class HiMockExceptionTest extends HiMockBaseTest {
         }, "Mock Process Error:\n" +
                 "\texception thrown cannot be set outside expectation:\n" +
                 "\t-> at cn.michaelwang.himock.HiMockExceptionTest.lambda$testExpectThrowOutsideExpectation$?(HiMockExceptionTest.java:?)\n" +
+                "\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n" +
                 "\t   at cn.michaelwang.himock.HiMockExceptionTest.testExpectThrowOutsideExpectation(HiMockExceptionTest.java:?)\n");
     }
 }

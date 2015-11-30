@@ -55,16 +55,30 @@ public class HiMockParameterTest extends HiMockBaseTest {
         mock.verify();
     }
 
-    @Test(expected = VerificationFailedReporter.class)
+    @Test
     public void testMockWithObjectParametersAndCalledWithNotTheSameParametersShouldFail() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        reportTest(() -> {
+                    MockedInterface dummy = mock.mock(MockedInterface.class);
 
-        mock.expect(() -> {
-            dummy.withObjectParameters("o1", "o2");
-        });
+                    mock.expect(() -> {
+                        dummy.withObjectParameters("o1", "o2");
+                    });
 
-        dummy.withObjectParameters("o1", "o3");
+                    dummy.withObjectParameters("o1", "o3");
 
-        mock.verify();
+                    mock.verify();
+                }, "Verification failed:\n" +
+                        "\tinvocation with unexpected parameters:\n" +
+                        "\t\tmethod called:\tcn.michaelwang.himock.MockedInterface.withObjectParameters\n" +
+                        "\t\tparameters expected:\to1\to2\n" +
+                        "\t\t-> at cn.michaelwang.himock.HiMockParameterTest.lambda$null$?(HiMockParameterTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockParameterTest.lambda$testMockWithObjectParametersAndCalledWithNotTheSameParametersShouldFail$?(HiMockParameterTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockParameterTest.testMockWithObjectParametersAndCalledWithNotTheSameParametersShouldFail(HiMockParameterTest.java:?)\n" +
+                        "\t\tparameters actually:\to1\to3\n" +
+                        "\t\t-> at cn.michaelwang.himock.HiMockParameterTest.lambda$testMockWithObjectParametersAndCalledWithNotTheSameParametersShouldFail$?(HiMockParameterTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockParameterTest.testMockWithObjectParametersAndCalledWithNotTheSameParametersShouldFail(HiMockParameterTest.java:?)\n"
+        );
     }
 }

@@ -1,10 +1,10 @@
 package cn.michaelwang.himock;
 
-import cn.michaelwang.himock.report.MockProcessErrorReporter;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
+@SuppressWarnings("CodeBlock2Expr")
 public class HiMockReturnValueTest extends HiMockBaseTest {
     @Test
     public void testExpectReturnIntType() {
@@ -34,16 +34,23 @@ public class HiMockReturnValueTest extends HiMockBaseTest {
         assertEquals(true, returnValue);
     }
 
-    @Test(expected = MockProcessErrorReporter.class)
+    @Test
     public void testNoReturnShouldThrowException() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        reportTest(() -> {
+                    MockedInterface dummy = mock.mock(MockedInterface.class);
 
-        mock.expect(() -> {
-            dummy.doNothing();
-            mock.willReturn(1);
-        });
-
-        dummy.doNothing();
+                    mock.expect(() -> {
+                        dummy.doNothing();
+                        mock.willReturn(1);
+                    });
+                }, "Mock Process Error:\n" +
+                        "\tinvocation expected has no return value:\n" +
+                        "\t\tcn.michaelwang.himock.MockedInterface.doNothing()\n" +
+                        "\t\t-> at cn.michaelwang.himock.HiMockReturnValueTest.lambda$null$?(HiMockReturnValueTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockReturnValueTest.lambda$testNoReturnShouldThrowException$?(HiMockReturnValueTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockReturnValueTest.testNoReturnShouldThrowException(HiMockReturnValueTest.java:?)\n"
+        );
     }
 
     @Test
@@ -80,23 +87,45 @@ public class HiMockReturnValueTest extends HiMockBaseTest {
         assertEquals(null, objectReturnValue);
     }
 
-    @Test(expected = MockProcessErrorReporter.class)
+    @Test
     public void testCannotSetNotSuitableTypeValue() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        reportTest(() -> {
+                    MockedInterface dummy = mock.mock(MockedInterface.class);
 
-        mock.expect(() -> {
-            dummy.returnInt();
-            mock.willReturn(true);
-        });
+                    mock.expect(() -> {
+                        dummy.returnInt();
+                        mock.willReturn(true);
+                    });
 
-        dummy.returnInt();
+                    dummy.returnInt();
 
-        mock.verify();
+                    mock.verify();
+                }, "Mock Process Error:\n" +
+                        "\treturn value type is not match:\n" +
+                        "\t\tmethod setting return value: cn.michaelwang.himock.MockedInterface.returnInt()\n" +
+                        "\t\treturn type expected:\tint\n" +
+                        "\t\t-> at cn.michaelwang.himock.HiMockReturnValueTest.lambda$null$?(HiMockReturnValueTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockReturnValueTest.lambda$testCannotSetNotSuitableTypeValue$?(HiMockReturnValueTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockReturnValueTest.testCannotSetNotSuitableTypeValue(HiMockReturnValueTest.java:?)\n" +
+                        "\t\treturn type being set:\tboolean\n" +
+                        "\t\t-> at cn.michaelwang.himock.HiMockReturnValueTest.lambda$null$?(HiMockReturnValueTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockReturnValueTest.lambda$testCannotSetNotSuitableTypeValue$?(HiMockReturnValueTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockReturnValueTest.testCannotSetNotSuitableTypeValue(HiMockReturnValueTest.java:?)\n"
+        );
     }
 
-    @Test(expected = MockProcessErrorReporter.class)
+    @Test
     public void testCannotSetReturnValueOutsideExpect() {
-        mock.willReturn(1);
+        reportTest(() -> {
+                    mock.willReturn(1);
+                }, "Mock Process Error:\n" +
+                        "\treturn value cannot be set outside expectation:\n" +
+                        "\t-> at cn.michaelwang.himock.HiMockReturnValueTest.lambda$testCannotSetReturnValueOutsideExpect$?(HiMockReturnValueTest.java:?)\n" +
+                        "\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n" +
+                        "\t   at cn.michaelwang.himock.HiMockReturnValueTest.testCannotSetReturnValueOutsideExpect(HiMockReturnValueTest.java:?)\n"
+        );
     }
 
     @Test

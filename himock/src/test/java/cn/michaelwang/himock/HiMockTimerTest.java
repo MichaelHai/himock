@@ -1,6 +1,5 @@
 package cn.michaelwang.himock;
 
-import cn.michaelwang.himock.report.HiMockReporter;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -23,8 +22,16 @@ public class HiMockTimerTest extends HiMockBaseTest {
         mock.verify();
     }
 
-    @Test(expected = HiMockReporter.class)
+    @Test
     public void testSetTimerOutExpectShouldFail() {
-        mock.times(3);
+        reportTest(() -> {
+                    mock.times(3);
+                }, "Mock Process Error:\n" +
+                        "\ttimer cannot be set outside expectation:\n" +
+                        "\t-> at cn.michaelwang.himock.HiMockTimerTest.lambda$testSetTimerOutExpectShouldFail$?(HiMockTimerTest.java:?)\n" +
+                        "\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n" +
+                        "\t   at cn.michaelwang.himock.HiMockTimerTest.testSetTimerOutExpectShouldFail(HiMockTimerTest.java:?)\n"
+
+        );
     }
 }
