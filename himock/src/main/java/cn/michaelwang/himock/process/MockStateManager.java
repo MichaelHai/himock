@@ -136,7 +136,7 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 
         @Override
         public void lastReturnTimer(int times) {
-            lastCall.answerMore(times-1);
+            lastCall.answerMore(times - 1);
         }
     }
 

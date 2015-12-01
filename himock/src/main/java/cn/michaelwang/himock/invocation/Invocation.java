@@ -2,6 +2,7 @@ package cn.michaelwang.himock.invocation;
 
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 public class Invocation {
@@ -11,18 +12,20 @@ public class Invocation {
     private Queue<Answer> returnValue = new LinkedList<>();
     private Answer lastAnswer;
     private Class<?> returnType;
+    private List<Class<Throwable>> exceptionTypes;
     private StackTraceElement[] setReturnStackTrace;
 
     private Object[] args;
 
     private StackTraceElement[] stackTraceElements;
 
-    public Invocation(int id, String methodName, Class<?> returnType, Object[] args) {
+    public Invocation(int id, String methodName, Class<?> returnType, Object[] args, List<Class<Throwable>> exceptionTypes) {
         this.id = id;
         this.methodName = methodName;
         this.returnType = returnType;
         this.args = args;
         this.stackTraceElements = new Exception().getStackTrace();
+        this.exceptionTypes = exceptionTypes;
     }
 
     public int getId() {
@@ -50,8 +53,12 @@ public class Invocation {
     }
 
     public void addException(Throwable toThrow) {
-        lastAnswer = new ThrowAnswer(toThrow);
-        returnValue.offer(lastAnswer);
+        if (exceptionTypes.stream().anyMatch(exceptionType -> exceptionType.isAssignableFrom(toThrow.getClass()))) {
+            lastAnswer = new ThrowAnswer(toThrow);
+            returnValue.offer(lastAnswer);
+        } else {
+            throw new ExceptionTypeIsNotSuitableException(this, toThrow);
+        }
     }
 
     public Object[] getParameters() {
@@ -70,6 +77,10 @@ public class Invocation {
         return returnType;
     }
 
+    public List<Class<Throwable>> getExceptionTypes() {
+        return exceptionTypes;
+    }
+
     public boolean isAllReturned() {
         return returnValue.isEmpty();
     }
@@ -79,6 +90,7 @@ public class Invocation {
             returnValue.offer(lastAnswer);
         }
     }
+
     protected Object nullValue() {
         if (returnType.isPrimitive()) {
             if (returnType.equals(Boolean.TYPE)) {
@@ -138,8 +150,9 @@ public class Invocation {
         Object doAnswer() throws Throwable;
     }
 
-    class ReturnAnswer implements  Answer {
+    class ReturnAnswer implements Answer {
         private Object returnValue;
+
         ReturnAnswer(Object returnValue) {
             this.returnValue = returnValue;
         }

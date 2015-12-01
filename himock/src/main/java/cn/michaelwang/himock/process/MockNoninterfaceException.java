@@ -16,7 +16,7 @@ public class MockNoninterfaceException extends MockProcessErrorException {
         reportBuilder.appendLine("only interface can(should) be mocked:");
 
         reportBuilder.buildNextLevel(() -> {
-            reportBuilder.appendLine("class being mocked: ", mockedClass.getName());
+            reportBuilder.appendLine("class being mocked: ", mockedClass.getCanonicalName());
             reportBuilder.appendStackTrace(getStackTrace());
         });
     }

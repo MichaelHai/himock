@@ -117,6 +117,35 @@ public class HiMockReturnValueTest extends HiMockBaseTest {
     }
 
     @Test
+    public void testCannotSetNotSuitableObjectTypeValue() {
+        reportTest(() -> {
+                    MockedInterface dummy = mock.mock(MockedInterface.class);
+
+                    mock.expect(() -> {
+                        dummy.returnInt();
+                        mock.willReturn(new Object());
+                    });
+
+                    dummy.returnInt();
+
+                    mock.verify();
+                }, "Mock Process Error:\n" +
+                        "\treturn value type is not match:\n" +
+                        "\t\tmethod setting return value: cn.michaelwang.himock.MockedInterface.returnInt()\n" +
+                        "\t\treturn type expected:\tint\n" +
+                        "\t\t-> at cn.michaelwang.himock.HiMockReturnValueTest.lambda$null$?(HiMockReturnValueTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockReturnValueTest.lambda$testCannotSetNotSuitableObjectTypeValue$?(HiMockReturnValueTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockReturnValueTest.testCannotSetNotSuitableObjectTypeValue(HiMockReturnValueTest.java:?)\n" +
+                        "\t\treturn type being set:\tjava.lang.Object\n" +
+                        "\t\t-> at cn.michaelwang.himock.HiMockReturnValueTest.lambda$null$?(HiMockReturnValueTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockReturnValueTest.lambda$testCannotSetNotSuitableObjectTypeValue$?(HiMockReturnValueTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockReturnValueTest.testCannotSetNotSuitableObjectTypeValue(HiMockReturnValueTest.java:?)\n"
+        );
+    }
+
+    @Test
     public void testCannotSetReturnValueOutsideExpect() {
         reportTest(() -> {
                     mock.willReturn(1);

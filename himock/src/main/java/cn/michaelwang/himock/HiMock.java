@@ -31,7 +31,7 @@ public class HiMock {
             expectation.expect();
         } catch (Throwable throwable) {
             if (throwable instanceof HiMockReporter) {
-                throw (HiMockReporter)throwable;
+                throw (HiMockReporter) throwable;
             }
         }
         mockProcessManager.toNormalState();

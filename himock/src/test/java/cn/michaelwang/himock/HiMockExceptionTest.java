@@ -84,4 +84,30 @@ public class HiMockExceptionTest extends HiMockBaseTest {
                 "\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n" +
                 "\t   at cn.michaelwang.himock.HiMockExceptionTest.testExpectThrowOutsideExpectation(HiMockExceptionTest.java:?)\n");
     }
+
+    @Test
+    public void testExpectUnsuitableExceptionType() {
+        reportTest(() -> {
+                    MockedInterface dummy = mock.mock(MockedInterface.class);
+                    mock.expect(() -> {
+                        dummy.throwException();
+                        mock.willThrow(new Exception());
+                    });
+                }, "Mock Process Error:\n" +
+                        "\texception type is not match:\n" +
+                        "\t\tmethod setting exception: cn.michaelwang.himock.MockedInterface.throwException()\n" +
+                        "\t\texception type expected:\n" +
+                        "\t\t\tcn.michaelwang.himock.UserException\n" +
+                        "\t\t-> at cn.michaelwang.himock.HiMockExceptionTest.lambda$null$?(HiMockExceptionTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockExceptionTest.lambda$testExpectUnsuitableExceptionType$?(HiMockExceptionTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockExceptionTest.testExpectUnsuitableExceptionType(HiMockExceptionTest.java:?)\n" +
+                        "\t\texception type being set:\n" +
+                        "\t\t\tjava.lang.Exception\n" +
+                        "\t\t-> at cn.michaelwang.himock.HiMockExceptionTest.lambda$null$?(HiMockExceptionTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockExceptionTest.lambda$testExpectUnsuitableExceptionType$?(HiMockExceptionTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockExceptionTest.testExpectUnsuitableExceptionType(HiMockExceptionTest.java:?)\n"
+        );
+    }
 }
