@@ -13,7 +13,6 @@ public class Invocation {
     private Answer lastAnswer;
     private Class<?> returnType;
     private List<Class<Throwable>> exceptionTypes;
-    private StackTraceElement[] setReturnStackTrace;
 
     private Object[] args;
 
@@ -41,7 +40,6 @@ public class Invocation {
     }
 
     public void addReturnValue(Object toSet, Class<?> toSetType) {
-        this.setReturnStackTrace = new Exception().getStackTrace();
         if (isSuitableType(toSet.getClass(), returnType)) {
             lastAnswer = new ReturnAnswer(toSet);
             returnValue.offer(lastAnswer);
@@ -63,10 +61,6 @@ public class Invocation {
 
     public Object[] getParameters() {
         return args;
-    }
-
-    public StackTraceElement[] getSetReturnStackTrace() {
-        return setReturnStackTrace;
     }
 
     public StackTraceElement[] getInvocationStackTrace() {

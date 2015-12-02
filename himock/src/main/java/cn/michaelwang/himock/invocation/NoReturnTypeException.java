@@ -16,7 +16,7 @@ public class NoReturnTypeException extends MockProcessErrorException {
 
         reportBuilder.buildNextLevel(() -> {
             reportBuilder.appendLine(invocation.getMethodName());
-            reportBuilder.appendStackTrace(invocation.getSetReturnStackTrace());
+            reportBuilder.appendStackTrace(getStackTrace());
         });
     }
 }
