@@ -49,6 +49,11 @@ public class HiMockReturnValueTest extends HiMockBaseTest {
                         "\t\t-> at cn.michaelwang.himock.HiMockReturnValueTest.lambda$null$?(HiMockReturnValueTest.java:?)\n" +
                         "\t\t   at cn.michaelwang.himock.HiMockReturnValueTest.lambda$testNoReturnShouldThrowException$?(HiMockReturnValueTest.java:?)\n" +
                         "\t\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockReturnValueTest.testNoReturnShouldThrowException(HiMockReturnValueTest.java:?)\n" +
+                        "\t\treturn value being set:\n" +
+                        "\t\t-> at cn.michaelwang.himock.HiMockReturnValueTest.lambda$null$?(HiMockReturnValueTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockReturnValueTest.lambda$testNoReturnShouldThrowException$?(HiMockReturnValueTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n" +
                         "\t\t   at cn.michaelwang.himock.HiMockReturnValueTest.testNoReturnShouldThrowException(HiMockReturnValueTest.java:?)\n"
         );
     }

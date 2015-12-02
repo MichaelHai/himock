@@ -18,6 +18,8 @@ public class NoReturnTypeReporter extends MockProcessErrorReporter {
         reportBuilder.buildNextLevel((levelBuilder) -> {
             levelBuilder.appendLine(invocation.getMethodName());
             levelBuilder.appendStackTrace(invocation.getInvocationStackTrace());
+            levelBuilder.appendLine("return value being set:");
+            levelBuilder.appendStackTrace(getStackTrace());
         });
     }
 }
