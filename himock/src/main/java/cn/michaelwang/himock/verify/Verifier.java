@@ -1,7 +1,8 @@
 package cn.michaelwang.himock.verify;
 
 import cn.michaelwang.himock.invocation.Invocation;
-import cn.michaelwang.himock.report.VerificationFailedException;
+import cn.michaelwang.himock.verify.failure.ExpectedInvocationNotHappenedFailure;
+import cn.michaelwang.himock.verify.failure.ParametersNotMatchFailure;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -9,8 +10,8 @@ import java.util.stream.Collectors;
 public class Verifier {
     private Set<Invocation> verificationInvocations = new HashSet<>();
 
-    public List<VerificationFailedException> verify(List<Invocation> actuallyInvocations) {
-        List<VerificationFailedException> exceptions = new ArrayList<>();
+    public void verify(List<Invocation> actuallyInvocations) {
+        List<VerificationFailure> exceptions = new ArrayList<>();
 
         List<Invocation> notCalled = verificationInvocations.stream()
                 .filter(invocationRecord ->
@@ -29,16 +30,18 @@ public class Verifier {
                     .findFirst();
 
             if (parameterDiff.isPresent()) {
-                exceptions.add(new ParametersNotMatchException(parameterDiff.get(), invocationRecord));
+                exceptions.add(new ParametersNotMatchFailure(parameterDiff.get(), invocationRecord));
                 iter.remove();
             }
         }
 
         if (!notCalled.isEmpty()) {
-            exceptions.add(new ExpectedInvocationNotHappenedException(notCalled));
+            exceptions.add(new ExpectedInvocationNotHappenedFailure(notCalled));
         }
 
-        return exceptions;
+        if (!exceptions.isEmpty()) {
+            throw new VerificationFailedReporter(exceptions);
+        }
     }
 
     public void addVerification(Invocation invocation) {

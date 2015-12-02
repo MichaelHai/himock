@@ -5,11 +5,7 @@ import cn.michaelwang.himock.process.MockFactory;
 import cn.michaelwang.himock.process.MockStateManager;
 import cn.michaelwang.himock.record.InvocationRecorder;
 import cn.michaelwang.himock.report.HiMockReporter;
-import cn.michaelwang.himock.report.VerificationFailedException;
-import cn.michaelwang.himock.report.VerificationFailedReporter;
 import cn.michaelwang.himock.verify.Verifier;
-
-import java.util.List;
 
 public class HiMock {
     private MockProcessManager mockProcessManager;
@@ -100,11 +96,7 @@ public class HiMock {
     }
 
     public void verify() {
-        List<VerificationFailedException> reports = mockProcessManager.doVerify();
-
-        if (!reports.isEmpty()) {
-            throw new VerificationFailedReporter(reports);
-        }
+        mockProcessManager.doVerify();
     }
 
     public void verify(Verification verify) {

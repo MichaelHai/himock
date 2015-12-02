@@ -1,16 +1,10 @@
 package cn.michaelwang.himock.process;
 
 import cn.michaelwang.himock.MockProcessManager;
-import cn.michaelwang.himock.invocation.Invocation;
-import cn.michaelwang.himock.invocation.InvocationListener;
-import cn.michaelwang.himock.invocation.NullInvocation;
+import cn.michaelwang.himock.invocation.*;
+import cn.michaelwang.himock.process.reporters.*;
 import cn.michaelwang.himock.record.InvocationRecorder;
-import cn.michaelwang.himock.report.MockProcessErrorException;
-import cn.michaelwang.himock.report.MockProcessErrorReporter;
-import cn.michaelwang.himock.report.VerificationFailedException;
 import cn.michaelwang.himock.verify.Verifier;
-
-import java.util.List;
 
 public class MockStateManager implements MockProcessManager, InvocationListener {
     private MockState state = new NormalState();
@@ -43,7 +37,7 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
     @Override
     public <T> T mock(Class<T> mockedInterface) {
         if (!mockedInterface.isInterface()) {
-            throw new MockProcessErrorReporter(new MockNoninterfaceException(mockedInterface));
+            throw new MockNoninterfaceReporter(mockedInterface);
         }
 
         return mockFactory.createMock(mockedInterface, this);
@@ -65,8 +59,8 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
     }
 
     @Override
-    public List<VerificationFailedException> doVerify() {
-        return verifier.verify(invocationRecorder.getActuallyInvocations());
+    public void doVerify() {
+        verifier.verify(invocationRecorder.getActuallyInvocations());
     }
 
     @Override
@@ -92,17 +86,17 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 
         @Override
         public <T> void lastCallReturn(T returnValue, Class<?> type) {
-            throw new MockProcessErrorReporter(new ExpectReturnOutsideExpectException());
+            throw new ExpectReturnOutsideExpectReporter();
         }
 
         @Override
         public void lastCallThrow(Throwable e) {
-            throw new MockProcessErrorReporter(new ExpectThrowOutsideExpectException());
+            throw new ExpectThrowOutsideExpectReporter();
         }
 
         @Override
         public void lastReturnTimer(int times) {
-            throw new MockProcessErrorReporter(new TimerOutsideExpectException());
+            throw new TimerOutsideExpectReporter();
         }
     }
 
@@ -118,10 +112,16 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 
         @Override
         public <T> void lastCallReturn(T returnValue, Class<?> type) {
+            if (lastCall == null) {
+                throw new ExpectReturnBeforeInvocationReporter();
+            }
+
             try {
                 lastCall.addReturnValue(returnValue, type);
-            } catch (MockProcessErrorException e) {
-                throw new MockProcessErrorReporter(e);
+            } catch (NoReturnTypeException e) {
+                throw new NoReturnTypeReporter(e.getInvocation());
+            } catch (ReturnTypeIsNotSuitableException e) {
+                throw new ReturnTypeIsNotSuitableReporter(e.getInvocation(), e.getToSetType());
             }
         }
 
@@ -129,8 +129,8 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
         public void lastCallThrow(Throwable toThrow) {
             try {
                 lastCall.addException(toThrow);
-            } catch (MockProcessErrorException e) {
-                throw new MockProcessErrorReporter(e);
+            } catch (ExceptionTypeIsNotSuitableException e) {
+                throw new ExceptionTypeIsNotSuitableReporter(e.getInvocation(), e.getToThrow());
             }
         }
 
@@ -150,17 +150,17 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 
         @Override
         public <T> void lastCallReturn(T returnValue, Class<?> type) {
-            throw new MockProcessErrorReporter(new ExpectReturnOutsideExpectException());
+            throw new ExpectReturnOutsideExpectReporter();
         }
 
         @Override
         public void lastCallThrow(Throwable e) {
-            throw new MockProcessErrorReporter(new ExpectThrowOutsideExpectException());
+            throw new ExpectThrowOutsideExpectReporter();
         }
 
         @Override
         public void lastReturnTimer(int times) {
-            throw new MockProcessErrorReporter(new TimerOutsideExpectException());
+            throw new TimerOutsideExpectReporter();
         }
     }
 }

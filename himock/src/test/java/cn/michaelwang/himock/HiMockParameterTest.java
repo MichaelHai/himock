@@ -1,6 +1,6 @@
 package cn.michaelwang.himock;
 
-import cn.michaelwang.himock.report.VerificationFailedReporter;
+import cn.michaelwang.himock.verify.VerificationFailedReporter;
 import org.junit.Test;
 
 @SuppressWarnings("CodeBlock2Expr")

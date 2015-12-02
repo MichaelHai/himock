@@ -170,4 +170,19 @@ public class HiMockReturnValueTest extends HiMockBaseTest {
         assertEquals(10, dummy.returnInt());
         assertEquals(0, dummy.returnInt());
     }
+
+    @Test
+    public void testSetReturnWhenNoCallExpected() {
+        reportTest(() -> {
+                    mock.expect(() -> {
+                        mock.willReturn(1);
+                    });
+                }, "Mock Process Error:\n" +
+                        "\treturn value cannot be set before invocation expectation:\n" +
+                        "\t-> at cn.michaelwang.himock.HiMockReturnValueTest.lambda$null$?(HiMockReturnValueTest.java:?)\n" +
+                        "\t   at cn.michaelwang.himock.HiMockReturnValueTest.lambda$testSetReturnWhenNoCallExpected$?(HiMockReturnValueTest.java:?)\n" +
+                        "\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n" +
+                        "\t   at cn.michaelwang.himock.HiMockReturnValueTest.testSetReturnWhenNoCallExpected(HiMockReturnValueTest.java:?)\n"
+        );
+    }
 }

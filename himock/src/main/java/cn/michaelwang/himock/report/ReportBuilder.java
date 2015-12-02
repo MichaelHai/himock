@@ -12,7 +12,7 @@ public class ReportBuilder {
 
     public void buildNextLevel(Level level) {
         levelStart();
-        level.buildLevel();
+        level.buildLevel(this);
         levelEnd();
     }
 
@@ -113,6 +113,6 @@ public class ReportBuilder {
 
     @FunctionalInterface
     public interface Level {
-        void buildLevel();
+        void buildLevel(ReportBuilder reportBuilder);
     }
 }

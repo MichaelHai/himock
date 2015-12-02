@@ -1,9 +1,5 @@
 package cn.michaelwang.himock;
 
-import cn.michaelwang.himock.report.VerificationFailedException;
-
-import java.util.List;
-
 public interface MockProcessManager {
 
     void toVerifyState();
@@ -18,7 +14,7 @@ public interface MockProcessManager {
 
     void lastReturnTimer(int times);
 
-    List<VerificationFailedException> doVerify();
+    void doVerify();
 
     void lastCallThrow(Throwable e);
 }

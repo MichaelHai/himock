@@ -39,7 +39,7 @@ public class Invocation {
         return returnValue.isEmpty() ? nullValue() : returnValue.poll().doAnswer();
     }
 
-    public void addReturnValue(Object toSet, Class<?> toSetType) {
+    public void addReturnValue(Object toSet, Class<?> toSetType) throws NoReturnTypeException, ReturnTypeIsNotSuitableException {
         if (isSuitableType(toSet.getClass(), returnType)) {
             lastAnswer = new ReturnAnswer(toSet);
             returnValue.offer(lastAnswer);
