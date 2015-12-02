@@ -127,6 +127,10 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 
         @Override
         public void lastCallThrow(Throwable toThrow) {
+            if (lastCall == null) {
+                throw new ExpectExceptionBeforeInvocationReporter();
+            }
+
             try {
                 lastCall.addException(toThrow);
             } catch (ExceptionTypeIsNotSuitableException e) {

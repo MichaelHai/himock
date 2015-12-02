@@ -110,4 +110,19 @@ public class HiMockExceptionTest extends HiMockBaseTest {
                         "\t\t   at cn.michaelwang.himock.HiMockExceptionTest.testExpectUnsuitableExceptionType(HiMockExceptionTest.java:?)\n"
         );
     }
+
+    @Test
+    public void testSetThrownWhenNoCallExpected() {
+        reportTest(() -> {
+                    mock.expect(() -> {
+                        mock.willThrow(new Exception());
+                    });
+                }, "Mock Process Error:\n" +
+                        "\texception cannot be set before invocation expectation:\n" +
+                        "\t-> at cn.michaelwang.himock.HiMockExceptionTest.lambda$null$?(HiMockExceptionTest.java:?)\n" +
+                        "\t   at cn.michaelwang.himock.HiMockExceptionTest.lambda$testSetThrownWhenNoCallExpected$?(HiMockExceptionTest.java:?)\n" +
+                        "\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n" +
+                        "\t   at cn.michaelwang.himock.HiMockExceptionTest.testSetThrownWhenNoCallExpected(HiMockExceptionTest.java:?)\n"
+        );
+    }
 }
