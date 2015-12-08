@@ -17,7 +17,6 @@ public class HiMockTimerTest extends HiMockBaseTest {
         assertEquals(1, dummy.returnInt());
         assertEquals(1, dummy.returnInt());
         assertEquals(1, dummy.returnInt());
-        assertEquals(0, dummy.returnInt());
 
         mock.verify();
     }

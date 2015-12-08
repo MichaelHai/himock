@@ -1,9 +1,6 @@
 package cn.michaelwang.himock.invocation;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 public class Invocation {
     private int id;
@@ -36,7 +33,11 @@ public class Invocation {
     }
 
     public Object getReturnValue() throws Throwable {
-        return returnValue.isEmpty() ? nullValue() : returnValue.poll().doAnswer();
+        if (!returnValue.isEmpty()) {
+            lastAnswer = returnValue.poll();
+        }
+
+        return lastAnswer == null ? nullValue() : lastAnswer.doAnswer();
     }
 
     public void addReturnValue(Object toSet, Class<?> toSetType) throws NoReturnTypeException, ReturnTypeIsNotSuitableException {

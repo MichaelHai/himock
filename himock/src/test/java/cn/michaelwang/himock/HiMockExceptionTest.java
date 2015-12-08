@@ -1,5 +1,6 @@
 package cn.michaelwang.himock;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import static junit.framework.TestCase.assertEquals;
@@ -124,5 +125,22 @@ public class HiMockExceptionTest extends HiMockBaseTest {
                         "\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n" +
                         "\t   at cn.michaelwang.himock.HiMockExceptionTest.testSetThrownWhenNoCallExpected(HiMockExceptionTest.java:?)\n"
         );
+    }
+
+    @Test(expected = UserException.class)
+    public void testCallMoreThenExpectedWithException() throws UserException {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        mock.expect(() -> {
+            dummy.throwException();
+            mock.willThrow(new UserException());
+        });
+
+        try {
+            dummy.throwException();
+        } catch (UserException ex) {
+        }
+
+        dummy.throwException();
     }
 }

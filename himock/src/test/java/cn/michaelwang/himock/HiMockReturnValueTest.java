@@ -190,4 +190,17 @@ public class HiMockReturnValueTest extends HiMockBaseTest {
                         "\t   at cn.michaelwang.himock.HiMockReturnValueTest.testSetReturnWhenNoCallExpected(HiMockReturnValueTest.java:?)\n"
         );
     }
+
+    @Test
+    public void testCallMoreThenExpected() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        mock.expect(() -> {
+            dummy.returnInt();
+            mock.willReturn(10);
+        });
+
+        assertEquals(10, dummy.returnInt());
+        assertEquals(10, dummy.returnInt());
+    }
 }
