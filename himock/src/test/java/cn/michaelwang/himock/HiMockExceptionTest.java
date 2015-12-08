@@ -1,6 +1,5 @@
 package cn.michaelwang.himock;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import static junit.framework.TestCase.assertEquals;
@@ -149,25 +148,50 @@ public class HiMockExceptionTest extends HiMockBaseTest {
         MockedInterface dummy = mock.mock(MockedInterface.class);
 
         reportTest(() -> {
-            mock.expect(() -> {
-                dummy.returnInt();
-                mock.willThrow(new UserException());
-            });
-        }, "Mock Process Error:\n" +
-                "\texception type is not match:\n" +
-                "\t\tmethod setting exception: cn.michaelwang.himock.MockedInterface.returnInt()\n" +
-                "\t\texception type expected:\n" +
-                "\t\t\t(none)\n" +
-                "\t\t-> at cn.michaelwang.himock.HiMockExceptionTest.lambda$null$?(HiMockExceptionTest.java:?)\n" +
-                "\t\t   at cn.michaelwang.himock.HiMockExceptionTest.lambda$testThrowCheckedExceptionForNotDeclaredMethod$?(HiMockExceptionTest.java:?)\n" +
-                "\t\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n" +
-                "\t\t   at cn.michaelwang.himock.HiMockExceptionTest.testThrowCheckedExceptionForNotDeclaredMethod(HiMockExceptionTest.java:?)\n" +
-                "\t\texception type being set:\n" +
-                "\t\t\tcn.michaelwang.himock.UserException\n" +
-                "\t\t-> at cn.michaelwang.himock.HiMockExceptionTest.lambda$null$?(HiMockExceptionTest.java:?)\n" +
-                "\t\t   at cn.michaelwang.himock.HiMockExceptionTest.lambda$testThrowCheckedExceptionForNotDeclaredMethod$?(HiMockExceptionTest.java:?)\n" +
-                "\t\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n" +
-                "\t\t   at cn.michaelwang.himock.HiMockExceptionTest.testThrowCheckedExceptionForNotDeclaredMethod(HiMockExceptionTest.java:?)\n"
+                    mock.expect(() -> {
+                        dummy.returnInt();
+                        mock.willThrow(new UserException());
+                    });
+                }, "Mock Process Error:\n" +
+                        "\texception type is not match:\n" +
+                        "\t\tmethod setting exception: cn.michaelwang.himock.MockedInterface.returnInt()\n" +
+                        "\t\texception type expected:\n" +
+                        "\t\t\t(none)\n" +
+                        "\t\t-> at cn.michaelwang.himock.HiMockExceptionTest.lambda$null$?(HiMockExceptionTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockExceptionTest.lambda$testThrowCheckedExceptionForNotDeclaredMethod$?(HiMockExceptionTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockExceptionTest.testThrowCheckedExceptionForNotDeclaredMethod(HiMockExceptionTest.java:?)\n" +
+                        "\t\texception type being set:\n" +
+                        "\t\t\tcn.michaelwang.himock.UserException\n" +
+                        "\t\t-> at cn.michaelwang.himock.HiMockExceptionTest.lambda$null$?(HiMockExceptionTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockExceptionTest.lambda$testThrowCheckedExceptionForNotDeclaredMethod$?(HiMockExceptionTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockExceptionTest.testThrowCheckedExceptionForNotDeclaredMethod(HiMockExceptionTest.java:?)\n"
         );
     }
+
+    @Test(expected = UserUncheckedException.class)
+    public void testThrowUncheckedExceptionForMethod() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        mock.expect(() -> {
+            dummy.returnInt();
+            mock.willThrow(new UserUncheckedException());
+        });
+
+        dummy.returnInt();
+    }
+
+    @Test(expected = UserUncheckedException.class)
+    public void testThrowUncheckedExcretionForMethodDeclaredException() throws UserException {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        mock.expect(() -> {
+            dummy.throwException();
+            mock.willThrow(new UserUncheckedException());
+        });
+
+        dummy.throwException();
+    }
+
 }

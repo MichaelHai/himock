@@ -52,7 +52,8 @@ public class Invocation {
     }
 
     public void addException(Throwable toThrow) {
-        if (exceptionTypes.stream().anyMatch(exceptionType -> exceptionType.isAssignableFrom(toThrow.getClass()))) {
+        if (toThrow instanceof RuntimeException
+                || exceptionTypes.stream().anyMatch(exceptionType -> exceptionType.isAssignableFrom(toThrow.getClass()))) {
             lastAnswer = new ThrowAnswer(toThrow);
             returnValue.offer(lastAnswer);
         } else {
