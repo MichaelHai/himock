@@ -36,18 +36,18 @@ public abstract class HiMockBaseTest {
 
             if (first) {
                 if (start != 0) {
-                    fail("expected:\n" + expected + "\n" + "actually:\n" + actually);
+                    assertEquals(expected, actually);
                     return;
                 }
                 first = false;
             } else {
                 if (start == -1) {
-                    fail("expected:\n" + expected + "\n" + "actually:\n" + actually);
+                    assertEquals(expected, actually);
                     return;
                 } else {
                     String number = actually.substring(end, start);
-                    if ((!first) && !number.matches("[0-9]+")) {
-                        fail("expected:\n" + expected + "\n" + "actually:\n" + actually);
+                    if (!number.matches("[0-9]+")) {
+                        assertEquals(expected, actually);
                         return;
                     }
                 }

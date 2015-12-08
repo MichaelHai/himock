@@ -24,7 +24,11 @@ public class ExceptionTypeIsNotSuitableReporter extends MockProcessErrorReporter
             levelBuilder.appendLine("exception type expected:");
             levelBuilder.buildNextLevel((exceptionListBuilder) -> {
                 List<Class<Throwable>> exceptions = invocationRecord.getExceptionTypes();
-                exceptions.stream().map(exception -> exception.getCanonicalName()).forEach(exceptionListBuilder::appendLine);
+                if (!exceptions.isEmpty()) {
+                    exceptions.stream().map(Class::getCanonicalName).forEach(exceptionListBuilder::appendLine);
+                } else {
+                    exceptionListBuilder.appendLine("(none)");
+                }
             });
             levelBuilder.appendStackTrace(invocationRecord.getInvocationStackTrace());
             levelBuilder.appendLine("exception type being set:");
