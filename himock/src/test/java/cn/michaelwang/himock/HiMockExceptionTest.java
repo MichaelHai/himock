@@ -243,4 +243,91 @@ public class HiMockExceptionTest extends HiMockBaseTest {
                         "\t\t   at cn.michaelwang.himock.HiMockExceptionTest.testUseWillReturnSetCheckedExceptionNotMatchEitherReturnTypeOrExceptionType(HiMockExceptionTest.java:?)\n"
         );
     }
+
+    @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
+    @Test
+    public void testUseWillReturnSetUncheckedExceptionOfTheReturnTypeShouldReturn() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        UserUncheckedException exception = new UserUncheckedException();
+        mock.expect(() -> {
+            dummy.returnUserUncheckedException();
+            mock.willReturn(exception);
+        });
+
+        assertEquals(exception, dummy.returnUserUncheckedException());
+
+        mock.verify();
+    }
+
+    @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
+    @Test(expected = AnotherUserUncheckedException.class)
+    public void testUseWillReturnSetUncheckedExceptionNotTheSameWithTheReturnTypeShouldThrow() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        mock.expect(() -> {
+            dummy.returnUserUncheckedException();
+            mock.willReturn(new AnotherUserUncheckedException());
+        });
+
+        dummy.returnUserUncheckedException();
+    }
+
+    @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
+    @Test
+    public void testUseWillReturnSetCheckedExceptionOfTheReturnTypeShouldReturn() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        UserException exception = new UserException();
+        mock.expect(() -> {
+            dummy.returnUserException();
+            mock.willReturn(exception);
+        });
+
+        assertEquals(exception, dummy.returnUserException());
+
+        mock.verify();
+    }
+
+    @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
+    @Test
+    public void testUseWillReturnSetCheckedExceptionNotTheSameWithTheReturnTypeAndNotDeclaredShouldFail() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        reportTest(() -> {
+                    mock.expect(() -> {
+                        dummy.returnUserException();
+                        mock.willReturn(new Exception());
+                    });
+                }, "Mock Process Error:\n" +
+                        "\texception type is not match:\n" +
+                        "\t\tmethod setting exception: cn.michaelwang.himock.MockedInterface.returnUserException()\n" +
+                        "\t\texception type expected:\n" +
+                        "\t\t\t(none)\n" +
+                        "\t\t-> at cn.michaelwang.himock.HiMockExceptionTest.lambda$null$?(HiMockExceptionTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockExceptionTest.lambda$testUseWillReturnSetCheckedExceptionNotTheSameWithTheReturnTypeAndNotDeclaredShouldFail$?(HiMockExceptionTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockExceptionTest.testUseWillReturnSetCheckedExceptionNotTheSameWithTheReturnTypeAndNotDeclaredShouldFail(HiMockExceptionTest.java:?)\n" +
+                        "\t\texception type being set:\n" +
+                        "\t\t\tjava.lang.Exception\n" +
+                        "\t\t-> at cn.michaelwang.himock.HiMockExceptionTest.lambda$null$?(HiMockExceptionTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockExceptionTest.lambda$testUseWillReturnSetCheckedExceptionNotTheSameWithTheReturnTypeAndNotDeclaredShouldFail$?(HiMockExceptionTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockExceptionTest.testUseWillReturnSetCheckedExceptionNotTheSameWithTheReturnTypeAndNotDeclaredShouldFail(HiMockExceptionTest.java:?)\n"
+        );
+    }
+
+    @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
+    @Test(expected = Exception.class)
+    public void testUseWillReturnSetCheckedExceptionNotTheSameWithTheReturnTypeButDeclaredShouldThrow() throws Exception {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        Exception exception = new Exception();
+        mock.expect(() -> {
+            dummy.returnUserExceptionAndThrow();
+            mock.willReturn(exception);
+        });
+
+        dummy.returnUserExceptionAndThrow();
+    }
 }
