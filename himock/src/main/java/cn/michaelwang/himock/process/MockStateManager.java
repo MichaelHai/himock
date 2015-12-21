@@ -4,19 +4,26 @@ import cn.michaelwang.himock.MockProcessManager;
 import cn.michaelwang.himock.invocation.*;
 import cn.michaelwang.himock.process.reporters.*;
 import cn.michaelwang.himock.record.InvocationRecorder;
+import cn.michaelwang.himock.verify.InOrderVerifier;
+import cn.michaelwang.himock.verify.NormalVerifier;
 import cn.michaelwang.himock.verify.Verifier;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MockStateManager implements MockProcessManager, InvocationListener {
     private MockState state = new NormalState();
 
     private MockFactory mockFactory;
     private InvocationRecorder invocationRecorder;
+    private List<Verifier> verifiers = new ArrayList<>();
     private Verifier verifier;
 
-    public MockStateManager(MockFactory mockFactory, InvocationRecorder invocationRecorder, Verifier verifier) {
+    public MockStateManager(MockFactory mockFactory, InvocationRecorder invocationRecorder) {
         this.mockFactory = mockFactory;
         this.invocationRecorder = invocationRecorder;
-        this.verifier = verifier;
+        this.verifier = new NormalVerifier();
+        verifiers.add(verifier);
     }
 
     @Override
@@ -32,6 +39,12 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
     @Override
     public void toExpectState() {
         this.state = new ExpectState();
+    }
+
+    @Override
+    public void toOrderedVerifyState() {
+        this.state = new VerificationInOrderState();
+        verifiers.add(((VerificationInOrderState) this.state).getVerifier());
     }
 
     @Override
@@ -60,7 +73,7 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 
     @Override
     public void doVerify() {
-        verifier.verify(invocationRecorder.getActuallyInvocations());
+        verifiers.forEach((verifier) -> verifier.verify(invocationRecorder.getActuallyInvocations()));
     }
 
     @Override
@@ -169,6 +182,20 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
         @Override
         public void lastReturnTimer(int times) {
             throw new TimerOutsideExpectReporter();
+        }
+    }
+
+    private class VerificationInOrderState extends VerificationState {
+        private InOrderVerifier verifier = new InOrderVerifier();
+
+        @Override
+        public Object methodCalled(Invocation invocation) {
+            this.verifier.addVerification(invocation);
+            return super.methodCalled(invocation);
+        }
+
+        public InOrderVerifier getVerifier() {
+            return verifier;
         }
     }
 }

@@ -5,7 +5,7 @@ import cn.michaelwang.himock.process.MockFactory;
 import cn.michaelwang.himock.process.MockStateManager;
 import cn.michaelwang.himock.record.InvocationRecorder;
 import cn.michaelwang.himock.report.HiMockReporter;
-import cn.michaelwang.himock.verify.Verifier;
+import cn.michaelwang.himock.verify.NormalVerifier;
 
 public class HiMock {
     private MockProcessManager mockProcessManager;
@@ -13,8 +13,7 @@ public class HiMock {
     public HiMock() {
         MockFactory mockFactory = MockFactoryImpl.getInstance();
         InvocationRecorder invocationRecorder = new InvocationRecorder();
-        Verifier verifier = new Verifier();
-        mockProcessManager = new MockStateManager(mockFactory, invocationRecorder, verifier);
+        mockProcessManager = new MockStateManager(mockFactory, invocationRecorder);
     }
 
     public <T> T mock(Class<T> mockedInterface) {
@@ -99,9 +98,16 @@ public class HiMock {
         mockProcessManager.doVerify();
     }
 
-    public void verify(Verification verify) {
+    public void verify(Verification verification) {
         mockProcessManager.toVerifyState();
-        verify.verify();
+        verification.record();
+        mockProcessManager.toNormalState();
+        verify();
+    }
+
+    public void verifyInOrder(Verification verification) {
+        mockProcessManager.toOrderedVerifyState();
+        verification.record();
         mockProcessManager.toNormalState();
         verify();
     }
@@ -113,6 +119,6 @@ public class HiMock {
 
     @FunctionalInterface
     public interface Verification {
-        void verify();
+        void record();
     }
 }
