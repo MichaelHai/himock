@@ -203,4 +203,18 @@ public class HiMockReturnValueTest extends HiMockBaseTest {
         assertEquals(10, dummy.returnInt());
         assertEquals(10, dummy.returnInt());
     }
+
+    @Test
+    public void testSetSubtypeOfTheReturn() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        mock.expect(() -> {
+            dummy.returnObject();
+            mock.willReturn("hello");
+        });
+
+        assertEquals("hello", dummy.returnObject());
+
+        mock.verify();
+    }
 }
