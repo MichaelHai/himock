@@ -183,7 +183,7 @@ public class HiMockExceptionTest extends HiMockBaseTest {
     }
 
     @Test(expected = UserUncheckedException.class)
-    public void testThrowUncheckedExcretionForMethodDeclaredException() throws UserException {
+    public void testThrowUncheckedExceptionForMethodDeclaredException() throws UserException {
         MockedInterface dummy = mock.mock(MockedInterface.class);
 
         mock.expect(() -> {
@@ -194,4 +194,53 @@ public class HiMockExceptionTest extends HiMockBaseTest {
         dummy.throwException();
     }
 
+    @Test(expected = UserUncheckedException.class)
+    public void testUseWillReturnSetNotSuitableUncheckedException()  {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        mock.expect(() -> {
+            dummy.returnInt();
+            mock.willReturn(new UserUncheckedException());
+        });
+
+        dummy.returnInt();
+    }
+
+    @Test(expected = UserException.class)
+    public void testUseWillReturnSetCheckedExceptionNotMatchReturnTypeButExceptionType() throws UserException {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        mock.expect(() -> {
+            dummy.throwException();
+            mock.willReturn(new UserException());
+        });
+
+        dummy.throwException();
+    }
+
+    @Test
+    public void testUseWillReturnSetCheckedExceptionNotMatchEitherReturnTypeOrExceptionType() throws UserException {
+        reportTest(() -> {
+                    MockedInterface dummy = mock.mock(MockedInterface.class);
+                    mock.expect(() -> {
+                        dummy.throwException();
+                        mock.willReturn(new Exception());
+                    });
+                }, "Mock Process Error:\n" +
+                        "\texception type is not match:\n" +
+                        "\t\tmethod setting exception: cn.michaelwang.himock.MockedInterface.throwException()\n" +
+                        "\t\texception type expected:\n" +
+                        "\t\t\tcn.michaelwang.himock.UserException\n" +
+                        "\t\t-> at cn.michaelwang.himock.HiMockExceptionTest.lambda$null$?(HiMockExceptionTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockExceptionTest.lambda$testUseWillReturnSetCheckedExceptionNotMatchEitherReturnTypeOrExceptionType$?(HiMockExceptionTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockExceptionTest.testUseWillReturnSetCheckedExceptionNotMatchEitherReturnTypeOrExceptionType(HiMockExceptionTest.java:?)\n" +
+                        "\t\texception type being set:\n" +
+                        "\t\t\tjava.lang.Exception\n" +
+                        "\t\t-> at cn.michaelwang.himock.HiMockExceptionTest.lambda$null$?(HiMockExceptionTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockExceptionTest.lambda$testUseWillReturnSetCheckedExceptionNotMatchEitherReturnTypeOrExceptionType$?(HiMockExceptionTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n" +
+                        "\t\t   at cn.michaelwang.himock.HiMockExceptionTest.testUseWillReturnSetCheckedExceptionNotMatchEitherReturnTypeOrExceptionType(HiMockExceptionTest.java:?)\n"
+        );
+    }
 }

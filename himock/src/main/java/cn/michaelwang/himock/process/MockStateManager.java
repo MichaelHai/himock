@@ -121,7 +121,11 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
             } catch (NoReturnTypeException e) {
                 throw new NoReturnTypeReporter(e.getInvocation());
             } catch (ReturnTypeIsNotSuitableException e) {
-                throw new ReturnTypeIsNotSuitableReporter(e.getInvocation(), e.getToSetType());
+                if (returnValue instanceof Throwable) {
+                    lastCallThrow((Throwable) returnValue);
+                } else {
+                    throw new ReturnTypeIsNotSuitableReporter(e.getInvocation(), e.getToSetType());
+                }
             }
         }
 
