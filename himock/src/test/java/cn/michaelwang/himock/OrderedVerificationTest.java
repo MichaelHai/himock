@@ -181,4 +181,18 @@ public class OrderedVerificationTest extends HiMockBaseTest {
             dummy.returnInt();
         });
     }
+
+    @Test
+    public void testTheSameCallBeforeAndAfterShouldPass() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        dummy.doNothing();
+        dummy.returnInt();
+        dummy.doNothing();
+
+        mock.verifyInOrder(() -> {
+            dummy.returnInt();
+            dummy.doNothing();
+        });
+    }
 }

@@ -15,6 +15,7 @@
  */
 package org.easymock.samples;
 
-public abstract class Printer {
-    public abstract void print(String toPrint);
+/* change to interface for HiMock use */
+public interface Printer {
+    void print(String toPrint);
 }
