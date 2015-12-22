@@ -36,14 +36,18 @@ public class OrderedVerificationTest extends HiMockBaseTest {
             });
         }, "Verification failed:\n" +
                 "\tmethod called in different order:\n" +
+                "\t\tactual order:\n" +
+                "\t\t\tcn.michaelwang.himock.MockedInterface.returnInt()\n" +
+                "\t\t\tcn.michaelwang.himock.MockedInterface.doNothing()\n" +
+                "\t\t\tcn.michaelwang.himock.MockedInterface.returnInt()\n" +
                 "\t\tverified order:\n" +
                 "\t\t\tcn.michaelwang.himock.MockedInterface.returnInt()\n" +
                 "\t\t\tcn.michaelwang.himock.MockedInterface.returnInt()\n" +
                 "\t\t\tcn.michaelwang.himock.MockedInterface.doNothing()\n" +
-                "\t\tactual order:\n" +
-                "\t\t\tcn.michaelwang.himock.MockedInterface.returnInt()\n" +
-                "\t\t\tcn.michaelwang.himock.MockedInterface.doNothing()\n" +
-                "\t\t\tcn.michaelwang.himock.MockedInterface.returnInt()\n");
+                "\t\t-> at cn.michaelwang.himock.OrderedVerificationTest.lambda$null$?(OrderedVerificationTest.java:?)\n" +
+                "\t\t   at cn.michaelwang.himock.OrderedVerificationTest.lambda$testNotTheSameOrderShouldFail$?(OrderedVerificationTest.java:?)\n" +
+                "\t\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n" +
+                "\t\t   at cn.michaelwang.himock.OrderedVerificationTest.testNotTheSameOrderShouldFail(OrderedVerificationTest.java:?)\n");
     }
 
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
@@ -79,12 +83,16 @@ public class OrderedVerificationTest extends HiMockBaseTest {
             });
         }, "Verification failed:\n" +
                 "\tmethod called in different order:\n" +
+                "\t\tactual order:\n" +
+                "\t\t\tcn.michaelwang.himock.MockedInterface.returnInt()\n" +
+                "\t\t\tcn.michaelwang.himock.MockedInterface.returnBoolean()\n" +
                 "\t\tverified order:\n" +
                 "\t\t\tcn.michaelwang.himock.MockedInterface.returnBoolean()\n" +
                 "\t\t\tcn.michaelwang.himock.MockedInterface.returnInt()\n" +
-                "\t\tactual order:\n" +
-                "\t\t\tcn.michaelwang.himock.MockedInterface.returnInt()\n" +
-                "\t\t\tcn.michaelwang.himock.MockedInterface.returnBoolean()\n");
+                "\t\t-> at cn.michaelwang.himock.OrderedVerificationTest.lambda$null$?(OrderedVerificationTest.java:?)\n" +
+                "\t\t   at cn.michaelwang.himock.OrderedVerificationTest.lambda$testWithOtherCallsNotOrderedShouldFail$?(OrderedVerificationTest.java:?)\n" +
+                "\t\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n" +
+                "\t\t   at cn.michaelwang.himock.OrderedVerificationTest.testWithOtherCallsNotOrderedShouldFail(OrderedVerificationTest.java:?)\n");
     }
 
     @Test
@@ -113,6 +121,64 @@ public class OrderedVerificationTest extends HiMockBaseTest {
         mock.verifyInOrder(() -> {
             dummy2.doNothing();
             dummy1.doNothing();
+        });
+    }
+
+    @Test
+    public void testTwoOrderSequence() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        dummy.doNothing();
+        dummy.returnInt();
+        dummy.returnBoolean();
+        dummy.returnObject();
+
+        mock.verifyInOrder(() -> {
+            dummy.doNothing();
+            dummy.returnBoolean();
+        });
+
+        mock.verifyInOrder(() -> {
+            dummy.returnInt();
+            dummy.returnObject();
+        });
+    }
+
+    @Test
+    public void testTwoOrderSequenceWithOverlap() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        dummy.doNothing();
+        dummy.returnInt();
+        dummy.returnBoolean();
+
+        mock.verifyInOrder(() -> {
+            dummy.doNothing();
+            dummy.returnBoolean();
+        });
+
+        mock.verifyInOrder(() -> {
+            dummy.doNothing();
+            dummy.returnInt();
+        });
+    }
+
+    @Test(expected = HiMockReporter.class)
+    public void testTwoOrderSequenceWithOverlapFail() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        dummy.doNothing();
+        dummy.returnInt();
+        dummy.returnBoolean();
+
+        mock.verifyInOrder(() -> {
+            dummy.returnBoolean();
+            dummy.doNothing();
+        });
+
+        mock.verifyInOrder(() -> {
+            dummy.doNothing();
+            dummy.returnInt();
         });
     }
 }

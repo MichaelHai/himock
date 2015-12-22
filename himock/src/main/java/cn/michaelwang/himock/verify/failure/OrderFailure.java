@@ -18,17 +18,18 @@ public class OrderFailure implements VerificationFailure {
     @Override
     public void buildReport(ReportBuilder reportBuilder) {
         reportBuilder.appendLine("method called in different order:");
-        reportBuilder.buildNextLevel((expectedBuilder) -> {
-            expectedBuilder.appendLine("verified order:");
-            expectedBuilder.buildNextLevel(invocationListBuilder ->
-                    expected.forEach(invocation ->
-                            invocationListBuilder.appendInvocationMessage(invocation.getMethodName(), invocation.getParameters())));
-        });
         reportBuilder.buildNextLevel((actualBuilder) -> {
             actualBuilder.appendLine("actual order:");
             actualBuilder.buildNextLevel(invocationListBuilder ->
                     actually.forEach(invocation ->
                             invocationListBuilder.appendInvocationMessage(invocation.getMethodName(), invocation.getParameters())));
         });
+        reportBuilder.buildNextLevel((expectedBuilder) -> {
+            expectedBuilder.appendLine("verified order:");
+            expectedBuilder.buildNextLevel(invocationListBuilder ->
+                    expected.forEach(invocation ->
+                            invocationListBuilder.appendInvocationMessage(invocation.getMethodName(), invocation.getParameters())));
+        });
+        reportBuilder.buildNextLevel((locationBuilder) -> locationBuilder.appendStackTrace(expected.get(0).getInvocationStackTrace()));
     }
 }
