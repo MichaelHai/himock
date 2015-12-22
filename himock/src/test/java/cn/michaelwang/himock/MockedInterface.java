@@ -1,7 +1,5 @@
 package cn.michaelwang.himock;
 
-import sun.reflect.annotation.ExceptionProxy;
-
 public interface MockedInterface {
     void doNothing();
 
@@ -20,6 +18,8 @@ public interface MockedInterface {
     int throwException() throws UserException;
 
     UserUncheckedException returnUserUncheckedException();
+
     UserException returnUserException();
+
     UserException returnUserExceptionAndThrow() throws Exception;
 }

@@ -8,6 +8,8 @@ public interface MockProcessManager {
 
     void toExpectState();
 
+    void toOrderedVerifyState();
+
     <T> T mock(Class<T> mockedInterface);
 
     <T> void lastCallReturn(T returnValue, Class<?> type);

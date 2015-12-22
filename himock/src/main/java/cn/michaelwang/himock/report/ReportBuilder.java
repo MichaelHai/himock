@@ -50,6 +50,21 @@ public class ReportBuilder {
         lineEnd();
     }
 
+    public void appendInvocationMessage(String methodName, Object[] args) {
+        lineStart();
+        sb.append(Utils.removeParenthesesInFunctionName(methodName));
+        sb.append("(");
+        if (args != null) {
+            for (Object parameter : args) {
+                sb.append(parameter);
+                sb.append(", ");
+            }
+            sb.delete(sb.lastIndexOf(","), sb.length());
+        }
+        sb.append(")");
+        lineEnd();
+    }
+
     public String getReport() {
         return sb.toString();
     }
@@ -74,21 +89,6 @@ public class ReportBuilder {
 
     private void lineEnd() {
         sb.append("\n");
-    }
-
-    private void appendInvocationMessage(String methodName, Object[] args) {
-        lineStart();
-        sb.append(Utils.removeParenthesesInFunctionName(methodName));
-        sb.append("(");
-        if (args != null) {
-            for (Object parameter : args) {
-                sb.append(parameter);
-                sb.append(", ");
-            }
-            sb.delete(sb.lastIndexOf(","), sb.length());
-        }
-        sb.append(")");
-        lineEnd();
     }
 
     private StackTraceElement[] simplifyTheStackTraces(StackTraceElement[] traces) {

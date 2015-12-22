@@ -57,7 +57,9 @@ public abstract class HiMockBaseTest {
         }
 
         for (int i = end; i < actually.length(); i++) {
-            assertEquals('?', actually.charAt(i));
+            if (actually.charAt(i) != '?') {
+                assertEquals(expected, actually);
+            }
         }
     }
 
