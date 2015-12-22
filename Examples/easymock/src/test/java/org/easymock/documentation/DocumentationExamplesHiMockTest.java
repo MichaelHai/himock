@@ -32,4 +32,33 @@ public class DocumentationExamplesHiMockTest {
 
         mock.verify();
     }
+
+    @Test
+    public void checkingMethodCallOrderBetweenMocks() {
+        HiMock mock = new HiMock();
+        MyInterface mock1 = mock.mock(MyInterface.class);
+        MyInterface mock2 = mock.mock(MyInterface.class);
+
+        // Ordered:
+        mock1.a();
+        mock2.a();
+
+        // Unordered:
+        mock2.c();
+        mock1.c();
+        mock2.c();
+
+        // Ordered:
+        mock2.b();
+        mock1.b();
+
+        mock.verifyInOrder(() -> {
+            mock1.a();
+            mock2.a();
+        });
+        mock.verifyInOrder(() -> {
+            mock2.b();
+            mock1.b();
+        });
+    }
 }
