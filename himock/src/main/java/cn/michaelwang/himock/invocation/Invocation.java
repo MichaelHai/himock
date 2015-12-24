@@ -131,7 +131,9 @@ public class Invocation {
         int hashCode = super.hashCode() + id + methodName.hashCode() + returnType.hashCode();
         if (args != null) {
             for (Object arg : args) {
-                hashCode += arg.hashCode();
+                if (arg != null) {
+                    hashCode += arg.hashCode();
+                }
             }
         }
 
@@ -172,14 +174,21 @@ public class Invocation {
     }
 
     private boolean isNullValue(Object thisArg) {
-        if (returnType.isPrimitive()) {
-            if (returnType.equals(Boolean.TYPE)) {
+        if (thisArg == null) {
+            return true;
+        }
+
+        Class<?> type = thisArg.getClass();
+        if (type.isPrimitive() || type.equals(Byte.class) || type.equals(Character.class)
+                || type.equals(Short.class) || type.equals(Integer.class) || type.equals(Long.class)
+                || type.equals(Float.class) || type.equals(Double.class) || type.equals(Boolean.class)) {
+            if (type.equals(Boolean.TYPE) || type.equals(Boolean.class)) {
                 return thisArg.equals(false);
             }
             return thisArg.equals(0);
         }
 
-        return thisArg == null;
+        return false;
     }
 
     interface Answer {

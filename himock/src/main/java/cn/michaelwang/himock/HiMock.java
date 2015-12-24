@@ -99,6 +99,11 @@ public class HiMock {
         return 0;
     }
 
+    public boolean matchBoolean(Matcher<Boolean> matcher) {
+        mockProcessManager.addMatcher(matcher);
+        return false;
+    }
+
     public <T> T match(Matcher<T> matcher) {
         mockProcessManager.addMatcher(matcher);
         return null;
