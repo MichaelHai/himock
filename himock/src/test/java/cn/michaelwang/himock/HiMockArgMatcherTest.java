@@ -31,10 +31,43 @@ public class HiMockArgMatcherTest extends HiMockBaseTest{
     public void testObjectArgumentCanBeMatchedInVerification() {
         MockedInterface dummy = mock.mock(MockedInterface.class);
 
-        dummy.withStringParamter("hello");
+        dummy.withStringParameter("hello");
 
         mock.verify(() -> {
-            dummy.withStringParamter(mock.match(arg -> arg.length() == 5));
+            dummy.withStringParameter(mock.match(arg -> arg.length() == 5));
+        });
+    }
+
+    @Test
+    public void testMixMatchWithObject() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        dummy.withObjectParameters("hello", "world");
+
+        mock.verify(() -> {
+            dummy.withObjectParameters(mock.match(arg -> arg.length() == 5), "world");
+        });
+    }
+
+    @Test
+    public void testMixMatchWithNullObjectAfterMatcher() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        dummy.withObjectParameters("hello", null);
+
+        mock.verify(() -> {
+            dummy.withObjectParameters(mock.match(arg -> arg.length() == 5), null);
+        });
+    }
+
+    @Test
+    public void testMixMatchWithNullObjectBeforeMatcher() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        dummy.withObjectParameters(null, "world");
+
+        mock.verify(() -> {
+            dummy.withObjectParameters( null, mock.match(arg -> arg.length() == 5));
         });
     }
 }

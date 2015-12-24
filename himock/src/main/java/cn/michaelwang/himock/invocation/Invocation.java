@@ -1,5 +1,6 @@
 package cn.michaelwang.himock.invocation;
 
+import cn.michaelwang.himock.NullObjectPlaceHolder;
 import cn.michaelwang.himock.matcher.Matcher;
 
 import java.util.LinkedList;
@@ -158,15 +159,18 @@ public class Invocation {
         for (int i = 0; i < args.length; i++) {
             Object thisArg = args[i];
             Object toCompareArg = toCompare.args[i];
-            if (isNullValue(thisArg)) {
+
+            if (toCompareArg == NullObjectPlaceHolder.getInstance()) {
+                if (!isNullValue(thisArg)) {
+                    return false;
+                }
+            } else if (isNullValue(thisArg)){
                 Matcher<Object> matcher = (Matcher<Object>) matchers.poll();
                 if (!matcher.isMatch(toCompareArg)) {
                     return false;
                 }
-            } else {
-                if (!thisArg.equals(toCompareArg)) {
-                    return false;
-                }
+            } else if (!thisArg.equals(toCompareArg)){
+                return false;
             }
         }
 

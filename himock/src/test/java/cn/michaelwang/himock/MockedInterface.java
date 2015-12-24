@@ -15,7 +15,7 @@ public interface MockedInterface {
 
     void withObjectParameters(String o1, String o2);
 
-    void withStringParamter(String string);
+    void withStringParameter(String string);
     void withBooleanParameter(boolean b);
 
     int throwException() throws UserException;

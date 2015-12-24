@@ -1,6 +1,7 @@
 package cn.michaelwang.himock.process;
 
 import cn.michaelwang.himock.MockProcessManager;
+import cn.michaelwang.himock.NullObjectPlaceHolder;
 import cn.michaelwang.himock.invocation.*;
 import cn.michaelwang.himock.matcher.Matcher;
 import cn.michaelwang.himock.process.reporters.*;
@@ -101,6 +102,13 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
     private class NormalState implements MockState {
         @Override
         public Object methodCalled(Invocation invocation) throws Throwable {
+            Object[] parameters = invocation.getParameters();
+            for (int i = 0; i < parameters.length; i++) {
+                Object param = parameters[i];
+                if (param == null) {
+                    parameters[i] = NullObjectPlaceHolder.getInstance();
+                }
+            }
             return invocationRecorder.actuallyCall(invocation);
         }
 
