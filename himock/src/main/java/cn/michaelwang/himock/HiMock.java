@@ -1,11 +1,11 @@
 package cn.michaelwang.himock;
 
+import cn.michaelwang.himock.matcher.Matcher;
 import cn.michaelwang.himock.mockup.MockFactoryImpl;
 import cn.michaelwang.himock.process.MockFactory;
 import cn.michaelwang.himock.process.MockStateManager;
 import cn.michaelwang.himock.record.InvocationRecorder;
 import cn.michaelwang.himock.report.HiMockReporter;
-import cn.michaelwang.himock.verify.NormalVerifier;
 
 public class HiMock {
     private MockProcessManager mockProcessManager;
@@ -92,6 +92,16 @@ public class HiMock {
     public HiMock times(int times) {
         mockProcessManager.lastReturnTimer(times);
         return this;
+    }
+
+    public int matchInt(Matcher<Integer> matcher) {
+        mockProcessManager.addMatcher(matcher);
+        return 0;
+    }
+
+    public <T> T match(Matcher<T> matcher) {
+        mockProcessManager.addMatcher(matcher);
+        return null;
     }
 
     public void verify() {

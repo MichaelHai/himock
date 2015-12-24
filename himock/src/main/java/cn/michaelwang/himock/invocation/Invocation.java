@@ -1,6 +1,10 @@
 package cn.michaelwang.himock.invocation;
 
-import java.util.*;
+import cn.michaelwang.himock.matcher.Matcher;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
 public class Invocation {
     private int id;
@@ -12,6 +16,7 @@ public class Invocation {
     private List<Class<Throwable>> exceptionTypes;
 
     private Object[] args;
+    private Queue<Matcher<?>> matchers;
 
     private StackTraceElement[] stackTraceElements;
 
@@ -117,6 +122,10 @@ public class Invocation {
         return false;
     }
 
+    public void addArgumentMatchers(Queue<Matcher<?>> matchers) {
+        this.matchers = matchers;
+    }
+
     @Override
     public int hashCode() {
         int hashCode = super.hashCode() + id + methodName.hashCode() + returnType.hashCode();
@@ -136,10 +145,41 @@ public class Invocation {
             return id == toCompare.id
                     && methodName.equals(toCompare.methodName)
                     && returnType.equals(toCompare.returnType)
-                    && Arrays.equals(args, toCompare.args);
+                    && checkArguments(toCompare);
         }
 
         return false;
+    }
+
+    @SuppressWarnings("unchecked")
+    private boolean checkArguments(Invocation toCompare) {
+        for (int i = 0; i < args.length; i++) {
+            Object thisArg = args[i];
+            Object toCompareArg = toCompare.args[i];
+            if (isNullValue(thisArg)) {
+                Matcher<Object> matcher = (Matcher<Object>) matchers.poll();
+                if (!matcher.isMatch(toCompareArg)) {
+                    return false;
+                }
+            } else {
+                if (!thisArg.equals(toCompareArg)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private boolean isNullValue(Object thisArg) {
+        if (returnType.isPrimitive()) {
+            if (returnType.equals(Boolean.TYPE)) {
+                return thisArg.equals(false);
+            }
+            return thisArg.equals(0);
+        }
+
+        return thisArg == null;
     }
 
     interface Answer {

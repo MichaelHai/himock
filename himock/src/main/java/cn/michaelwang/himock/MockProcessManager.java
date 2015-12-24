@@ -1,5 +1,7 @@
 package cn.michaelwang.himock;
 
+import cn.michaelwang.himock.matcher.Matcher;
+
 public interface MockProcessManager {
 
     void toVerifyState();
@@ -19,4 +21,6 @@ public interface MockProcessManager {
     void doVerify();
 
     void lastCallThrow(Throwable e);
+
+    <T> void addMatcher(Matcher<T> matcher);
 }

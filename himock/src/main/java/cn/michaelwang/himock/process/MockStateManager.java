@@ -2,14 +2,14 @@ package cn.michaelwang.himock.process;
 
 import cn.michaelwang.himock.MockProcessManager;
 import cn.michaelwang.himock.invocation.*;
+import cn.michaelwang.himock.matcher.Matcher;
 import cn.michaelwang.himock.process.reporters.*;
 import cn.michaelwang.himock.record.InvocationRecorder;
 import cn.michaelwang.himock.verify.InOrderVerifier;
 import cn.michaelwang.himock.verify.NormalVerifier;
 import cn.michaelwang.himock.verify.Verifier;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class MockStateManager implements MockProcessManager, InvocationListener {
     private MockState state = new NormalState();
@@ -18,6 +18,8 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
     private InvocationRecorder invocationRecorder;
     private List<Verifier> verifiers = new ArrayList<>();
     private Verifier verifier;
+
+    private Queue<Matcher<?>> matchers = new LinkedList<>();
 
     public MockStateManager(MockFactory mockFactory, InvocationRecorder invocationRecorder) {
         this.mockFactory = mockFactory;
@@ -64,6 +66,11 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
     @Override
     public void lastCallThrow(Throwable e) {
         state.lastCallThrow(e);
+    }
+
+    @Override
+    public <T> void addMatcher(Matcher<T> matcher) {
+        matchers.offer(matcher);
     }
 
     @Override
@@ -165,6 +172,7 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 
         @Override
         public Object methodCalled(Invocation invocation) {
+            invocation.addArgumentMatchers(matchers);
             verifier.addVerification(invocation);
             return new NullInvocation(invocation.getReturnType()).getReturnValue();
         }
