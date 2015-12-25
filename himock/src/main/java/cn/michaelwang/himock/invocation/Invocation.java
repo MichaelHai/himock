@@ -25,7 +25,7 @@ public class Invocation {
         this.id = id;
         this.methodName = methodName;
         this.returnType = returnType;
-        this.args = args;
+        this.args = args == null ? new Object[0] : args;
         this.stackTraceElements = new Exception().getStackTrace();
         this.exceptionTypes = exceptionTypes;
     }
@@ -130,11 +130,9 @@ public class Invocation {
     @Override
     public int hashCode() {
         int hashCode = super.hashCode() + id + methodName.hashCode() + returnType.hashCode();
-        if (args != null) {
-            for (Object arg : args) {
-                if (arg != null) {
-                    hashCode += arg.hashCode();
-                }
+        for (Object arg : args) {
+            if (arg != null) {
+                hashCode += arg.hashCode();
             }
         }
 
@@ -156,23 +154,21 @@ public class Invocation {
 
     @SuppressWarnings("unchecked")
     private boolean checkArguments(Invocation toCompare) {
-        if (args != null) {
-            for (int i = 0; i < args.length; i++) {
-                Object thisArg = args[i];
-                Object toCompareArg = toCompare.args[i];
+        for (int i = 0; i < args.length; i++) {
+            Object thisArg = args[i];
+            Object toCompareArg = toCompare.args[i];
 
-                if (toCompareArg == NullObjectPlaceHolder.getInstance()) {
-                    if (!isNullValue(thisArg)) {
-                        return false;
-                    }
-                } else if (isNullValue(thisArg)) {
-                    Matcher<Object> matcher = (Matcher<Object>) matchers.poll();
-                    if (!matcher.isMatch(toCompareArg)) {
-                        return false;
-                    }
-                } else if (!thisArg.equals(toCompareArg)) {
+            if (toCompareArg == NullObjectPlaceHolder.getInstance()) {
+                if (!isNullValue(thisArg)) {
                     return false;
                 }
+            } else if (isNullValue(thisArg)) {
+                Matcher<Object> matcher = (Matcher<Object>) matchers.poll();
+                if (!matcher.isMatch(toCompareArg)) {
+                    return false;
+                }
+            } else if (!thisArg.equals(toCompareArg)) {
+                return false;
             }
         }
 

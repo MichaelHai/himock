@@ -106,12 +106,10 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
         @Override
         public Object methodCalled(Invocation invocation) throws Throwable {
             Object[] parameters = invocation.getParameters();
-            if (parameters != null) {
-                for (int i = 0; i < parameters.length; i++) {
-                    Object param = parameters[i];
-                    if (param == null) {
-                        parameters[i] = NullObjectPlaceHolder.getInstance();
-                    }
+            for (int i = 0; i < parameters.length; i++) {
+                Object param = parameters[i];
+                if (param == null) {
+                    parameters[i] = NullObjectPlaceHolder.getInstance();
                 }
             }
             return invocationRecorder.actuallyCall(invocation);
