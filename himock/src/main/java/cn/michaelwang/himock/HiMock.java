@@ -94,9 +94,9 @@ public class HiMock {
         return this;
     }
 
-    public int matchInt(Matcher<Integer> matcher) {
+    public <T> T match(Matcher<T> matcher) {
         mockProcessManager.addMatcher(matcher);
-        return 0;
+        return null;
     }
 
     public boolean matchBoolean(Matcher<Boolean> matcher) {
@@ -104,9 +104,45 @@ public class HiMock {
         return false;
     }
 
-    public <T> T match(Matcher<T> matcher) {
+    @SuppressWarnings("unused") // simple function not tested
+    public byte matchByte(Matcher<Byte> matcher) {
         mockProcessManager.addMatcher(matcher);
-        return null;
+        return 0;
+    }
+
+    @SuppressWarnings("unused") // simple function not tested
+    public char matchChar(Matcher<Character> matcher) {
+        mockProcessManager.addMatcher(matcher);
+        return 0;
+    }
+
+    @SuppressWarnings("unused") // simple function not tested
+    public short matchShort(Matcher<Short> matcher) {
+        mockProcessManager.addMatcher(matcher);
+        return 0;
+    }
+
+    public int matchInt(Matcher<Integer> matcher) {
+        mockProcessManager.addMatcher(matcher);
+        return 0;
+    }
+
+    @SuppressWarnings("unused") // simple function not tested
+    public long matchLong(Matcher<Long> matcher) {
+        mockProcessManager.addMatcher(matcher);
+        return 0;
+    }
+
+    @SuppressWarnings("unused") // simple function not tested
+    public float matchFloat(Matcher<Float> matcher) {
+        mockProcessManager.addMatcher(matcher);
+        return 0;
+    }
+
+    @SuppressWarnings("unused") // simple function not tested
+    public double matchDouble(Matcher<Double> matcher) {
+        mockProcessManager.addMatcher(matcher);
+        return 0;
     }
 
     public void verify() {
