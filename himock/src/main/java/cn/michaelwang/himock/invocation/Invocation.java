@@ -17,7 +17,7 @@ public class Invocation {
     private List<Class<Throwable>> exceptionTypes;
 
     private Object[] args;
-    private Queue<Matcher<?>> matchers;
+    private List<Matcher<?>> matchers;
 
     private StackTraceElement[] stackTraceElements;
 
@@ -123,7 +123,7 @@ public class Invocation {
         return false;
     }
 
-    public void addArgumentMatchers(Queue<Matcher<?>> matchers) {
+    public void addArgumentMatchers(List<Matcher<?>> matchers) {
         this.matchers = matchers;
     }
 
@@ -154,6 +154,7 @@ public class Invocation {
 
     @SuppressWarnings("unchecked")
     private boolean checkArguments(Invocation toCompare) {
+        int matchIndex = 0;
         for (int i = 0; i < args.length; i++) {
             Object thisArg = args[i];
             Object toCompareArg = toCompare.args[i];
@@ -163,7 +164,8 @@ public class Invocation {
                     return false;
                 }
             } else if (isNullValue(thisArg)) {
-                Matcher<Object> matcher = (Matcher<Object>) matchers.poll();
+                Matcher<Object> matcher = (Matcher<Object>) matchers.get(matchIndex);
+                matchIndex++;
                 if (!matcher.isMatch(toCompareArg)) {
                     return false;
                 }

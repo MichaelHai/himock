@@ -70,4 +70,32 @@ public class HiMockArgMatcherTest extends HiMockBaseTest{
             dummy.withObjectParameters( null, mock.match(arg -> arg.length() == 5));
         });
     }
+
+    @Test
+    public void testMatcherForTwoFunctions() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        dummy.withObjectParameters(null, "world");
+        dummy.withOneIntParameter(10);
+
+        mock.verify(() -> {
+            dummy.withObjectParameters( null, mock.match(arg -> arg.length() == 5));
+            dummy.withOneIntParameter(mock.matchInt(arg -> arg == 10));
+        });
+    }
+
+    @Test
+    public void testMatcherInTwoVerifyBlock() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        dummy.withObjectParameters(null, "world");
+        dummy.withOneIntParameter(10);
+
+        mock.verify(() -> {
+            dummy.withObjectParameters( null, mock.match(arg -> arg.length() == 5));
+        });
+        mock.verify(() -> {
+            dummy.withOneIntParameter(mock.matchInt(arg -> arg == 10));
+        });
+    }
 }

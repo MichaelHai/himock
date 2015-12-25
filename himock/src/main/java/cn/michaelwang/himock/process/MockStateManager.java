@@ -23,7 +23,7 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
     private List<Verifier> verifiers = new ArrayList<>();
     private Verifier verifier;
 
-    private Queue<Matcher<?>> matchers = new LinkedList<>();
+    private List<Matcher<?>> matchers = new ArrayList<>();
 
     public MockStateManager(MockFactory mockFactory, InvocationRecorder invocationRecorder) {
         this.mockFactory = mockFactory;
@@ -75,7 +75,7 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 
     @Override
     public <T> void addMatcher(Matcher<T> matcher) {
-        matchers.offer(matcher);
+        matchers.add(matcher);
     }
 
     @Override
@@ -185,6 +185,7 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
         @Override
         public Object methodCalled(Invocation invocation) {
             invocation.addArgumentMatchers(matchers);
+            matchers = new ArrayList<>();
             verifier.addVerification(invocation);
             return new NullInvocation(invocation.getReturnType()).getReturnValue();
         }
