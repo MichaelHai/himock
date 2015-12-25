@@ -94,8 +94,8 @@ public class Invocation {
     }
 
     protected Object nullValue() {
-        if (returnType.isPrimitive()) {
-            if (returnType.equals(Boolean.TYPE)) {
+        if (isPrimitiveOrBoxType(returnType)) {
+            if (returnType.equals(Boolean.TYPE) || returnType.equals(Boolean.class)) {
                 return false;
             }
             return 0;
@@ -156,21 +156,23 @@ public class Invocation {
 
     @SuppressWarnings("unchecked")
     private boolean checkArguments(Invocation toCompare) {
-        for (int i = 0; i < args.length; i++) {
-            Object thisArg = args[i];
-            Object toCompareArg = toCompare.args[i];
+        if (args != null) {
+            for (int i = 0; i < args.length; i++) {
+                Object thisArg = args[i];
+                Object toCompareArg = toCompare.args[i];
 
-            if (toCompareArg == NullObjectPlaceHolder.getInstance()) {
-                if (!isNullValue(thisArg)) {
+                if (toCompareArg == NullObjectPlaceHolder.getInstance()) {
+                    if (!isNullValue(thisArg)) {
+                        return false;
+                    }
+                } else if (isNullValue(thisArg)) {
+                    Matcher<Object> matcher = (Matcher<Object>) matchers.poll();
+                    if (!matcher.isMatch(toCompareArg)) {
+                        return false;
+                    }
+                } else if (!thisArg.equals(toCompareArg)) {
                     return false;
                 }
-            } else if (isNullValue(thisArg)){
-                Matcher<Object> matcher = (Matcher<Object>) matchers.poll();
-                if (!matcher.isMatch(toCompareArg)) {
-                    return false;
-                }
-            } else if (!thisArg.equals(toCompareArg)){
-                return false;
             }
         }
 
@@ -183,9 +185,7 @@ public class Invocation {
         }
 
         Class<?> type = thisArg.getClass();
-        if (type.isPrimitive() || type.equals(Byte.class) || type.equals(Character.class)
-                || type.equals(Short.class) || type.equals(Integer.class) || type.equals(Long.class)
-                || type.equals(Float.class) || type.equals(Double.class) || type.equals(Boolean.class)) {
+        if (isPrimitiveOrBoxType(type)) {
             if (type.equals(Boolean.TYPE) || type.equals(Boolean.class)) {
                 return thisArg.equals(false);
             }
@@ -193,6 +193,12 @@ public class Invocation {
         }
 
         return false;
+    }
+
+    private boolean isPrimitiveOrBoxType(Class<?> type) {
+        return type.isPrimitive() || type.equals(Byte.class) || type.equals(Character.class)
+                || type.equals(Short.class) || type.equals(Integer.class) || type.equals(Long.class)
+                || type.equals(Float.class) || type.equals(Double.class) || type.equals(Boolean.class);
     }
 
     interface Answer {

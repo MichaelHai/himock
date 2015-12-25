@@ -10,7 +10,10 @@ import cn.michaelwang.himock.verify.InOrderVerifier;
 import cn.michaelwang.himock.verify.NormalVerifier;
 import cn.michaelwang.himock.verify.Verifier;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
 public class MockStateManager implements MockProcessManager, InvocationListener {
     private MockState state = new NormalState();
@@ -103,10 +106,12 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
         @Override
         public Object methodCalled(Invocation invocation) throws Throwable {
             Object[] parameters = invocation.getParameters();
-            for (int i = 0; i < parameters.length; i++) {
-                Object param = parameters[i];
-                if (param == null) {
-                    parameters[i] = NullObjectPlaceHolder.getInstance();
+            if (parameters != null) {
+                for (int i = 0; i < parameters.length; i++) {
+                    Object param = parameters[i];
+                    if (param == null) {
+                        parameters[i] = NullObjectPlaceHolder.getInstance();
+                    }
                 }
             }
             return invocationRecorder.actuallyCall(invocation);
