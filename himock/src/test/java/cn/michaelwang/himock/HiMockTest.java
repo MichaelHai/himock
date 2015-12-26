@@ -8,7 +8,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-@SuppressWarnings("CodeBlock2Expr")
+@SuppressWarnings({"CodeBlock2Expr", "Convert2MethodRef"})
 public class HiMockTest extends HiMockBaseTest {
 
     @Test
@@ -74,12 +74,12 @@ public class HiMockTest extends HiMockBaseTest {
                     MockedInterface dummy = mock.mock(MockedInterface.class);
 
                     mock.expect(() -> {
-                        dummy.withObjectParameters("o1", "o2");
+                        dummy.withObjectArguments("o1", "o2");
                     });
                     mock.verify();
                 }, "Verification failed:\n" +
                         "\texpected invocation not happened:\n" +
-                        "\t\tcn.michaelwang.himock.MockedInterface.withObjectParameters(o1, o2)\n" +
+                        "\t\tcn.michaelwang.himock.MockedInterface.withObjectArguments(o1, o2)\n" +
                         "\t\t-> at cn.michaelwang.himock.HiMockTest.lambda$null$?(HiMockTest.java:?)\n" +
                         "\t\t   at cn.michaelwang.himock.HiMockTest.lambda$testNotCalledExpectationWithArgs$?(HiMockTest.java:?)\n" +
                         "\t\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n" +
@@ -252,6 +252,19 @@ public class HiMockTest extends HiMockBaseTest {
         });
 
         assertEquals(10, dummy.returnInt());
+
+        mock.verify();
+    }
+
+    @Test(expected = VerificationFailedReporter.class)
+    public void testOverloadFunctions() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        mock.expect(() -> {
+            dummy.returnInt();
+        });
+
+        dummy.returnInt(1);
 
         mock.verify();
     }

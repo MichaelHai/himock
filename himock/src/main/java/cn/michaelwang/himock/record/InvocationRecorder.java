@@ -1,8 +1,8 @@
 package cn.michaelwang.himock.record;
 
 import cn.michaelwang.himock.Invocation;
-import cn.michaelwang.himock.verify.NullInvocation;
-import cn.michaelwang.himock.verify.Verification;
+import cn.michaelwang.himock.verify.NullVerification;
+import cn.michaelwang.himock.Verification;
 import cn.michaelwang.himock.verify.VerificationImpl;
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ public class InvocationRecorder {
         actuallyInvocations.add(invocation);
         return expectedInvocations.stream()
                 .filter(verification -> verification.satisfyWith(invocation))
-                .findFirst().orElse(new NullInvocation(invocation))
+                .findFirst().orElse(new NullVerification(invocation))
                 .getReturnValue();
     }
 

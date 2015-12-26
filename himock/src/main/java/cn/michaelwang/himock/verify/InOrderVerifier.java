@@ -1,6 +1,7 @@
 package cn.michaelwang.himock.verify;
 
 import cn.michaelwang.himock.Invocation;
+import cn.michaelwang.himock.Verification;
 import cn.michaelwang.himock.verify.failure.OrderFailure;
 
 import java.util.ArrayList;
@@ -34,7 +35,9 @@ public class InOrderVerifier implements Verifier {
                 foundIndexes.add(outOfOrderIndex);
 
                 List<Invocation> actuallyOrder = foundIndexes.stream().sorted().map(toBeVerified::get).collect(Collectors.toList());
-                throw new VerificationFailedReporter(new OrderFailure(orderedVerifications.subList(0, i + 1), actuallyOrder));
+                throw new VerificationFailedReporter(
+                        new OrderFailure(orderedVerifications.subList(0, i + 1).stream().map(Verification::getInvocation).collect(Collectors.toList()),
+                                actuallyOrder));
             }
         }
     }

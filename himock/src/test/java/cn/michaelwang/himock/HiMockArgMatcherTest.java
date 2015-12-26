@@ -8,10 +8,10 @@ public class HiMockArgMatcherTest extends HiMockBaseTest {
     public void testIntArgumentCanBeMatchedInVerification() {
         MockedInterface dummy = mock.mock(MockedInterface.class);
 
-        dummy.withOneIntParameter(10);
+        dummy.withOneIntArgument(10);
 
         mock.verify(() -> {
-            dummy.withOneIntParameter(mock.matchInt(arg -> arg == 10));
+            dummy.withOneIntArgument(mock.matchInt(arg -> arg == 10));
         });
     }
 
@@ -31,10 +31,10 @@ public class HiMockArgMatcherTest extends HiMockBaseTest {
     public void testObjectArgumentCanBeMatchedInVerification() {
         MockedInterface dummy = mock.mock(MockedInterface.class);
 
-        dummy.withStringParameter("hello");
+        dummy.withStringArgument("hello");
 
         mock.verify(() -> {
-            dummy.withStringParameter(mock.match(arg -> arg.length() == 5));
+            dummy.withStringArgument(mock.match(arg -> arg.length() == 5));
         });
     }
 
@@ -42,10 +42,10 @@ public class HiMockArgMatcherTest extends HiMockBaseTest {
     public void testMixMatchWithObject() {
         MockedInterface dummy = mock.mock(MockedInterface.class);
 
-        dummy.withObjectParameters("hello", "world");
+        dummy.withObjectArguments("hello", "world");
 
         mock.verify(() -> {
-            dummy.withObjectParameters(mock.match(arg -> arg.length() == 5), "world");
+            dummy.withObjectArguments(mock.match(arg -> arg.length() == 5), "world");
         });
     }
 
@@ -53,10 +53,10 @@ public class HiMockArgMatcherTest extends HiMockBaseTest {
     public void testMixMatchWithNullObjectAfterMatcher() {
         MockedInterface dummy = mock.mock(MockedInterface.class);
 
-        dummy.withObjectParameters("hello", null);
+        dummy.withObjectArguments("hello", null);
 
         mock.verify(() -> {
-            dummy.withObjectParameters(mock.match(arg -> arg.length() == 5), null);
+            dummy.withObjectArguments(mock.match(arg -> arg.length() == 5), null);
         });
     }
 
@@ -64,10 +64,10 @@ public class HiMockArgMatcherTest extends HiMockBaseTest {
     public void testMixMatchWithNullObjectBeforeMatcher() {
         MockedInterface dummy = mock.mock(MockedInterface.class);
 
-        dummy.withObjectParameters(null, "world");
+        dummy.withObjectArguments(null, "world");
 
         mock.verify(() -> {
-            dummy.withObjectParameters(null, mock.match(arg -> arg.length() == 5));
+            dummy.withObjectArguments(null, mock.match(arg -> arg.length() == 5));
         });
     }
 
@@ -75,12 +75,12 @@ public class HiMockArgMatcherTest extends HiMockBaseTest {
     public void testMatcherForTwoFunctions() {
         MockedInterface dummy = mock.mock(MockedInterface.class);
 
-        dummy.withObjectParameters(null, "world");
-        dummy.withOneIntParameter(10);
+        dummy.withObjectArguments(null, "world");
+        dummy.withOneIntArgument(10);
 
         mock.verify(() -> {
-            dummy.withObjectParameters(null, mock.match(arg -> arg.length() == 5));
-            dummy.withOneIntParameter(mock.matchInt(arg -> arg == 10));
+            dummy.withObjectArguments(null, mock.match(arg -> arg.length() == 5));
+            dummy.withOneIntArgument(mock.matchInt(arg -> arg == 10));
         });
     }
 
@@ -88,14 +88,27 @@ public class HiMockArgMatcherTest extends HiMockBaseTest {
     public void testMatcherInTwoVerifyBlock() {
         MockedInterface dummy = mock.mock(MockedInterface.class);
 
-        dummy.withObjectParameters(null, "world");
-        dummy.withOneIntParameter(10);
+        dummy.withObjectArguments(null, "world");
+        dummy.withOneIntArgument(10);
 
         mock.verify(() -> {
-            dummy.withObjectParameters(null, mock.match(arg -> arg.length() == 5));
+            dummy.withObjectArguments(null, mock.match(arg -> arg.length() == 5));
         });
         mock.verify(() -> {
-            dummy.withOneIntParameter(mock.matchInt(arg -> arg == 10));
+            dummy.withOneIntArgument(mock.matchInt(arg -> arg == 10));
+        });
+    }
+
+    @Test
+    public void testMatcherWithOrderedVerification() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        dummy.withObjectArguments(null, "world");
+        dummy.withOneIntArgument(10);
+
+        mock.verifyInOrder(() -> {
+            dummy.withObjectArguments(null, mock.match(arg -> arg.length() == 5));
+            dummy.withOneIntArgument(mock.matchInt(arg -> arg == 10));
         });
     }
 }

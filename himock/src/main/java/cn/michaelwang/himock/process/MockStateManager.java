@@ -2,6 +2,7 @@ package cn.michaelwang.himock.process;
 
 import cn.michaelwang.himock.Invocation;
 import cn.michaelwang.himock.MockProcessManager;
+import cn.michaelwang.himock.Verification;
 import cn.michaelwang.himock.verify.*;
 import cn.michaelwang.himock.NullObjectPlaceHolder;
 import cn.michaelwang.himock.invocation.*;
@@ -13,13 +14,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MockStateManager implements MockProcessManager, InvocationListener {
-    private MockState state = new NormalState();
-
     private MockFactory mockFactory;
     private InvocationRecorder invocationRecorder;
+
+    private MockState state = new NormalState();
+
     private List<Verifier> verifiers = new ArrayList<>();
     private Verifier verifier;
-
     private List<Matcher<?>> matchers = new ArrayList<>();
 
     public MockStateManager(MockFactory mockFactory, InvocationRecorder invocationRecorder) {
@@ -30,11 +31,6 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
     }
 
     @Override
-    public void toVerifyState() {
-        this.state = new VerificationState();
-    }
-
-    @Override
     public void toNormalState() {
         this.state = new NormalState();
     }
@@ -42,6 +38,11 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
     @Override
     public void toExpectState() {
         this.state = new ExpectState();
+    }
+
+    @Override
+    public void toVerifyState() {
+        this.state = new VerificationState();
     }
 
     @Override
@@ -71,11 +72,6 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
     }
 
     @Override
-    public <T> void addMatcher(Matcher<T> matcher) {
-        matchers.add(matcher);
-    }
-
-    @Override
     public void lastReturnTimer(int times) {
         state.lastReturnTimer(times);
     }
@@ -83,6 +79,11 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
     @Override
     public void doVerify() {
         verifiers.forEach((verifier) -> verifier.verify(invocationRecorder.getActuallyInvocations()));
+    }
+
+    @Override
+    public <T> void addMatcher(Matcher<T> matcher) {
+        matchers.add(matcher);
     }
 
     @Override
@@ -94,20 +95,19 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
         Object methodCalled(Invocation invocation) throws Throwable;
 
         <T> void lastCallReturn(T returnValue, Class<?> type);
+        void lastCallThrow(Throwable e);
 
         void lastReturnTimer(int times);
-
-        void lastCallThrow(Throwable e);
     }
 
     private class NormalState implements MockState {
         @Override
         public Object methodCalled(Invocation invocation) throws Throwable {
-            Object[] parameters = invocation.getParameters();
-            for (int i = 0; i < parameters.length; i++) {
-                Object param = parameters[i];
+            Object[] arguments = invocation.getArguments();
+            for (int i = 0; i < arguments.length; i++) {
+                Object param = arguments[i];
                 if (param == null) {
-                    parameters[i] = NullObjectPlaceHolder.getInstance();
+                    arguments[i] = NullObjectPlaceHolder.getInstance();
                 }
             }
             return invocationRecorder.actuallyCall(invocation);
@@ -136,7 +136,7 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
         public Object methodCalled(Invocation invocation) {
             lastCall = invocationRecorder.expect(invocation);
             verifier.addVerification(lastCall);
-            return new NullInvocation(invocation).getReturnValue();
+            return new NullVerification(invocation).getReturnValue();
         }
 
         @Override
@@ -178,14 +178,18 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
     }
 
     private class VerificationState implements MockState {
-
         @Override
         public Object methodCalled(Invocation invocation) {
-            Verification verification = new VerificationImpl(invocation);
-            verification.addArgumentMatchers(matchers);
+            newVerification(invocation);
+
+            return new NullVerification(invocation).getReturnValue();
+        }
+
+        protected Verification newVerification(Invocation invocation) {
+            Verification verification = new VerificationImpl(invocation, matchers);
             matchers = new ArrayList<>();
             verifier.addVerification(verification);
-            return new NullInvocation(invocation).getReturnValue();
+            return verification;
         }
 
         @Override
@@ -213,9 +217,10 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 
         @Override
         public Object methodCalled(Invocation invocation) {
-            Verification verification = new VerificationImpl(invocation);
+            Verification verification = newVerification(invocation);
+
             this.verifier.addVerification(verification);
-            return super.methodCalled(invocation);
+            return new NullVerification(invocation).getReturnValue();
         }
     }
 }

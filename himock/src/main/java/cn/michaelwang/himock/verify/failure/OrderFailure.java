@@ -7,10 +7,10 @@ import cn.michaelwang.himock.verify.VerificationFailure;
 import java.util.List;
 
 public class OrderFailure implements VerificationFailure {
-    private List<? extends Invocation> expected;
-    private List<? extends Invocation> actually;
+    private List<Invocation> expected;
+    private List<Invocation> actually;
 
-    public OrderFailure(List<? extends Invocation> expected, List<? extends Invocation> actually) {
+    public OrderFailure(List<Invocation> expected, List<Invocation> actually) {
         this.expected = expected;
         this.actually = actually;
     }
@@ -22,13 +22,13 @@ public class OrderFailure implements VerificationFailure {
             actualBuilder.appendLine("actual order:");
             actualBuilder.buildNextLevel(invocationListBuilder ->
                     actually.forEach(actuallyInvocation ->
-                            invocationListBuilder.appendInvocationMessage(actuallyInvocation.getMethodName(), actuallyInvocation.getParameters())));
+                            invocationListBuilder.appendInvocationMessage(actuallyInvocation.getMethodName(), actuallyInvocation.getArguments())));
         });
         reportBuilder.buildNextLevel((expectedBuilder) -> {
             expectedBuilder.appendLine("verified order:");
             expectedBuilder.buildNextLevel(invocationListBuilder ->
                     expected.forEach(expectedInvocation ->
-                            invocationListBuilder.appendInvocationMessage(expectedInvocation.getMethodName(), expectedInvocation.getParameters())));
+                            invocationListBuilder.appendInvocationMessage(expectedInvocation.getMethodName(), expectedInvocation.getArguments())));
         });
         reportBuilder.buildNextLevel((locationBuilder) -> locationBuilder.appendStackTrace(expected.get(0).getInvocationStackTrace()));
     }

@@ -2,6 +2,7 @@ package cn.michaelwang.himock.verify;
 
 import cn.michaelwang.himock.Invocation;
 import cn.michaelwang.himock.NullObjectPlaceHolder;
+import cn.michaelwang.himock.Verification;
 import cn.michaelwang.himock.invocation.ExceptionTypeIsNotSuitableException;
 import cn.michaelwang.himock.invocation.NoReturnTypeException;
 import cn.michaelwang.himock.invocation.ReturnTypeIsNotSuitableException;
@@ -24,9 +25,14 @@ public class VerificationImpl implements Verification {
         this.invocation = invocation;
     }
 
+    public VerificationImpl(Invocation invocation, List<Matcher<?>> matchers) {
+        this(invocation);
+        this.matchers = matchers;
+    }
+
     @Override
     public boolean satisfyWith(Invocation invocation) {
-        return this.invocation.equals(invocation) && checkArguments(invocation);
+        return this.invocation.sameMethod(invocation) && checkArguments(invocation);
     }
 
     @Override
@@ -35,41 +41,6 @@ public class VerificationImpl implements Verification {
             .filter(this::satisfyWith)
             .findFirst();
         return invocation.isPresent() && isAllReturned();
-    }
-
-    @Override
-    public int getObjectId() {
-        return invocation.getObjectId();
-    }
-
-    @Override
-    public String getMethodName() {
-        return invocation.getMethodName();
-    }
-
-    @Override
-    public Object[] getParameters() {
-        return invocation.getParameters();
-    }
-
-    @Override
-    public StackTraceElement[] getInvocationStackTrace() {
-        return invocation.getInvocationStackTrace();
-    }
-
-    @Override
-    public Class<?> getReturnType() {
-        return invocation.getReturnType();
-    }
-
-    @Override
-    public List<Class<Throwable>> getExceptionTypes() {
-        return invocation.getExceptionTypes();
-    }
-
-    @Override
-    public boolean sameMethod(Invocation invocation) {
-        return this.invocation.sameMethod(invocation);
     }
 
     @Override
@@ -82,7 +53,7 @@ public class VerificationImpl implements Verification {
     }
 
     protected Object nullValue() {
-        Class<?> returnType = getReturnType();
+        Class<?> returnType = invocation.getReturnType();
         if (isPrimitiveOrBoxType(returnType)) {
             if (returnType.equals(Boolean.TYPE) || returnType.equals(Boolean.class)) {
                 return false;
@@ -101,7 +72,7 @@ public class VerificationImpl implements Verification {
 
     @Override
     public void addReturnValue(Object toSet, Class<?> toSetType) throws NoReturnTypeException, ReturnTypeIsNotSuitableException {
-        Class<?> returnType = getReturnType();
+        Class<?> returnType = invocation.getReturnType();
         if (isSuitableType(toSet.getClass(), returnType)) {
             lastAnswer = new ReturnAnswer(toSet);
             returnValue.offer(lastAnswer);
@@ -134,6 +105,11 @@ public class VerificationImpl implements Verification {
         }
     }
 
+    @Override
+    public Invocation getInvocation() {
+        return invocation;
+    }
+
     interface Answer {
         Object doAnswer() throws Throwable;
     }
@@ -164,11 +140,6 @@ public class VerificationImpl implements Verification {
         }
     }
 
-    @Override
-    public void addArgumentMatchers(List<Matcher<?>> matchers) {
-        this.matchers = matchers;
-    }
-
     private boolean isSuitableType(Class<?> thisType, Class<?> targetType) {
         if (targetType.isAssignableFrom(thisType)) {
             return true;
@@ -190,11 +161,12 @@ public class VerificationImpl implements Verification {
 
     @SuppressWarnings("unchecked")
     private boolean checkArguments(Invocation toCompare) {
-        Object[] args = invocation.getParameters();
+        Object[] args = invocation.getArguments();
+
         int matchIndex = 0;
         for (int i = 0; i < args.length; i++) {
             Object thisArg = args[i];
-            Object toCompareArg = toCompare.getParameters()[i];
+            Object toCompareArg = toCompare.getArguments()[i];
 
             if (toCompareArg == NullObjectPlaceHolder.getInstance()) {
                 if (!isNullValue(thisArg)) {

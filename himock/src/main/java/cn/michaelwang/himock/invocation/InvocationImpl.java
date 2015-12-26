@@ -2,26 +2,27 @@ package cn.michaelwang.himock.invocation;
 
 import cn.michaelwang.himock.Invocation;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class InvocationImpl implements Invocation {
     private int objectId;
     private String methodName;
-
+    private Class<?>[] parameterTypes;
+    private Object[] args;
+    private Class<?> returnType;
     private List<Class<Throwable>> exceptionTypes;
 
-    private Object[] args;
-
     private StackTraceElement[] stackTraceElements;
-    protected Class<?> returnType;
 
-    public InvocationImpl(int objectId, String methodName, Class<?> returnType, Object[] args, List<Class<Throwable>> exceptionTypes) {
+    public InvocationImpl(int objectId, String methodName, Class<?>[] parameterTypes, Object[] args, Class<?> returnType, List<Class<Throwable>> exceptionTypes) {
         this.objectId = objectId;
         this.methodName = methodName;
-        this.returnType = returnType;
+        this.parameterTypes = parameterTypes == null ? new Class<?>[0] : parameterTypes;
         this.args = args == null ? new Object[0] : args;
-        this.stackTraceElements = new Exception().getStackTrace();
+        this.returnType = returnType;
         this.exceptionTypes = exceptionTypes;
+        this.stackTraceElements = new Exception().getStackTrace();
     }
 
     @Override
@@ -35,20 +36,13 @@ public class InvocationImpl implements Invocation {
     }
 
     @Override
-    public Object[] getParameters() {
+    public Class<?>[] getParameterTypes() {
+        return parameterTypes;
+    }
+
+    @Override
+    public Object[] getArguments() {
         return args;
-    }
-
-    @Override
-    public StackTraceElement[] getInvocationStackTrace() {
-        return stackTraceElements;
-    }
-
-    @Override
-    public boolean sameMethod(Invocation invocation) {
-        return invocation.getObjectId() == this.getObjectId()
-                && invocation.getMethodName().equals(this.getMethodName());
-
     }
 
     @Override
@@ -62,8 +56,31 @@ public class InvocationImpl implements Invocation {
     }
 
     @Override
+    public StackTraceElement[] getInvocationStackTrace() {
+        return stackTraceElements;
+    }
+
+    @Override
+    public boolean sameMethod(Invocation invocation) {
+        return invocation.getObjectId() == this.getObjectId()
+                && invocation.getMethodName().equals(this.getMethodName())
+                && Arrays.equals(invocation.getParameterTypes(), this.getParameterTypes());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof InvocationImpl) {
+            InvocationImpl toCompare = (InvocationImpl) obj;
+            return this.sameMethod(toCompare)
+                    && Arrays.equals(args, toCompare.getArguments());
+        }
+
+        return false;
+    }
+
+    @Override
     public int hashCode() {
-        int hashCode = super.hashCode() + objectId + methodName.hashCode() + returnType.hashCode();
+        int hashCode = super.hashCode() + objectId + methodName.hashCode();
         for (Object arg : args) {
             if (arg != null) {
                 hashCode += arg.hashCode();
@@ -71,17 +88,5 @@ public class InvocationImpl implements Invocation {
         }
 
         return hashCode;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof InvocationImpl) {
-            InvocationImpl toCompare = (InvocationImpl) obj;
-            return objectId == toCompare.objectId
-                    && methodName.equals(toCompare.methodName)
-                    && returnType.equals(toCompare.returnType);
-        }
-
-        return false;
     }
 }

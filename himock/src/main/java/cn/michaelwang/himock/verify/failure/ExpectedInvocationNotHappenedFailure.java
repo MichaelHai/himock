@@ -7,9 +7,9 @@ import cn.michaelwang.himock.verify.VerificationFailure;
 import java.util.List;
 
 public class ExpectedInvocationNotHappenedFailure implements VerificationFailure {
-    private final List<? extends Invocation> missedInvocations;
+    private final List<Invocation> missedInvocations;
 
-    public ExpectedInvocationNotHappenedFailure(List<? extends Invocation> missedInvocations) {
+    public ExpectedInvocationNotHappenedFailure(List<Invocation> missedInvocations) {
         this.missedInvocations = missedInvocations;
     }
 
@@ -21,7 +21,7 @@ public class ExpectedInvocationNotHappenedFailure implements VerificationFailure
                 (levelBuilder) -> missedInvocations.forEach(
                         invocation -> levelBuilder.appendInvocationDetail(
                                 invocation.getMethodName(),
-                                invocation.getParameters(),
+                                invocation.getArguments(),
                                 invocation.getInvocationStackTrace()))
         );
     }
