@@ -1,13 +1,13 @@
 package cn.michaelwang.himock.process.reporters;
 
-import cn.michaelwang.himock.invocation.Invocation;
+import cn.michaelwang.himock.invocation.InvocationImpl;
 import cn.michaelwang.himock.process.MockProcessErrorReporter;
 import cn.michaelwang.himock.report.ReportBuilder;
 
 public class NoReturnTypeReporter extends MockProcessErrorReporter {
-    private Invocation invocation;
+    private InvocationImpl invocation;
 
-    public NoReturnTypeReporter(Invocation invocation) {
+    public NoReturnTypeReporter(InvocationImpl invocation) {
         this.invocation = invocation;
     }
 

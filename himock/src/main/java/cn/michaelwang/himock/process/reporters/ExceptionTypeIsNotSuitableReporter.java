@@ -1,16 +1,16 @@
 package cn.michaelwang.himock.process.reporters;
 
-import cn.michaelwang.himock.invocation.Invocation;
+import cn.michaelwang.himock.invocation.InvocationImpl;
 import cn.michaelwang.himock.process.MockProcessErrorReporter;
 import cn.michaelwang.himock.report.ReportBuilder;
 
 import java.util.List;
 
 public class ExceptionTypeIsNotSuitableReporter extends MockProcessErrorReporter {
-    private Invocation invocationRecord;
+    private InvocationImpl invocationRecord;
     private Class<?> toSet;
 
-    public ExceptionTypeIsNotSuitableReporter(Invocation invocation, Throwable toSet) {
+    public ExceptionTypeIsNotSuitableReporter(InvocationImpl invocation, Throwable toSet) {
         this.invocationRecord = invocation;
         this.toSet = toSet.getClass();
     }

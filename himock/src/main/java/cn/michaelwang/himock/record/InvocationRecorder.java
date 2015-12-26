@@ -1,6 +1,6 @@
 package cn.michaelwang.himock.record;
 
-import cn.michaelwang.himock.invocation.Invocation;
+import cn.michaelwang.himock.invocation.InvocationImpl;
 import cn.michaelwang.himock.invocation.NullInvocation;
 
 import java.util.ArrayList;
@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Optional;
 
 public class InvocationRecorder {
-    private List<Invocation> expectedInvocations = new ArrayList<>();
-    private List<Invocation> actuallyInvocations = new ArrayList<>();
+    private List<InvocationImpl> expectedInvocations = new ArrayList<>();
+    private List<InvocationImpl> actuallyInvocations = new ArrayList<>();
 
-    public Object actuallyCall(Invocation invocation) throws Throwable {
+    public Object actuallyCall(InvocationImpl invocation) throws Throwable {
         actuallyInvocations.add(invocation);
         return expectedInvocations.stream()
                 .filter(invocation::equals)
@@ -19,8 +19,8 @@ public class InvocationRecorder {
                 .getReturnValue();
     }
 
-    public Invocation expect(Invocation invocation) {
-        Optional<Invocation> exist = expectedInvocations.stream().filter(invocation::equals).findFirst();
+    public InvocationImpl expect(InvocationImpl invocation) {
+        Optional<InvocationImpl> exist = expectedInvocations.stream().filter(invocation::equals).findFirst();
 
         if (exist.isPresent()) {
             return exist.get();
@@ -30,7 +30,7 @@ public class InvocationRecorder {
         }
     }
 
-    public List<Invocation> getActuallyInvocations() {
+    public List<InvocationImpl> getActuallyInvocations() {
         return actuallyInvocations;
     }
 }

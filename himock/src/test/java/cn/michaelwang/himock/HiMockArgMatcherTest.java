@@ -3,7 +3,7 @@ package cn.michaelwang.himock;
 import org.junit.Test;
 
 @SuppressWarnings("CodeBlock2Expr")
-public class HiMockArgMatcherTest extends HiMockBaseTest{
+public class HiMockArgMatcherTest extends HiMockBaseTest {
     @Test
     public void testIntArgumentCanBeMatchedInVerification() {
         MockedInterface dummy = mock.mock(MockedInterface.class);
@@ -67,7 +67,7 @@ public class HiMockArgMatcherTest extends HiMockBaseTest{
         dummy.withObjectParameters(null, "world");
 
         mock.verify(() -> {
-            dummy.withObjectParameters( null, mock.match(arg -> arg.length() == 5));
+            dummy.withObjectParameters(null, mock.match(arg -> arg.length() == 5));
         });
     }
 
@@ -79,7 +79,7 @@ public class HiMockArgMatcherTest extends HiMockBaseTest{
         dummy.withOneIntParameter(10);
 
         mock.verify(() -> {
-            dummy.withObjectParameters( null, mock.match(arg -> arg.length() == 5));
+            dummy.withObjectParameters(null, mock.match(arg -> arg.length() == 5));
             dummy.withOneIntParameter(mock.matchInt(arg -> arg == 10));
         });
     }
@@ -92,7 +92,7 @@ public class HiMockArgMatcherTest extends HiMockBaseTest{
         dummy.withOneIntParameter(10);
 
         mock.verify(() -> {
-            dummy.withObjectParameters( null, mock.match(arg -> arg.length() == 5));
+            dummy.withObjectParameters(null, mock.match(arg -> arg.length() == 5));
         });
         mock.verify(() -> {
             dummy.withOneIntParameter(mock.matchInt(arg -> arg == 10));

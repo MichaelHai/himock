@@ -2,7 +2,6 @@ package cn.michaelwang.himock.verify;
 
 import cn.michaelwang.himock.report.HiMockReporter;
 import cn.michaelwang.himock.report.ReportBuilder;
-import cn.michaelwang.himock.verify.failure.OrderFailure;
 
 import java.util.ArrayList;
 import java.util.List;

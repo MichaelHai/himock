@@ -54,13 +54,13 @@ public class ReportBuilder {
         lineStart();
         sb.append(Utils.removeParenthesesInFunctionName(methodName));
         sb.append("(");
-            for (Object parameter : args) {
-                sb.append(parameter);
-                sb.append(", ");
-            }
-            if (sb.lastIndexOf(",") != -1) {
-                sb.delete(sb.lastIndexOf(","), sb.length());
-            }
+        for (Object parameter : args) {
+            sb.append(parameter);
+            sb.append(", ");
+        }
+        if (sb.lastIndexOf(",") != -1) {
+            sb.delete(sb.lastIndexOf(","), sb.length());
+        }
         sb.append(")");
         lineEnd();
     }

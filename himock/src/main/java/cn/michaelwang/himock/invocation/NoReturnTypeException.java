@@ -1,13 +1,13 @@
 package cn.michaelwang.himock.invocation;
 
 public class NoReturnTypeException extends Exception {
-    private final Invocation invocation;
+    private final InvocationImpl invocation;
 
-    public NoReturnTypeException(Invocation invocation) {
+    public NoReturnTypeException(InvocationImpl invocation) {
         this.invocation = invocation;
     }
 
-    public Invocation getInvocation() {
+    public InvocationImpl getInvocation() {
         return invocation;
     }
 }

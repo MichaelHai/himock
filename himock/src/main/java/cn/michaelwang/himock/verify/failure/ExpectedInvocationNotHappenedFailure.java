@@ -1,15 +1,15 @@
 package cn.michaelwang.himock.verify.failure;
 
-import cn.michaelwang.himock.invocation.Invocation;
+import cn.michaelwang.himock.Invocation;
 import cn.michaelwang.himock.report.ReportBuilder;
 import cn.michaelwang.himock.verify.VerificationFailure;
 
 import java.util.List;
 
 public class ExpectedInvocationNotHappenedFailure implements VerificationFailure {
-    private final List<Invocation> missedInvocations;
+    private final List<? extends Invocation> missedInvocations;
 
-    public ExpectedInvocationNotHappenedFailure(List<Invocation> missedInvocations) {
+    public ExpectedInvocationNotHappenedFailure(List<? extends Invocation> missedInvocations) {
         this.missedInvocations = missedInvocations;
     }
 

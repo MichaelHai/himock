@@ -195,7 +195,7 @@ public class HiMockExceptionTest extends HiMockBaseTest {
     }
 
     @Test(expected = UserUncheckedException.class)
-    public void testUseWillReturnSetNotSuitableUncheckedException()  {
+    public void testUseWillReturnSetNotSuitableUncheckedException() {
         MockedInterface dummy = mock.mock(MockedInterface.class);
 
         mock.expect(() -> {

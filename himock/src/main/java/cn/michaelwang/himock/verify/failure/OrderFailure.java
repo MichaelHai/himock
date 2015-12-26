@@ -1,16 +1,16 @@
 package cn.michaelwang.himock.verify.failure;
 
-import cn.michaelwang.himock.invocation.Invocation;
+import cn.michaelwang.himock.Invocation;
 import cn.michaelwang.himock.report.ReportBuilder;
 import cn.michaelwang.himock.verify.VerificationFailure;
 
 import java.util.List;
 
 public class OrderFailure implements VerificationFailure {
-    private List<Invocation> expected;
-    private List<Invocation> actually;
+    private List<? extends Invocation> expected;
+    private List<? extends Invocation> actually;
 
-    public OrderFailure(List<Invocation> expected, List<Invocation> actually) {
+    public OrderFailure(List<? extends Invocation> expected, List<? extends Invocation> actually) {
         this.expected = expected;
         this.actually = actually;
     }
@@ -21,14 +21,14 @@ public class OrderFailure implements VerificationFailure {
         reportBuilder.buildNextLevel((actualBuilder) -> {
             actualBuilder.appendLine("actual order:");
             actualBuilder.buildNextLevel(invocationListBuilder ->
-                    actually.forEach(invocation ->
-                            invocationListBuilder.appendInvocationMessage(invocation.getMethodName(), invocation.getParameters())));
+                    actually.forEach(actuallyInvocation ->
+                            invocationListBuilder.appendInvocationMessage(actuallyInvocation.getMethodName(), actuallyInvocation.getParameters())));
         });
         reportBuilder.buildNextLevel((expectedBuilder) -> {
             expectedBuilder.appendLine("verified order:");
             expectedBuilder.buildNextLevel(invocationListBuilder ->
-                    expected.forEach(invocation ->
-                            invocationListBuilder.appendInvocationMessage(invocation.getMethodName(), invocation.getParameters())));
+                    expected.forEach(expectedInvocation ->
+                            invocationListBuilder.appendInvocationMessage(expectedInvocation.getMethodName(), expectedInvocation.getParameters())));
         });
         reportBuilder.buildNextLevel((locationBuilder) -> locationBuilder.appendStackTrace(expected.get(0).getInvocationStackTrace()));
     }

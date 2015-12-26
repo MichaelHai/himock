@@ -1,13 +1,16 @@
 package cn.michaelwang.himock.invocation;
 
+import cn.michaelwang.himock.Invocation;
 import cn.michaelwang.himock.NullObjectPlaceHolder;
 import cn.michaelwang.himock.matcher.Matcher;
+import cn.michaelwang.himock.verify.Verifiable;
+import cn.michaelwang.himock.verify.Verification;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-public class Invocation {
+public class InvocationImpl implements Verifiable, Verification {
     private int id;
     private String methodName;
 
@@ -21,17 +24,13 @@ public class Invocation {
 
     private StackTraceElement[] stackTraceElements;
 
-    public Invocation(int id, String methodName, Class<?> returnType, Object[] args, List<Class<Throwable>> exceptionTypes) {
+    public InvocationImpl(int id, String methodName, Class<?> returnType, Object[] args, List<Class<Throwable>> exceptionTypes) {
         this.id = id;
         this.methodName = methodName;
         this.returnType = returnType;
         this.args = args == null ? new Object[0] : args;
         this.stackTraceElements = new Exception().getStackTrace();
         this.exceptionTypes = exceptionTypes;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public String getMethodName() {
@@ -73,6 +72,14 @@ public class Invocation {
 
     public StackTraceElement[] getInvocationStackTrace() {
         return stackTraceElements;
+    }
+
+    @Override
+    public boolean sameMethod(Invocation invocation) {
+        return invocation instanceof InvocationImpl
+                && ((InvocationImpl) invocation).id == this.id
+                && invocation.getMethodName().equals(this.getMethodName());
+
     }
 
     public Class<?> getReturnType() {
@@ -141,8 +148,8 @@ public class Invocation {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Invocation) {
-            Invocation toCompare = (Invocation) obj;
+        if (obj instanceof InvocationImpl) {
+            InvocationImpl toCompare = (InvocationImpl) obj;
             return id == toCompare.id
                     && methodName.equals(toCompare.methodName)
                     && returnType.equals(toCompare.returnType)
@@ -153,7 +160,7 @@ public class Invocation {
     }
 
     @SuppressWarnings("unchecked")
-    private boolean checkArguments(Invocation toCompare) {
+    private boolean checkArguments(InvocationImpl toCompare) {
         int matchIndex = 0;
         for (int i = 0; i < args.length; i++) {
             Object thisArg = args[i];
@@ -197,6 +204,16 @@ public class Invocation {
         return type.isPrimitive() || type.equals(Byte.class) || type.equals(Character.class)
                 || type.equals(Short.class) || type.equals(Integer.class) || type.equals(Long.class)
                 || type.equals(Float.class) || type.equals(Double.class) || type.equals(Boolean.class);
+    }
+
+    @Override
+    public boolean satisfyWith(Verifiable verifiable) {
+        return this.equals(verifiable);
+    }
+
+    @Override
+    public boolean satisfyWith(List<? extends Verifiable> toBeVerified) {
+        return toBeVerified.contains(this) && this.isAllReturned();
     }
 
     interface Answer {
