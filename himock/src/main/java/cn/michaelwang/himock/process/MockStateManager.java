@@ -1,14 +1,13 @@
 package cn.michaelwang.himock.process;
 
+import cn.michaelwang.himock.Invocation;
 import cn.michaelwang.himock.MockProcessManager;
+import cn.michaelwang.himock.verify.*;
 import cn.michaelwang.himock.NullObjectPlaceHolder;
 import cn.michaelwang.himock.invocation.*;
 import cn.michaelwang.himock.matcher.Matcher;
 import cn.michaelwang.himock.process.reporters.*;
 import cn.michaelwang.himock.record.InvocationRecorder;
-import cn.michaelwang.himock.verify.InOrderVerifier;
-import cn.michaelwang.himock.verify.NormalVerifier;
-import cn.michaelwang.himock.verify.Verifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,12 +86,12 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
     }
 
     @Override
-    public Object methodCalled(InvocationImpl invocation) throws Throwable {
+    public Object methodCalled(Invocation invocation) throws Throwable {
         return state.methodCalled(invocation);
     }
 
     private interface MockState {
-        Object methodCalled(InvocationImpl invocation) throws Throwable;
+        Object methodCalled(Invocation invocation) throws Throwable;
 
         <T> void lastCallReturn(T returnValue, Class<?> type);
 
@@ -103,7 +102,7 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 
     private class NormalState implements MockState {
         @Override
-        public Object methodCalled(InvocationImpl invocation) throws Throwable {
+        public Object methodCalled(Invocation invocation) throws Throwable {
             Object[] parameters = invocation.getParameters();
             for (int i = 0; i < parameters.length; i++) {
                 Object param = parameters[i];
@@ -131,13 +130,13 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
     }
 
     private class ExpectState implements MockState {
-        private InvocationImpl lastCall;
+        private Verification lastCall;
 
         @Override
-        public Object methodCalled(InvocationImpl invocation) {
+        public Object methodCalled(Invocation invocation) {
             lastCall = invocationRecorder.expect(invocation);
             verifier.addVerification(lastCall);
-            return new NullInvocation(invocation.getReturnType()).getReturnValue();
+            return new NullInvocation(invocation).getReturnValue();
         }
 
         @Override
@@ -181,11 +180,12 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
     private class VerificationState implements MockState {
 
         @Override
-        public Object methodCalled(InvocationImpl invocation) {
-            invocation.addArgumentMatchers(matchers);
+        public Object methodCalled(Invocation invocation) {
+            Verification verification = new VerificationImpl(invocation);
+            verification.addArgumentMatchers(matchers);
             matchers = new ArrayList<>();
-            verifier.addVerification(invocation);
-            return new NullInvocation(invocation.getReturnType()).getReturnValue();
+            verifier.addVerification(verification);
+            return new NullInvocation(invocation).getReturnValue();
         }
 
         @Override
@@ -212,8 +212,9 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
         }
 
         @Override
-        public Object methodCalled(InvocationImpl invocation) {
-            this.verifier.addVerification(invocation);
+        public Object methodCalled(Invocation invocation) {
+            Verification verification = new VerificationImpl(invocation);
+            this.verifier.addVerification(verification);
             return super.methodCalled(invocation);
         }
     }

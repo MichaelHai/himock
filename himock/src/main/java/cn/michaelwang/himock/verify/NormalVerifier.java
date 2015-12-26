@@ -16,7 +16,7 @@ public class NormalVerifier implements Verifier {
     }
 
     @Override
-    public void verify(List<? extends Verifiable> toBeVerified) {
+    public void verify(List<Invocation> toBeVerified) {
         List<Verification> notSatisfied = verifications.stream()
                 .filter(verification -> !verification.satisfyWith(toBeVerified))
                 .collect(Collectors.toList());
@@ -32,13 +32,13 @@ public class NormalVerifier implements Verifier {
         }
     }
 
-    private List<VerificationFailure> checkParameters(List<? extends Verifiable> toBeVerified, List<Verification> notSatisfied) {
+    private List<VerificationFailure> checkParameters(List<Invocation> toBeVerified, List<Verification> notSatisfied) {
         List<VerificationFailure> failures = new ArrayList<>();
 
         Iterator<Verification> iter = notSatisfied.iterator();
         while (iter.hasNext()) {
             Verification verification = iter.next();
-            Optional<? extends Verifiable> parameterDiff = toBeVerified.stream()
+            Optional<Invocation> parameterDiff = toBeVerified.stream()
                     .filter(invocation -> invocation.sameMethod(verification))
                     .filter(invocation -> !verification.satisfyWith(invocation))
                     .findFirst();

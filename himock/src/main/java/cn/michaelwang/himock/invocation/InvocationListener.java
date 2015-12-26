@@ -1,5 +1,7 @@
 package cn.michaelwang.himock.invocation;
 
+import cn.michaelwang.himock.Invocation;
+
 public interface InvocationListener {
-    Object methodCalled(InvocationImpl invocation) throws Throwable;
+    Object methodCalled(Invocation invocation) throws Throwable;
 }

@@ -1,5 +1,6 @@
 package cn.michaelwang.himock.verify;
 
+import cn.michaelwang.himock.Invocation;
 import cn.michaelwang.himock.verify.failure.OrderFailure;
 
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ public class InOrderVerifier implements Verifier {
     }
 
     @Override
-    public void verify(List<? extends Verifiable> toBeVerified) {
+    public void verify(List<Invocation> toBeVerified) {
         int index = -1;
         Set<Integer> foundIndexes = new HashSet<>();
         for (int i = 0; i < orderedVerifications.size(); i++) {
@@ -32,13 +33,13 @@ public class InOrderVerifier implements Verifier {
                 } while (foundIndexes.contains(outOfOrderIndex));
                 foundIndexes.add(outOfOrderIndex);
 
-                List<Verifiable> actuallyOrder = foundIndexes.stream().sorted().map(toBeVerified::get).collect(Collectors.toList());
+                List<Invocation> actuallyOrder = foundIndexes.stream().sorted().map(toBeVerified::get).collect(Collectors.toList());
                 throw new VerificationFailedReporter(new OrderFailure(orderedVerifications.subList(0, i + 1), actuallyOrder));
             }
         }
     }
 
-    private int findAfter(int index, List<? extends Verifiable> toBeVerified, Verification verification) {
+    private int findAfter(int index, List<Invocation> toBeVerified, Verification verification) {
         for (int i = index + 1; i < toBeVerified.size(); i++) {
             if (verification.satisfyWith(toBeVerified.get(i))) {
                 return i;

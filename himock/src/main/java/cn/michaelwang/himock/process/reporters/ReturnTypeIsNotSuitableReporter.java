@@ -1,14 +1,14 @@
 package cn.michaelwang.himock.process.reporters;
 
-import cn.michaelwang.himock.invocation.InvocationImpl;
+import cn.michaelwang.himock.Invocation;
 import cn.michaelwang.himock.process.MockProcessErrorReporter;
 import cn.michaelwang.himock.report.ReportBuilder;
 
 public class ReturnTypeIsNotSuitableReporter extends MockProcessErrorReporter {
-    private InvocationImpl invocationRecord;
+    private Invocation invocationRecord;
     private Class<?> setAgain;
 
-    public ReturnTypeIsNotSuitableReporter(InvocationImpl invocationRecord, Class<?> setAgain) {
+    public ReturnTypeIsNotSuitableReporter(Invocation invocationRecord, Class<?> setAgain) {
         this.invocationRecord = invocationRecord;
         this.setAgain = setAgain;
     }
