@@ -1,4 +1,4 @@
-package cn.michaelwang.himock.matcher;
+package cn.michaelwang.himock;
 
 @FunctionalInterface
 public interface Matcher<T> {

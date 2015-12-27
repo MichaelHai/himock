@@ -6,7 +6,7 @@ import cn.michaelwang.himock.Verification;
 import cn.michaelwang.himock.invocation.ExceptionTypeIsNotSuitableException;
 import cn.michaelwang.himock.invocation.NoReturnTypeException;
 import cn.michaelwang.himock.invocation.ReturnTypeIsNotSuitableException;
-import cn.michaelwang.himock.matcher.Matcher;
+import cn.michaelwang.himock.Matcher;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -31,43 +31,8 @@ public class VerificationImpl implements Verification {
     }
 
     @Override
-    public boolean satisfyWith(Invocation invocation) {
-        return this.invocation.sameMethod(invocation) && checkArguments(invocation);
-    }
-
-    @Override
-    public boolean satisfyWith(List<Invocation> toBeVerified) {
-        Optional<Invocation> invocation = toBeVerified.stream()
-            .filter(this::satisfyWith)
-            .findFirst();
-        return invocation.isPresent() && isAllReturned();
-    }
-
-    @Override
-    public Object getReturnValue() throws Throwable {
-        if (!returnValue.isEmpty()) {
-            lastAnswer = returnValue.poll();
-        }
-
-        return lastAnswer == null ? nullValue() : lastAnswer.doAnswer();
-    }
-
-    protected Object nullValue() {
-        Class<?> returnType = invocation.getReturnType();
-        if (isPrimitiveOrBoxType(returnType)) {
-            if (returnType.equals(Boolean.TYPE) || returnType.equals(Boolean.class)) {
-                return false;
-            }
-            return 0;
-        }
-
-        return null;
-    }
-
-    protected boolean isPrimitiveOrBoxType(Class<?> type) {
-        return type.isPrimitive() || type.equals(Byte.class) || type.equals(Character.class)
-                || type.equals(Short.class) || type.equals(Integer.class) || type.equals(Long.class)
-                || type.equals(Float.class) || type.equals(Double.class) || type.equals(Boolean.class);
+    public Invocation getVerifiedInvocation() {
+        return invocation;
     }
 
     @Override
@@ -94,9 +59,6 @@ public class VerificationImpl implements Verification {
             throw new ExceptionTypeIsNotSuitableException(invocation, toThrow);
         }
     }
-    public boolean isAllReturned() {
-        return returnValue.isEmpty();
-    }
 
     @Override
     public void answerMore(int times) {
@@ -106,38 +68,37 @@ public class VerificationImpl implements Verification {
     }
 
     @Override
-    public Invocation getInvocation() {
-        return invocation;
+    public Object getReturnValue() throws Throwable {
+        if (!returnValue.isEmpty()) {
+            lastAnswer = returnValue.poll();
+        }
+
+        return lastAnswer == null ? nullValue() : lastAnswer.doAnswer();
     }
 
-    interface Answer {
-        Object doAnswer() throws Throwable;
+    @Override
+    public boolean satisfyWith(Invocation invocation) {
+        return this.invocation.sameMethod(invocation) && checkArguments(invocation);
     }
 
-    class ReturnAnswer implements Answer {
-        private Object returnValue;
-
-        ReturnAnswer(Object returnValue) {
-            this.returnValue = returnValue;
-        }
-
-        @Override
-        public Object doAnswer() {
-            return returnValue;
-        }
+    @Override
+    public boolean satisfyWith(List<Invocation> toBeVerified) {
+        Optional<Invocation> invocation = toBeVerified.stream()
+                .filter(this::satisfyWith)
+                .findFirst();
+        return invocation.isPresent() && isAllReturned();
     }
 
-    class ThrowAnswer implements Answer {
-        private Throwable toThrow;
-
-        ThrowAnswer(Throwable toThrow) {
-            this.toThrow = toThrow;
+    protected Object nullValue() {
+        Class<?> returnType = invocation.getReturnType();
+        if (isPrimitiveOrBoxType(returnType)) {
+            if (returnType.equals(Boolean.TYPE) || returnType.equals(Boolean.class)) {
+                return false;
+            }
+            return 0;
         }
 
-        @Override
-        public Object doAnswer() throws Throwable {
-            throw toThrow;
-        }
+        return null;
     }
 
     private boolean isSuitableType(Class<?> thisType, Class<?> targetType) {
@@ -150,7 +111,8 @@ public class VerificationImpl implements Verification {
             if (thisTypeName.startsWith("java.lang.")) {
                 thisTypeName = thisTypeName.substring("java.lang.".length());
                 if (thisTypeName.toLowerCase().equals(targetTypeName)
-                        || (thisTypeName.equals("Integer") && targetTypeName.equals("int"))) {
+                        || (thisTypeName.equals("Integer") && targetTypeName.equals("int"))
+                        || (thisTypeName.equals("Character") && targetTypeName.equals("char"))) {
                     return true;
                 }
             }
@@ -159,31 +121,10 @@ public class VerificationImpl implements Verification {
         return false;
     }
 
-    @SuppressWarnings("unchecked")
-    private boolean checkArguments(Invocation toCompare) {
-        Object[] args = invocation.getArguments();
-
-        int matchIndex = 0;
-        for (int i = 0; i < args.length; i++) {
-            Object thisArg = args[i];
-            Object toCompareArg = toCompare.getArguments()[i];
-
-            if (toCompareArg == NullObjectPlaceHolder.getInstance()) {
-                if (!isNullValue(thisArg)) {
-                    return false;
-                }
-            } else if (isNullValue(thisArg)) {
-                Matcher<Object> matcher = (Matcher<Object>) matchers.get(matchIndex);
-                matchIndex++;
-                if (!matcher.isMatch(toCompareArg)) {
-                    return false;
-                }
-            } else if (!thisArg.equals(toCompareArg)) {
-                return false;
-            }
-        }
-
-        return true;
+    private boolean isPrimitiveOrBoxType(Class<?> type) {
+        return type.isPrimitive() || type.equals(Byte.class) || type.equals(Character.class)
+                || type.equals(Short.class) || type.equals(Integer.class) || type.equals(Long.class)
+                || type.equals(Float.class) || type.equals(Double.class) || type.equals(Boolean.class);
     }
 
     private boolean isNullValue(Object thisArg) {
@@ -202,4 +143,66 @@ public class VerificationImpl implements Verification {
         return false;
     }
 
+    @SuppressWarnings("unchecked")
+    private boolean checkArguments(Invocation toCompare) {
+        Object[] args = invocation.getArguments();
+
+        int matcherIndex = 0;
+        for (int i = 0; i < args.length; i++) {
+            Object thisArg = args[i];
+            Object toCompareArg = toCompare.getArguments()[i];
+
+            if (toCompareArg == NullObjectPlaceHolder.getInstance()) {
+                if (!isNullValue(thisArg)) {
+                    return false;
+                }
+            } else {
+                if (isNullValue(thisArg)) {
+                    Matcher<Object> matcher = (Matcher<Object>) matchers.get(matcherIndex);
+                    matcherIndex++;
+                    if (!matcher.isMatch(toCompareArg)) {
+                        return false;
+                    }
+                } else if (!thisArg.equals(toCompareArg)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private boolean isAllReturned() {
+        return returnValue.isEmpty();
+    }
+
+    private interface Answer {
+        Object doAnswer() throws Throwable;
+    }
+
+    private class ReturnAnswer implements Answer {
+        private Object returnValue;
+
+        ReturnAnswer(Object returnValue) {
+            this.returnValue = returnValue;
+        }
+
+        @Override
+        public Object doAnswer() {
+            return returnValue;
+        }
+    }
+
+    private class ThrowAnswer implements Answer {
+        private Throwable toThrow;
+
+        ThrowAnswer(Throwable toThrow) {
+            this.toThrow = toThrow;
+        }
+
+        @Override
+        public Object doAnswer() throws Throwable {
+            throw toThrow;
+        }
+    }
 }

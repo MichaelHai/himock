@@ -4,6 +4,7 @@ public interface MockedInterface {
     void doNothing();
 
     int returnInt();
+
     int returnInt(int i);
 
     boolean returnBoolean();

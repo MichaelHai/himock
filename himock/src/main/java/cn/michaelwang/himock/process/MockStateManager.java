@@ -2,13 +2,15 @@ package cn.michaelwang.himock.process;
 
 import cn.michaelwang.himock.Invocation;
 import cn.michaelwang.himock.MockProcessManager;
-import cn.michaelwang.himock.Verification;
-import cn.michaelwang.himock.verify.*;
 import cn.michaelwang.himock.NullObjectPlaceHolder;
-import cn.michaelwang.himock.invocation.*;
-import cn.michaelwang.himock.matcher.Matcher;
+import cn.michaelwang.himock.Verification;
+import cn.michaelwang.himock.invocation.ExceptionTypeIsNotSuitableException;
+import cn.michaelwang.himock.invocation.InvocationListener;
+import cn.michaelwang.himock.invocation.NoReturnTypeException;
+import cn.michaelwang.himock.invocation.ReturnTypeIsNotSuitableException;
+import cn.michaelwang.himock.Matcher;
 import cn.michaelwang.himock.process.reporters.*;
-import cn.michaelwang.himock.record.InvocationRecorder;
+import cn.michaelwang.himock.verify.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,10 +93,18 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
         return state.methodCalled(invocation);
     }
 
+    private Verification newVerification(Invocation invocation) {
+        Verification verification = new VerificationImpl(invocation, matchers);
+        matchers = new ArrayList<>();
+        verifier.addVerification(verification);
+        return verification;
+    }
+
     private interface MockState {
         Object methodCalled(Invocation invocation) throws Throwable;
 
         <T> void lastCallReturn(T returnValue, Class<?> type);
+
         void lastCallThrow(Throwable e);
 
         void lastReturnTimer(int times);
@@ -181,15 +191,7 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
         @Override
         public Object methodCalled(Invocation invocation) {
             newVerification(invocation);
-
             return new NullVerification(invocation).getReturnValue();
-        }
-
-        protected Verification newVerification(Invocation invocation) {
-            Verification verification = new VerificationImpl(invocation, matchers);
-            matchers = new ArrayList<>();
-            verifier.addVerification(verification);
-            return verification;
         }
 
         @Override
@@ -218,7 +220,6 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
         @Override
         public Object methodCalled(Invocation invocation) {
             Verification verification = newVerification(invocation);
-
             this.verifier.addVerification(verification);
             return new NullVerification(invocation).getReturnValue();
         }

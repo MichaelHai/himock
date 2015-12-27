@@ -1,8 +1,8 @@
-package cn.michaelwang.himock.record;
+package cn.michaelwang.himock.process;
 
 import cn.michaelwang.himock.Invocation;
-import cn.michaelwang.himock.verify.NullVerification;
 import cn.michaelwang.himock.Verification;
+import cn.michaelwang.himock.verify.NullVerification;
 import cn.michaelwang.himock.verify.VerificationImpl;
 
 import java.util.ArrayList;
@@ -15,14 +15,13 @@ public class InvocationRecorder {
 
     public Object actuallyCall(Invocation invocation) throws Throwable {
         actuallyInvocations.add(invocation);
-        return expectedInvocations.stream()
-                .filter(verification -> verification.satisfyWith(invocation))
-                .findFirst().orElse(new NullVerification(invocation))
+        return findExistVerification(invocation)
+                .orElse(new NullVerification(invocation))
                 .getReturnValue();
     }
 
     public Verification expect(Invocation invocation) {
-        Optional<Verification> exist = expectedInvocations.stream().filter(verification -> verification.satisfyWith(invocation)).findFirst();
+        Optional<Verification> exist = findExistVerification(invocation);
 
         if (exist.isPresent()) {
             return exist.get();
@@ -31,6 +30,12 @@ public class InvocationRecorder {
             expectedInvocations.add(verification);
             return verification;
         }
+    }
+
+    private Optional<Verification> findExistVerification(Invocation invocation) {
+        return expectedInvocations.stream()
+                .filter(verification -> verification.satisfyWith(invocation))
+                .findFirst();
     }
 
     public List<Invocation> getActuallyInvocations() {
