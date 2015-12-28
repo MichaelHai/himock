@@ -30,7 +30,7 @@ public class InvocationHandlerWithId implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         List<Class<Throwable>> typeChecked = getExceptions(method);
-        Invocation invocation = new Invocation(id, getInvocationName(method), method.getReturnType(), args, typeChecked);
+        InvocationImpl invocation = new InvocationImpl(id, getInvocationName(method), method.getParameterTypes(), args, method.getReturnType(), typeChecked);
         return invocationListener.methodCalled(invocation);
     }
 

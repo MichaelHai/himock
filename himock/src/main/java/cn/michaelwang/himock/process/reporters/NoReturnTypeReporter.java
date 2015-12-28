@@ -1,6 +1,6 @@
 package cn.michaelwang.himock.process.reporters;
 
-import cn.michaelwang.himock.invocation.Invocation;
+import cn.michaelwang.himock.Invocation;
 import cn.michaelwang.himock.process.MockProcessErrorReporter;
 import cn.michaelwang.himock.report.ReportBuilder;
 

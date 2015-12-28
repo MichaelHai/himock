@@ -1,11 +1,10 @@
 package cn.michaelwang.himock;
 
 import cn.michaelwang.himock.mockup.MockFactoryImpl;
+import cn.michaelwang.himock.process.InvocationRecorder;
 import cn.michaelwang.himock.process.MockFactory;
 import cn.michaelwang.himock.process.MockStateManager;
-import cn.michaelwang.himock.record.InvocationRecorder;
 import cn.michaelwang.himock.report.HiMockReporter;
-import cn.michaelwang.himock.verify.NormalVerifier;
 
 public class HiMock {
     private MockProcessManager mockProcessManager;
@@ -92,6 +91,57 @@ public class HiMock {
     public HiMock times(int times) {
         mockProcessManager.lastReturnTimer(times);
         return this;
+    }
+
+    public <T> T match(Matcher<T> matcher) {
+        mockProcessManager.addMatcher(matcher);
+        return null;
+    }
+
+    public boolean matchBoolean(Matcher<Boolean> matcher) {
+        mockProcessManager.addMatcher(matcher);
+        return false;
+    }
+
+    @SuppressWarnings("unused") // simple function not tested
+    public byte matchByte(Matcher<Byte> matcher) {
+        mockProcessManager.addMatcher(matcher);
+        return 0;
+    }
+
+    @SuppressWarnings("unused") // simple function not tested
+    public char matchChar(Matcher<Character> matcher) {
+        mockProcessManager.addMatcher(matcher);
+        return 0;
+    }
+
+    @SuppressWarnings("unused") // simple function not tested
+    public short matchShort(Matcher<Short> matcher) {
+        mockProcessManager.addMatcher(matcher);
+        return 0;
+    }
+
+    public int matchInt(Matcher<Integer> matcher) {
+        mockProcessManager.addMatcher(matcher);
+        return 0;
+    }
+
+    @SuppressWarnings("unused") // simple function not tested
+    public long matchLong(Matcher<Long> matcher) {
+        mockProcessManager.addMatcher(matcher);
+        return 0;
+    }
+
+    @SuppressWarnings("unused") // simple function not tested
+    public float matchFloat(Matcher<Float> matcher) {
+        mockProcessManager.addMatcher(matcher);
+        return 0;
+    }
+
+    @SuppressWarnings("unused") // simple function not tested
+    public double matchDouble(Matcher<Double> matcher) {
+        mockProcessManager.addMatcher(matcher);
+        return 0;
     }
 
     public void verify() {

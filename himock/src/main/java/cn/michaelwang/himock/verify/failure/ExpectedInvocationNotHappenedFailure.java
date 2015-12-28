@@ -1,6 +1,6 @@
 package cn.michaelwang.himock.verify.failure;
 
-import cn.michaelwang.himock.invocation.Invocation;
+import cn.michaelwang.himock.Invocation;
 import cn.michaelwang.himock.report.ReportBuilder;
 import cn.michaelwang.himock.verify.VerificationFailure;
 
@@ -21,7 +21,7 @@ public class ExpectedInvocationNotHappenedFailure implements VerificationFailure
                 (levelBuilder) -> missedInvocations.forEach(
                         invocation -> levelBuilder.appendInvocationDetail(
                                 invocation.getMethodName(),
-                                invocation.getParameters(),
+                                invocation.getArguments(),
                                 invocation.getInvocationStackTrace()))
         );
     }

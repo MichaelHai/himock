@@ -1,6 +1,8 @@
 package cn.michaelwang.himock.invocation;
 
-public class ReturnTypeIsNotSuitableException extends Exception {
+import cn.michaelwang.himock.Invocation;
+
+public class ReturnTypeIsNotSuitableException extends RuntimeException {
     private final Invocation invocation;
     private final Class<?> toSetType;
 

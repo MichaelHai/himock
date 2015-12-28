@@ -1,52 +1,56 @@
 package cn.michaelwang.himock.verify;
 
-import cn.michaelwang.himock.invocation.Invocation;
+import cn.michaelwang.himock.Invocation;
+import cn.michaelwang.himock.verify.failure.ArgumentsNotMatchFailure;
 import cn.michaelwang.himock.verify.failure.ExpectedInvocationNotHappenedFailure;
-import cn.michaelwang.himock.verify.failure.ParametersNotMatchFailure;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class NormalVerifier implements Verifier {
-    private Set<Invocation> verificationInvocations = new HashSet<>();
+    private Set<Verification> verifications = new HashSet<>();
 
     @Override
-    public void addVerification(Invocation invocation) {
-        verificationInvocations.add(invocation);
+    public void addVerification(Verification verification) {
+        verifications.add(verification);
     }
 
     @Override
-    public void verify(List<Invocation> actuallyInvocations) {
-        List<VerificationFailure> failures = new ArrayList<>();
-
-        List<Invocation> notCalled = verificationInvocations.stream()
-                .filter(invocationRecord ->
-                        !actuallyInvocations.contains(invocationRecord)
-                                || !invocationRecord.isAllReturned())
+    public void verify(List<Invocation> toBeVerified) {
+        List<Verification> notSatisfied = verifications.stream()
+                .filter(verification -> !toBeVerified.stream().anyMatch(verification::satisfyWith))
                 .collect(Collectors.toList());
 
-        Iterator<Invocation> iter = notCalled.iterator();
-
-        while (iter.hasNext()) {
-            Invocation invocationRecord = iter.next();
-            Optional<Invocation> parameterDiff = actuallyInvocations.stream()
-                    .filter(actualInvocation -> !actualInvocation.equals(invocationRecord))
-                    .filter(actualInvocation -> actualInvocation.getId() == invocationRecord.getId())
-                    .filter(actualInvocation -> actualInvocation.getMethodName().equals(invocationRecord.getMethodName()))
-                    .findFirst();
-
-            if (parameterDiff.isPresent()) {
-                failures.add(new ParametersNotMatchFailure(parameterDiff.get(), invocationRecord));
-                iter.remove();
-            }
-        }
-
-        if (!notCalled.isEmpty()) {
-            failures.add(new ExpectedInvocationNotHappenedFailure(notCalled));
-        }
+        List<VerificationFailure> failures = generateFailures(toBeVerified, notSatisfied);
 
         if (!failures.isEmpty()) {
             throw new VerificationFailedReporter(failures);
         }
+    }
+
+    private List<VerificationFailure> generateFailures(List<Invocation> toBeVerified, List<Verification> notSatisfied) {
+        List<VerificationFailure> failures = new ArrayList<>();
+
+        Iterator<Verification> iter = notSatisfied.iterator();
+        while (iter.hasNext()) {
+            Verification verification = iter.next();
+            toBeVerified.stream()
+                    .filter(verification.getVerifiedInvocation()::sameMethod)
+                    .filter(invocation -> !verification.satisfyWith(invocation))
+                    .findFirst()
+                    .ifPresent((invocation) -> {
+                        failures.add(new ArgumentsNotMatchFailure(invocation, verification.getVerifiedInvocation()));
+                        iter.remove();
+                    });
+        }
+
+        if (!notSatisfied.isEmpty()) {
+            List<Invocation> missingInvocations = notSatisfied.stream()
+                    .map(Verification::getVerifiedInvocation)
+                    .collect(Collectors.toList());
+            failures.add(new ExpectedInvocationNotHappenedFailure(missingInvocations));
+        }
+
+        return failures;
     }
 }

@@ -1,5 +1,7 @@
 package cn.michaelwang.himock.invocation;
 
+import cn.michaelwang.himock.Invocation;
+
 public class ExceptionTypeIsNotSuitableException extends RuntimeException {
     private final Invocation invocation;
     private final Throwable toThrow;

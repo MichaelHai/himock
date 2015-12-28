@@ -8,4 +8,10 @@ public class Utils {
             return functionName;
         }
     }
+
+    public static boolean isPrimitiveOrBoxType(Class<?> type) {
+        return type.isPrimitive() || type.equals(Byte.class) || type.equals(Character.class)
+                || type.equals(Short.class) || type.equals(Integer.class) || type.equals(Long.class)
+                || type.equals(Float.class) || type.equals(Double.class) || type.equals(Boolean.class);
+    }
 }

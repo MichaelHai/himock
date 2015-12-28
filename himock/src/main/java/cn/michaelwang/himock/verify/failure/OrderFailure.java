@@ -1,6 +1,6 @@
 package cn.michaelwang.himock.verify.failure;
 
-import cn.michaelwang.himock.invocation.Invocation;
+import cn.michaelwang.himock.Invocation;
 import cn.michaelwang.himock.report.ReportBuilder;
 import cn.michaelwang.himock.verify.VerificationFailure;
 
@@ -21,14 +21,14 @@ public class OrderFailure implements VerificationFailure {
         reportBuilder.buildNextLevel((actualBuilder) -> {
             actualBuilder.appendLine("actual order:");
             actualBuilder.buildNextLevel(invocationListBuilder ->
-                    actually.forEach(invocation ->
-                            invocationListBuilder.appendInvocationMessage(invocation.getMethodName(), invocation.getParameters())));
+                    actually.forEach(actuallyInvocation ->
+                            invocationListBuilder.appendInvocationMessage(actuallyInvocation.getMethodName(), actuallyInvocation.getArguments())));
         });
         reportBuilder.buildNextLevel((expectedBuilder) -> {
             expectedBuilder.appendLine("verified order:");
             expectedBuilder.buildNextLevel(invocationListBuilder ->
-                    expected.forEach(invocation ->
-                            invocationListBuilder.appendInvocationMessage(invocation.getMethodName(), invocation.getParameters())));
+                    expected.forEach(expectedInvocation ->
+                            invocationListBuilder.appendInvocationMessage(expectedInvocation.getMethodName(), expectedInvocation.getArguments())));
         });
         reportBuilder.buildNextLevel((locationBuilder) -> locationBuilder.appendStackTrace(expected.get(0).getInvocationStackTrace()));
     }
