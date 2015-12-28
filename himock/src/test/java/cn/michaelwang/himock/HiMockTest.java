@@ -1,6 +1,8 @@
 package cn.michaelwang.himock;
 
+import cn.michaelwang.himock.report.HiMockReporter;
 import cn.michaelwang.himock.verify.VerificationFailedReporter;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
@@ -123,6 +125,29 @@ public class HiMockTest extends HiMockBaseTest {
             dummy.returnInt();
         });
     }
+
+    @Test(expected = HiMockReporter.class)
+    public void testNotCalledButVerifiedShouldFail() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        mock.verify(() -> {
+            dummy.returnInt();
+        });
+    }
+
+    @Ignore
+    @Test(expected = HiMockReporter.class)
+    public void testCalledOnceButVerifiedTwiceShouldFail() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        dummy.returnInt();
+
+        mock.verify(() -> {
+            dummy.returnInt();
+            dummy.returnInt();
+        });
+    }
+
 
     @Test
     public void testTwoMockObjectOfTheSameInterfaceBothExpectedAndCalledShouldPass() {

@@ -1,9 +1,9 @@
-package cn.michaelwang.himock.verify;
+package cn.michaelwang.himock.process;
 
 import cn.michaelwang.himock.Invocation;
 
-public class NullVerification extends VerificationImpl {
-    public NullVerification(Invocation invocation) {
+public class NullExpectation extends ExpectationImpl {
+    public NullExpectation(Invocation invocation) {
         super(invocation);
     }
 

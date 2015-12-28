@@ -1,7 +1,6 @@
 package cn.michaelwang.himock.verify;
 
 import cn.michaelwang.himock.Invocation;
-import cn.michaelwang.himock.Verification;
 import cn.michaelwang.himock.verify.failure.OrderFailure;
 
 import java.util.ArrayList;

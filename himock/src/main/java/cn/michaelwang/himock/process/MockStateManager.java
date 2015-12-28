@@ -1,16 +1,18 @@
 package cn.michaelwang.himock.process;
 
 import cn.michaelwang.himock.Invocation;
+import cn.michaelwang.himock.Matcher;
 import cn.michaelwang.himock.MockProcessManager;
 import cn.michaelwang.himock.NullObjectPlaceHolder;
-import cn.michaelwang.himock.Verification;
 import cn.michaelwang.himock.invocation.ExceptionTypeIsNotSuitableException;
 import cn.michaelwang.himock.invocation.InvocationListener;
 import cn.michaelwang.himock.invocation.NoReturnTypeException;
 import cn.michaelwang.himock.invocation.ReturnTypeIsNotSuitableException;
-import cn.michaelwang.himock.Matcher;
 import cn.michaelwang.himock.process.reporters.*;
-import cn.michaelwang.himock.verify.*;
+import cn.michaelwang.himock.verify.InOrderVerifier;
+import cn.michaelwang.himock.verify.NormalVerifier;
+import cn.michaelwang.himock.verify.Verification;
+import cn.michaelwang.himock.verify.Verifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -140,13 +142,13 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
     }
 
     private class ExpectState implements MockState {
-        private Verification lastCall;
+        private Expectation lastCall;
 
         @Override
         public Object methodCalled(Invocation invocation) {
             lastCall = invocationRecorder.expect(invocation);
-            verifier.addVerification(lastCall);
-            return new NullVerification(invocation).getReturnValue();
+            verifier.addVerification(lastCall.generateVerification());
+            return new NullExpectation(invocation).getReturnValue();
         }
 
         @Override
@@ -191,7 +193,7 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
         @Override
         public Object methodCalled(Invocation invocation) {
             newVerification(invocation);
-            return new NullVerification(invocation).getReturnValue();
+            return new NullExpectation(invocation).getReturnValue();
         }
 
         @Override
@@ -221,7 +223,7 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
         public Object methodCalled(Invocation invocation) {
             Verification verification = newVerification(invocation);
             this.verifier.addVerification(verification);
-            return new NullVerification(invocation).getReturnValue();
+            return new NullExpectation(invocation).getReturnValue();
         }
     }
 }

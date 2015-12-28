@@ -1,40 +1,37 @@
 package cn.michaelwang.himock.process;
 
 import cn.michaelwang.himock.Invocation;
-import cn.michaelwang.himock.Verification;
-import cn.michaelwang.himock.verify.NullVerification;
-import cn.michaelwang.himock.verify.VerificationImpl;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class InvocationRecorder {
-    private List<Verification> expectedInvocations = new ArrayList<>();
+    private List<Expectation> expectedInvocations = new ArrayList<>();
     private List<Invocation> actuallyInvocations = new ArrayList<>();
 
     public Object actuallyCall(Invocation invocation) throws Throwable {
         actuallyInvocations.add(invocation);
-        return findExistVerification(invocation)
-                .orElse(new NullVerification(invocation))
+        return findExistExpectation(invocation)
+                .orElse(new NullExpectation(invocation))
                 .getReturnValue();
     }
 
-    public Verification expect(Invocation invocation) {
-        Optional<Verification> exist = findExistVerification(invocation);
+    public Expectation expect(Invocation invocation) {
+        Optional<Expectation> exist = findExistExpectation(invocation);
 
         if (exist.isPresent()) {
             return exist.get();
         } else {
-            Verification verification = new VerificationImpl(invocation);
-            expectedInvocations.add(verification);
-            return verification;
+            Expectation expectation = new ExpectationImpl(invocation);
+            expectedInvocations.add(expectation);
+            return expectation;
         }
     }
 
-    private Optional<Verification> findExistVerification(Invocation invocation) {
+    private Optional<Expectation> findExistExpectation(Invocation invocation) {
         return expectedInvocations.stream()
-                .filter(verification -> verification.satisfyWith(invocation))
+                .filter(expectation -> expectation.match(invocation))
                 .findFirst();
     }
 

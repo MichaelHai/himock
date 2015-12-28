@@ -1,7 +1,6 @@
 package cn.michaelwang.himock.verify;
 
 import cn.michaelwang.himock.Invocation;
-import cn.michaelwang.himock.Verification;
 import cn.michaelwang.himock.verify.failure.ArgumentsNotMatchFailure;
 import cn.michaelwang.himock.verify.failure.ExpectedInvocationNotHappenedFailure;
 
@@ -19,7 +18,7 @@ public class NormalVerifier implements Verifier {
     @Override
     public void verify(List<Invocation> toBeVerified) {
         List<Verification> notSatisfied = verifications.stream()
-                .filter(verification -> !verification.satisfyWith(toBeVerified))
+                .filter(verification -> !toBeVerified.stream().anyMatch(verification::satisfyWith))
                 .collect(Collectors.toList());
 
         List<VerificationFailure> failures = generateFailures(toBeVerified, notSatisfied);
