@@ -1,5 +1,6 @@
 package cn.michaelwang.himock;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
@@ -125,5 +126,23 @@ public class HiMockArgMatcherTest extends HiMockBaseTest {
 
         assertEquals(10, dummy.withStringArgument("hello"));
         assertEquals(10, dummy.withStringArgument("world"));
+    }
+
+    @Ignore
+    @Test
+    public void testMatcherDescription() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        reportTest(() -> {
+            mock.verify(() -> {
+                dummy.withOneIntArgument(mock.matchInt(arg -> arg == 10));
+            });
+        }, "Verification failed:\n" +
+                "\texpected invocation not happened:\n" +
+                "\t\tcn.michaelwang.himock.MockedInterface.withOneIntArgument('matcher')\n" +
+                "\t\t-> at cn.michaelwang.himock.HiMockArgMatcherTest.lambda$null$?(HiMockArgMatcherTest.java:?)\n" +
+                "\t\t   at cn.michaelwang.himock.HiMockArgMatcherTest.lambda$testMatcherDescription$?(HiMockArgMatcherTest.java:?)\n" +
+                "\t\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n" +
+                "\t\t   at cn.michaelwang.himock.HiMockArgMatcherTest.testMatcherDescription(HiMockArgMatcherTest.java:?)\n");
     }
 }
