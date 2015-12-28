@@ -17,7 +17,7 @@ public interface MockedInterface {
 
     void withObjectArguments(String o1, String o2);
 
-    void withStringArgument(String string);
+    int withStringArgument(String string);
 
     void withBooleanParameter(boolean b);
 

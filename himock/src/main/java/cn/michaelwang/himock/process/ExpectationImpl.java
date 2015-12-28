@@ -1,22 +1,27 @@
 package cn.michaelwang.himock.process;
 
 import cn.michaelwang.himock.Invocation;
+import cn.michaelwang.himock.Matcher;
 import cn.michaelwang.himock.invocation.ExceptionTypeIsNotSuitableException;
 import cn.michaelwang.himock.invocation.NoReturnTypeException;
 import cn.michaelwang.himock.invocation.ReturnTypeIsNotSuitableException;
 import cn.michaelwang.himock.utils.Utils;
 import cn.michaelwang.himock.verify.Verification;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
-public class ExpectationImpl implements Verification, Expectation {
-    private Invocation invocation;
-
+public class ExpectationImpl implements Expectation, Verification {
     private Queue<Answer> returnValue = new LinkedList<>();
     private Answer lastAnswer;
 
-    public ExpectationImpl(Invocation invocation) {
+    private Invocation invocation;
+    private Matchers matchers;
+
+    public ExpectationImpl(Invocation invocation, List<Matcher<?>> matchers) {
         this.invocation = invocation;
+        this.matchers = new Matchers(matchers, invocation.getArguments());
     }
 
     @Override
@@ -27,7 +32,7 @@ public class ExpectationImpl implements Verification, Expectation {
     @Override
     public boolean match(Invocation invocation) {
         return this.invocation.sameMethod(invocation)
-                && Arrays.equals(this.invocation.getArguments(), invocation.getArguments());
+                && matchers.match(invocation.getArguments());
     }
 
     @Override
@@ -77,8 +82,15 @@ public class ExpectationImpl implements Verification, Expectation {
     }
 
     @Override
+    public boolean equals(Invocation invocation, List<Matcher<?>> matchers) {
+        return this.invocation.sameMethod(invocation)
+                && this.matchers.getMatchers().equals(matchers);
+    }
+
+    @Override
     public boolean satisfyWith(Invocation invocation) {
-        return this.match(invocation)
+        return this.invocation.sameMethod(invocation)
+                && matchers.match(invocation.getArguments())
                 && isAllReturned();
     }
 

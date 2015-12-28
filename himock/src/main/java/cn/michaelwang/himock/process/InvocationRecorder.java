@@ -1,6 +1,7 @@
 package cn.michaelwang.himock.process;
 
 import cn.michaelwang.himock.Invocation;
+import cn.michaelwang.himock.Matcher;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,27 +13,25 @@ public class InvocationRecorder {
 
     public Object actuallyCall(Invocation invocation) throws Throwable {
         actuallyInvocations.add(invocation);
-        return findExistExpectation(invocation)
+        return expectedInvocations.stream()
+                .filter(expectation -> expectation.match(invocation))
+                .findFirst()
                 .orElse(new NullExpectation(invocation))
                 .getReturnValue();
     }
 
-    public Expectation expect(Invocation invocation) {
-        Optional<Expectation> exist = findExistExpectation(invocation);
+    public Expectation expect(Invocation invocation, List<Matcher<?>> matchers) {
+        Optional<Expectation> exist = expectedInvocations.stream()
+                .filter(expectation -> expectation.equals(invocation, matchers))
+                .findFirst();
 
         if (exist.isPresent()) {
             return exist.get();
         } else {
-            Expectation expectation = new ExpectationImpl(invocation);
+            Expectation expectation = new ExpectationImpl(invocation, matchers);
             expectedInvocations.add(expectation);
             return expectation;
         }
-    }
-
-    private Optional<Expectation> findExistExpectation(Invocation invocation) {
-        return expectedInvocations.stream()
-                .filter(expectation -> expectation.match(invocation))
-                .findFirst();
     }
 
     public List<Invocation> getActuallyInvocations() {

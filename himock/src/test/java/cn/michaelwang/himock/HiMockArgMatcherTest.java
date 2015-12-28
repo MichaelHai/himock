@@ -2,6 +2,8 @@ package cn.michaelwang.himock;
 
 import org.junit.Test;
 
+import static junit.framework.Assert.assertEquals;
+
 @SuppressWarnings("CodeBlock2Expr")
 public class HiMockArgMatcherTest extends HiMockBaseTest {
     @Test
@@ -110,5 +112,18 @@ public class HiMockArgMatcherTest extends HiMockBaseTest {
             dummy.withObjectArguments(null, mock.match(arg -> arg.length() == 5));
             dummy.withOneIntArgument(mock.matchInt(arg -> arg == 10));
         });
+    }
+
+    @Test
+    public void testMatcherInExpectation() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        mock.expect(() -> {
+            dummy.withStringArgument(mock.match(str -> str.length() == 5));
+            mock.willReturn(10);
+        });
+
+        assertEquals(10, dummy.withStringArgument("hello"));
+        assertEquals(10, dummy.withStringArgument("world"));
     }
 }

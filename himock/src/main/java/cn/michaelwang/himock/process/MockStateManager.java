@@ -146,7 +146,8 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 
         @Override
         public Object methodCalled(Invocation invocation) {
-            lastCall = invocationRecorder.expect(invocation);
+            lastCall = invocationRecorder.expect(invocation, matchers);
+            matchers = new ArrayList<>();
             verifier.addVerification(lastCall.generateVerification());
             return new NullExpectation(invocation).getReturnValue();
         }

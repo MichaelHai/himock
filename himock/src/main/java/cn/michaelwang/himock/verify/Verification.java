@@ -6,8 +6,4 @@ public interface Verification {
     Invocation getVerifiedInvocation();
 
     boolean satisfyWith(Invocation invocation);
-
-    interface Answer {
-        Object doAnswer() throws Throwable;
-    }
 }
