@@ -1,5 +1,6 @@
 package cn.michaelwang.himock;
 
+import cn.michaelwang.himock.report.HiMockReporter;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -126,6 +127,30 @@ public class HiMockArgMatcherTest extends HiMockBaseTest {
 
         assertEquals(10, dummy.withStringArgument("hello"));
         assertEquals(10, dummy.withStringArgument("world"));
+    }
+
+    @Test
+    @Ignore
+    public void testCallWithNullValueAndVerifiedWithoutMatcher() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        dummy.withBooleanParameter(false);
+
+        mock.verify(() -> {
+            dummy.withBooleanParameter(false);
+        });
+    }
+
+    @Test(expected = HiMockReporter.class)
+    @Ignore
+    public void testCallWithNullValueAndVerifiedWithMatcherThatNotMatchesNull() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        dummy.withStringArgument(null);
+
+        mock.verify(() -> {
+            dummy.withStringArgument(mock.match(str -> str.length() == 0));
+        });
     }
 
     @Ignore
