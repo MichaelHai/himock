@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>easymock</artifactId>
-    
+
     <dependencies>
         <dependency>
             <groupId>org.easymock</groupId>

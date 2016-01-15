@@ -1,17 +1,21 @@
 package org.easymock.samples;
 
-import cn.michaelwang.himock.HiMock;
+import cn.michaelwang.himock.HiMockRunner;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import static cn.michaelwang.himock.HiMock.mock;
+import static cn.michaelwang.himock.HiMock.verify;
+
+@RunWith(HiMockRunner.class)
 public class BasicClassMockHiMockTest {
     private Printer printer;
     private Document document;
-    private HiMock mock = new HiMock();
 
     @Before
     public void setUp() {
-        printer = mock.mock(Printer.class);
+        printer = mock(Printer.class);
         document = new Document(printer);
     }
 
@@ -20,7 +24,7 @@ public class BasicClassMockHiMockTest {
         document.setContent("Hello World");
         document.print();
 
-        mock.verify(() -> printer.print("Hello World"));
+        verify(() -> printer.print("Hello World"));
     }
 
     @Test
@@ -28,6 +32,6 @@ public class BasicClassMockHiMockTest {
         document.setContent("");
         document.print();
 
-        mock.verify(() -> printer.print(""));
+        verify(() -> printer.print(""));
     }
 }

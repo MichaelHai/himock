@@ -4,125 +4,126 @@ import cn.michaelwang.himock.report.HiMockReporter;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import static cn.michaelwang.himock.HiMock.*;
 import static junit.framework.Assert.assertEquals;
 
 @SuppressWarnings("CodeBlock2Expr")
 public class HiMockArgMatcherTest extends HiMockBaseTest {
     @Test
     public void testIntArgumentCanBeMatchedInVerification() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
         dummy.withOneIntArgument(10);
 
-        mock.verify(() -> {
-            dummy.withOneIntArgument(mock.matchInt(arg -> arg == 10));
+        verify(() -> {
+            dummy.withOneIntArgument(matchInt(arg -> arg == 10));
         });
     }
 
     @Test
     public void testBooleanArgumentCanBeMatchedInVerification() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
         dummy.withBooleanParameter(true);
 
-        mock.verify(() -> {
+        verify(() -> {
             //noinspection PointlessBooleanExpression
-            dummy.withBooleanParameter(mock.matchBoolean(arg -> arg == true));
+            dummy.withBooleanParameter(matchBoolean(arg -> arg == true));
         });
     }
 
     @Test
     public void testObjectArgumentCanBeMatchedInVerification() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
         dummy.withStringArgument("hello");
 
-        mock.verify(() -> {
-            dummy.withStringArgument(mock.match(arg -> arg.length() == 5));
+        verify(() -> {
+            dummy.withStringArgument(match(arg -> arg.length() == 5));
         });
     }
 
     @Test
     public void testMixMatchWithObject() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
         dummy.withObjectArguments("hello", "world");
 
-        mock.verify(() -> {
-            dummy.withObjectArguments(mock.match(arg -> arg.length() == 5), "world");
+        verify(() -> {
+            dummy.withObjectArguments(match(arg -> arg.length() == 5), "world");
         });
     }
 
     @Test
     public void testMixMatchWithNullObjectAfterMatcher() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
         dummy.withObjectArguments("hello", null);
 
-        mock.verify(() -> {
-            dummy.withObjectArguments(mock.match(arg -> arg.length() == 5), null);
+        verify(() -> {
+            dummy.withObjectArguments(match(arg -> arg.length() == 5), null);
         });
     }
 
     @Test
     public void testMixMatchWithNullObjectBeforeMatcher() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
         dummy.withObjectArguments(null, "world");
 
-        mock.verify(() -> {
-            dummy.withObjectArguments(null, mock.match(arg -> arg.length() == 5));
+        verify(() -> {
+            dummy.withObjectArguments(null, match(arg -> arg.length() == 5));
         });
     }
 
     @Test
     public void testMatcherForTwoFunctions() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
         dummy.withObjectArguments(null, "world");
         dummy.withOneIntArgument(10);
 
-        mock.verify(() -> {
-            dummy.withObjectArguments(null, mock.match(arg -> arg.length() == 5));
-            dummy.withOneIntArgument(mock.matchInt(arg -> arg == 10));
+        verify(() -> {
+            dummy.withObjectArguments(null, match(arg -> arg.length() == 5));
+            dummy.withOneIntArgument(matchInt(arg -> arg == 10));
         });
     }
 
     @Test
     public void testMatcherInTwoVerifyBlock() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
         dummy.withObjectArguments(null, "world");
         dummy.withOneIntArgument(10);
 
-        mock.verify(() -> {
-            dummy.withObjectArguments(null, mock.match(arg -> arg.length() == 5));
+        verify(() -> {
+            dummy.withObjectArguments(null, match(arg -> arg.length() == 5));
         });
-        mock.verify(() -> {
-            dummy.withOneIntArgument(mock.matchInt(arg -> arg == 10));
+        verify(() -> {
+            dummy.withOneIntArgument(matchInt(arg -> arg == 10));
         });
     }
 
     @Test
     public void testMatcherWithOrderedVerification() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
         dummy.withObjectArguments(null, "world");
         dummy.withOneIntArgument(10);
 
-        mock.verifyInOrder(() -> {
-            dummy.withObjectArguments(null, mock.match(arg -> arg.length() == 5));
-            dummy.withOneIntArgument(mock.matchInt(arg -> arg == 10));
+        verifyInOrder(() -> {
+            dummy.withObjectArguments(null, match(arg -> arg.length() == 5));
+            dummy.withOneIntArgument(matchInt(arg -> arg == 10));
         });
     }
 
     @Test
     public void testMatcherInExpectation() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
-        mock.expect(() -> {
-            dummy.withStringArgument(mock.match(str -> str.length() == 5));
-            mock.willReturn(10);
+        expect(() -> {
+            dummy.withStringArgument(match(str -> str.length() == 5));
+            willReturn(10);
         });
 
         assertEquals(10, dummy.withStringArgument("hello"));
@@ -132,11 +133,11 @@ public class HiMockArgMatcherTest extends HiMockBaseTest {
     @Test
     @Ignore
     public void testCallWithNullValueAndVerifiedWithoutMatcher() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
         dummy.withBooleanParameter(false);
 
-        mock.verify(() -> {
+        verify(() -> {
             dummy.withBooleanParameter(false);
         });
     }
@@ -144,23 +145,23 @@ public class HiMockArgMatcherTest extends HiMockBaseTest {
     @Test(expected = HiMockReporter.class)
     @Ignore
     public void testCallWithNullValueAndVerifiedWithMatcherThatNotMatchesNull() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
         dummy.withStringArgument(null);
 
-        mock.verify(() -> {
-            dummy.withStringArgument(mock.match(str -> str.length() == 0));
+        verify(() -> {
+            dummy.withStringArgument(match(str -> str.length() == 0));
         });
     }
 
     @Ignore
     @Test
     public void testMatcherDescription() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
         reportTest(() -> {
-            mock.verify(() -> {
-                dummy.withOneIntArgument(mock.matchInt(arg -> arg == 10));
+            verify(() -> {
+                dummy.withOneIntArgument(matchInt(arg -> arg == 10));
             });
         }, "Verification failed:\n" +
                 "\texpected invocation not happened:\n" +

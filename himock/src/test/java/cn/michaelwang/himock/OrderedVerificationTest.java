@@ -3,17 +3,20 @@ package cn.michaelwang.himock;
 import cn.michaelwang.himock.report.HiMockReporter;
 import org.junit.Test;
 
+import static cn.michaelwang.himock.HiMock.mock;
+import static cn.michaelwang.himock.HiMock.verifyInOrder;
+
 @SuppressWarnings("CodeBlock2Expr")
 public class OrderedVerificationTest extends HiMockBaseTest {
     @Test
     public void testOrderedVerification() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
         dummy.returnInt();
         dummy.doNothing();
         dummy.returnInt();
 
-        mock.verifyInOrder(() -> {
+        verifyInOrder(() -> {
             dummy.returnInt();
             dummy.doNothing();
             dummy.returnInt();
@@ -22,14 +25,14 @@ public class OrderedVerificationTest extends HiMockBaseTest {
 
     @Test
     public void testNotTheSameOrderShouldFail() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
         dummy.returnInt();
         dummy.doNothing();
         dummy.returnInt();
 
         reportTest(() -> {
-            mock.verifyInOrder(() -> {
+            verifyInOrder(() -> {
                 dummy.returnInt();
                 dummy.returnInt();
                 dummy.doNothing();
@@ -53,14 +56,14 @@ public class OrderedVerificationTest extends HiMockBaseTest {
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
     @Test
     public void testOrderWithOtherCallsCanBeVerified() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
         dummy.returnInt();
         dummy.returnObject();
         dummy.returnBoolean();
         dummy.returnUserException();
 
-        mock.verifyInOrder(() -> {
+        verifyInOrder(() -> {
             dummy.returnInt();
             dummy.returnBoolean();
         });
@@ -69,7 +72,7 @@ public class OrderedVerificationTest extends HiMockBaseTest {
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
     @Test
     public void testWithOtherCallsNotOrderedShouldFail() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
         dummy.returnInt();
         dummy.returnObject();
@@ -77,7 +80,7 @@ public class OrderedVerificationTest extends HiMockBaseTest {
         dummy.returnUserException();
 
         reportTest(() -> {
-            mock.verifyInOrder(() -> {
+            verifyInOrder(() -> {
                 dummy.returnBoolean();
                 dummy.returnInt();
             });
@@ -97,13 +100,13 @@ public class OrderedVerificationTest extends HiMockBaseTest {
 
     @Test
     public void testDifferentMockedObjectCanBeVerifiedWithOrder() {
-        MockedInterface dummy1 = mock.mock(MockedInterface.class);
-        MockedInterface dummy2 = mock.mock(MockedInterface.class);
+        MockedInterface dummy1 = mock(MockedInterface.class);
+        MockedInterface dummy2 = mock(MockedInterface.class);
 
         dummy1.doNothing();
         dummy2.doNothing();
 
-        mock.verifyInOrder(() -> {
+        verifyInOrder(() -> {
             dummy1.doNothing();
             dummy2.doNothing();
         });
@@ -112,13 +115,13 @@ public class OrderedVerificationTest extends HiMockBaseTest {
 
     @Test(expected = HiMockReporter.class)
     public void testDifferentMockedObjectNotOrderedShouldFail() {
-        MockedInterface dummy1 = mock.mock(MockedInterface.class);
-        MockedInterface dummy2 = mock.mock(MockedInterface.class);
+        MockedInterface dummy1 = mock(MockedInterface.class);
+        MockedInterface dummy2 = mock(MockedInterface.class);
 
         dummy1.doNothing();
         dummy2.doNothing();
 
-        mock.verifyInOrder(() -> {
+        verifyInOrder(() -> {
             dummy2.doNothing();
             dummy1.doNothing();
         });
@@ -126,19 +129,19 @@ public class OrderedVerificationTest extends HiMockBaseTest {
 
     @Test
     public void testTwoOrderSequence() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
         dummy.doNothing();
         dummy.returnInt();
         dummy.returnBoolean();
         dummy.returnObject();
 
-        mock.verifyInOrder(() -> {
+        verifyInOrder(() -> {
             dummy.doNothing();
             dummy.returnBoolean();
         });
 
-        mock.verifyInOrder(() -> {
+        verifyInOrder(() -> {
             dummy.returnInt();
             dummy.returnObject();
         });
@@ -146,18 +149,18 @@ public class OrderedVerificationTest extends HiMockBaseTest {
 
     @Test
     public void testTwoOrderSequenceWithOverlap() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
         dummy.doNothing();
         dummy.returnInt();
         dummy.returnBoolean();
 
-        mock.verifyInOrder(() -> {
+        verifyInOrder(() -> {
             dummy.doNothing();
             dummy.returnBoolean();
         });
 
-        mock.verifyInOrder(() -> {
+        verifyInOrder(() -> {
             dummy.doNothing();
             dummy.returnInt();
         });
@@ -165,18 +168,18 @@ public class OrderedVerificationTest extends HiMockBaseTest {
 
     @Test(expected = HiMockReporter.class)
     public void testTwoOrderSequenceWithOverlapFail() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
         dummy.doNothing();
         dummy.returnInt();
         dummy.returnBoolean();
 
-        mock.verifyInOrder(() -> {
+        verifyInOrder(() -> {
             dummy.returnBoolean();
             dummy.doNothing();
         });
 
-        mock.verifyInOrder(() -> {
+        verifyInOrder(() -> {
             dummy.doNothing();
             dummy.returnInt();
         });
@@ -184,13 +187,13 @@ public class OrderedVerificationTest extends HiMockBaseTest {
 
     @Test
     public void testTheSameCallBeforeAndAfterShouldPass() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
         dummy.doNothing();
         dummy.returnInt();
         dummy.doNothing();
 
-        mock.verifyInOrder(() -> {
+        verifyInOrder(() -> {
             dummy.returnInt();
             dummy.doNothing();
         });

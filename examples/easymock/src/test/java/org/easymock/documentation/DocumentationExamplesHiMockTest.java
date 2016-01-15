@@ -1,21 +1,26 @@
 package org.easymock.documentation;
 
-import cn.michaelwang.himock.HiMock;
+import cn.michaelwang.himock.HiMockRunner;
 import org.easymock.samples.Collaborator;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import static cn.michaelwang.himock.HiMock.*;
 import static junit.framework.TestCase.assertEquals;
 
+@RunWith(HiMockRunner.class)
 public class DocumentationExamplesHiMockTest {
     @Test
     public void changingBehaviorForTheSameMethodCall() {
-        HiMock mock = new HiMock();
-        Collaborator collaborator = mock.mock(Collaborator.class);
+        Collaborator collaborator = mock(Collaborator.class);
         String title = "Document";
 
-        mock.expect(() -> {
+        expect(() -> {
             collaborator.voteForRemoval(title);
-            mock.willReturn(42).times(3).willThrow(new RuntimeException()).willReturn(-42);
+            willReturn(42);
+            times(3);
+            willThrow(new RuntimeException());
+            willReturn(-42);
         });
 
         assertEquals(42, collaborator.voteForRemoval(title));
@@ -30,14 +35,13 @@ public class DocumentationExamplesHiMockTest {
 
         assertEquals(-42, collaborator.voteForRemoval(title));
 
-        mock.verify();
+        verify();
     }
 
     @Test
     public void checkingMethodCallOrderBetweenMocks() {
-        HiMock mock = new HiMock();
-        MyInterface mock1 = mock.mock(MyInterface.class);
-        MyInterface mock2 = mock.mock(MyInterface.class);
+        MyInterface mock1 = mock(MyInterface.class);
+        MyInterface mock2 = mock(MyInterface.class);
 
         // Ordered:
         mock1.a();
@@ -52,11 +56,11 @@ public class DocumentationExamplesHiMockTest {
         mock2.b();
         mock1.b();
 
-        mock.verifyInOrder(() -> {
+        verifyInOrder(() -> {
             mock1.a();
             mock2.a();
         });
-        mock.verifyInOrder(() -> {
+        verifyInOrder(() -> {
             mock2.b();
             mock1.b();
         });

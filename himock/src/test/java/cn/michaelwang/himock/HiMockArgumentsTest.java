@@ -3,70 +3,72 @@ package cn.michaelwang.himock;
 import cn.michaelwang.himock.verify.VerificationFailedReporter;
 import org.junit.Test;
 
+import static cn.michaelwang.himock.HiMock.*;
+
 @SuppressWarnings("CodeBlock2Expr")
 public class HiMockArgumentsTest extends HiMockBaseTest {
     @Test
     public void testMockWithOneIntArgumentsAndCalledShouldPass() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
-        mock.expect(() -> {
+        expect(() -> {
             dummy.withOneIntArgument(1);
         });
 
         dummy.withOneIntArgument(1);
 
-        mock.verify();
+        verify();
     }
 
     @Test(expected = VerificationFailedReporter.class)
     public void testMockWithOneIntArgumentsCalledWithAnotherShouldFail() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
-        mock.expect(() -> {
+        MockedInterface dummy = mock(MockedInterface.class);
+        expect(() -> {
             dummy.withOneIntArgument(1);
         });
 
         dummy.withOneIntArgument(2);
 
-        mock.verify();
+        verify();
     }
 
     @Test
     public void testMockWithMultipleIntArgumentsAndCalledShouldPass() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
-        mock.expect(() -> {
+        MockedInterface dummy = mock(MockedInterface.class);
+        expect(() -> {
             dummy.withMultipleIntArguments(1, 2);
         });
 
         dummy.withMultipleIntArguments(1, 2);
 
-        mock.verify();
+        verify();
     }
 
     @Test
     public void testMockWithObjectArgumentsAndCalledShouldPass() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
-        mock.expect(() -> {
+        expect(() -> {
             dummy.withObjectArguments("o1", "o2");
         });
 
         dummy.withObjectArguments("o1", "o2");
 
-        mock.verify();
+        verify();
     }
 
     @Test
     public void testMockWithObjectArgumentsAndCalledWithNotTheSameArgumentsShouldFail() {
         reportTest(() -> {
-                    MockedInterface dummy = mock.mock(MockedInterface.class);
+                    MockedInterface dummy = mock(MockedInterface.class);
 
-                    mock.expect(() -> {
+                    expect(() -> {
                         dummy.withObjectArguments("o1", "o2");
                     });
 
                     dummy.withObjectArguments("o1", "o3");
 
-                    mock.verify();
+                    verify();
                 }, "Verification failed:\n" +
                         "\tinvocation with unexpected arguments:\n" +
                         "\t\tmethod called:\tcn.michaelwang.himock.MockedInterface.withObjectArguments\n" +

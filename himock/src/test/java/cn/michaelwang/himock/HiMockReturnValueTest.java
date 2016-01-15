@@ -2,17 +2,18 @@ package cn.michaelwang.himock;
 
 import org.junit.Test;
 
+import static cn.michaelwang.himock.HiMock.*;
 import static org.junit.Assert.assertEquals;
 
 @SuppressWarnings("CodeBlock2Expr")
 public class HiMockReturnValueTest extends HiMockBaseTest {
     @Test
     public void testExpectReturnIntType() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
-        mock.expect(() -> {
+        expect(() -> {
             dummy.returnInt();
-            mock.willReturn(1);
+            willReturn(1);
         });
 
         int returnValue = dummy.returnInt();
@@ -22,11 +23,11 @@ public class HiMockReturnValueTest extends HiMockBaseTest {
 
     @Test
     public void testExpectReturnBooleanType() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
-        mock.expect(() -> {
+        expect(() -> {
             dummy.returnBoolean();
-            mock.willReturn(true);
+            willReturn(true);
         });
 
         boolean returnValue = dummy.returnBoolean();
@@ -37,11 +38,11 @@ public class HiMockReturnValueTest extends HiMockBaseTest {
     @Test
     public void testNoReturnShouldThrowException() {
         reportTest(() -> {
-                    MockedInterface dummy = mock.mock(MockedInterface.class);
+                    MockedInterface dummy = mock(MockedInterface.class);
 
-                    mock.expect(() -> {
+                    expect(() -> {
                         dummy.doNothing();
-                        mock.willReturn(1);
+                        willReturn(1);
                     });
                 }, "Mock Process Error:\n" +
                         "\tinvocation expected has no return value:\n" +
@@ -60,12 +61,12 @@ public class HiMockReturnValueTest extends HiMockBaseTest {
 
     @Test
     public void testExpectReturnObjectType() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
         String expectedReturn = "to return";
-        mock.expect(() -> {
+        expect(() -> {
             dummy.returnObject();
-            mock.willReturn(expectedReturn);
+            willReturn(expectedReturn);
         });
 
         Object returnValue = dummy.returnObject();
@@ -75,9 +76,9 @@ public class HiMockReturnValueTest extends HiMockBaseTest {
 
     @Test
     public void testNoExpectationShouldReturnDefaultValue() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
-        mock.expect(() -> {
+        expect(() -> {
             dummy.returnInt();
             dummy.returnBoolean();
             dummy.returnObject();
@@ -95,16 +96,16 @@ public class HiMockReturnValueTest extends HiMockBaseTest {
     @Test
     public void testCannotSetNotSuitableTypeValue() {
         reportTest(() -> {
-                    MockedInterface dummy = mock.mock(MockedInterface.class);
+                    MockedInterface dummy = mock(MockedInterface.class);
 
-                    mock.expect(() -> {
+                    expect(() -> {
                         dummy.returnInt();
-                        mock.willReturn(true);
+                        willReturn(true);
                     });
 
                     dummy.returnInt();
 
-                    mock.verify();
+                    verify();
                 }, "Mock Process Error:\n" +
                         "\treturn value type is not match:\n" +
                         "\t\tmethod setting return value: cn.michaelwang.himock.MockedInterface.returnInt()\n" +
@@ -124,16 +125,16 @@ public class HiMockReturnValueTest extends HiMockBaseTest {
     @Test
     public void testCannotSetNotSuitableObjectTypeValue() {
         reportTest(() -> {
-                    MockedInterface dummy = mock.mock(MockedInterface.class);
+                    MockedInterface dummy = mock(MockedInterface.class);
 
-                    mock.expect(() -> {
+                    expect(() -> {
                         dummy.returnInt();
-                        mock.willReturn(new Object());
+                        willReturn(new Object());
                     });
 
                     dummy.returnInt();
 
-                    mock.verify();
+                    verify();
                 }, "Mock Process Error:\n" +
                         "\treturn value type is not match:\n" +
                         "\t\tmethod setting return value: cn.michaelwang.himock.MockedInterface.returnInt()\n" +
@@ -153,7 +154,7 @@ public class HiMockReturnValueTest extends HiMockBaseTest {
     @Test
     public void testCannotSetReturnValueOutsideExpect() {
         reportTest(() -> {
-                    mock.willReturn(1);
+                    willReturn(1);
                 }, "Mock Process Error:\n" +
                         "\treturn value cannot be set outside expectation:\n" +
                         "\t-> at cn.michaelwang.himock.HiMockReturnValueTest.lambda$testCannotSetReturnValueOutsideExpect$?(HiMockReturnValueTest.java:?)\n" +
@@ -164,12 +165,12 @@ public class HiMockReturnValueTest extends HiMockBaseTest {
 
     @Test
     public void testSetReturnTwiceShouldReturnCorrectlyInOrder() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
-        mock.expect(() -> {
+        expect(() -> {
             dummy.returnInt();
-            mock.willReturn(10);
-            mock.willReturn(0);
+            willReturn(10);
+            willReturn(0);
         });
 
         assertEquals(10, dummy.returnInt());
@@ -179,8 +180,8 @@ public class HiMockReturnValueTest extends HiMockBaseTest {
     @Test
     public void testSetReturnWhenNoCallExpected() {
         reportTest(() -> {
-                    mock.expect(() -> {
-                        mock.willReturn(1);
+                    expect(() -> {
+                        willReturn(1);
                     });
                 }, "Mock Process Error:\n" +
                         "\treturn value cannot be set before invocation expectation:\n" +
@@ -193,11 +194,11 @@ public class HiMockReturnValueTest extends HiMockBaseTest {
 
     @Test
     public void testCallMoreThenExpected() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
-        mock.expect(() -> {
+        expect(() -> {
             dummy.returnInt();
-            mock.willReturn(10);
+            willReturn(10);
         });
 
         assertEquals(10, dummy.returnInt());
@@ -206,15 +207,15 @@ public class HiMockReturnValueTest extends HiMockBaseTest {
 
     @Test
     public void testSetSubtypeOfTheReturn() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
-        mock.expect(() -> {
+        expect(() -> {
             dummy.returnObject();
-            mock.willReturn("hello");
+            willReturn("hello");
         });
 
         assertEquals("hello", dummy.returnObject());
 
-        mock.verify();
+        verify();
     }
 }

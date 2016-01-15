@@ -1,19 +1,13 @@
 package cn.michaelwang.himock;
 
 import cn.michaelwang.himock.report.HiMockReporter;
-import org.junit.Before;
+import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+@RunWith(HiMockRunner.class)
 public abstract class HiMockBaseTest {
-    protected HiMock mock;
-
-    @Before
-    public void setup() {
-        mock = new HiMock();
-    }
-
     protected void reportTest(TestProcess test, String expectedMessage) {
         try {
             test.doTest();

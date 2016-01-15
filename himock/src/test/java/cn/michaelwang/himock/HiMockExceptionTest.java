@@ -2,6 +2,7 @@ package cn.michaelwang.himock;
 
 import org.junit.Test;
 
+import static cn.michaelwang.himock.HiMock.*;
 import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -9,11 +10,11 @@ import static org.junit.Assert.fail;
 public class HiMockExceptionTest extends HiMockBaseTest {
     @Test(expected = UserException.class)
     public void testExpectThrowCheckedUserException() throws UserException {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
-        mock.expect(() -> {
+        expect(() -> {
             dummy.throwException();
-            mock.willThrow(new UserException());
+            willThrow(new UserException());
         });
 
         dummy.throwException();
@@ -21,11 +22,12 @@ public class HiMockExceptionTest extends HiMockBaseTest {
 
     @Test
     public void testExpectThrowCheckedUserExceptionWithTimer() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
-        mock.expect(() -> {
+        expect(() -> {
             dummy.throwException();
-            mock.willThrow(new UserException()).times(2);
+            willThrow(new UserException());
+            times(2);
         });
 
         int times = 0;
@@ -46,11 +48,14 @@ public class HiMockExceptionTest extends HiMockBaseTest {
 
     @Test
     public void testExpectThrowAndReturnCanBeMixed() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
-        mock.expect(() -> {
+        expect(() -> {
             dummy.throwException();
-            mock.willThrow(new UserException()).willReturn(2).times(2).willThrow(new UserException());
+            willThrow(new UserException());
+            willReturn(2);
+            times(2);
+            willThrow(new UserException());
         });
 
         int times = 0;
@@ -77,7 +82,7 @@ public class HiMockExceptionTest extends HiMockBaseTest {
     @Test
     public void testExpectThrowOutsideExpectation() {
         reportTest(() -> {
-            mock.willThrow(new Exception());
+            willThrow(new Exception());
         }, "Mock Process Error:\n" +
                 "\texception thrown cannot be set outside expectation:\n" +
                 "\t-> at cn.michaelwang.himock.HiMockExceptionTest.lambda$testExpectThrowOutsideExpectation$?(HiMockExceptionTest.java:?)\n" +
@@ -88,10 +93,10 @@ public class HiMockExceptionTest extends HiMockBaseTest {
     @Test
     public void testExpectUnsuitableExceptionType() {
         reportTest(() -> {
-                    MockedInterface dummy = mock.mock(MockedInterface.class);
-                    mock.expect(() -> {
+                    MockedInterface dummy = mock(MockedInterface.class);
+                    expect(() -> {
                         dummy.throwException();
-                        mock.willThrow(new Exception());
+                        willThrow(new Exception());
                     });
                 }, "Mock Process Error:\n" +
                         "\texception type is not match:\n" +
@@ -114,8 +119,8 @@ public class HiMockExceptionTest extends HiMockBaseTest {
     @Test
     public void testSetThrownWhenNoCallExpected() {
         reportTest(() -> {
-                    mock.expect(() -> {
-                        mock.willThrow(new Exception());
+                    expect(() -> {
+                        willThrow(new Exception());
                     });
                 }, "Mock Process Error:\n" +
                         "\texception cannot be set before invocation expectation:\n" +
@@ -128,11 +133,11 @@ public class HiMockExceptionTest extends HiMockBaseTest {
 
     @Test(expected = UserException.class)
     public void testCallMoreThenExpectedWithException() throws UserException {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
-        mock.expect(() -> {
+        expect(() -> {
             dummy.throwException();
-            mock.willThrow(new UserException());
+            willThrow(new UserException());
         });
 
         try {
@@ -145,12 +150,12 @@ public class HiMockExceptionTest extends HiMockBaseTest {
 
     @Test
     public void testThrowCheckedExceptionForNotDeclaredMethod() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
         reportTest(() -> {
-                    mock.expect(() -> {
+                    expect(() -> {
                         dummy.returnInt();
-                        mock.willThrow(new UserException());
+                        willThrow(new UserException());
                     });
                 }, "Mock Process Error:\n" +
                         "\texception type is not match:\n" +
@@ -172,11 +177,11 @@ public class HiMockExceptionTest extends HiMockBaseTest {
 
     @Test(expected = UserUncheckedException.class)
     public void testThrowUncheckedExceptionForMethod() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
-        mock.expect(() -> {
+        expect(() -> {
             dummy.returnInt();
-            mock.willThrow(new UserUncheckedException());
+            willThrow(new UserUncheckedException());
         });
 
         dummy.returnInt();
@@ -184,11 +189,11 @@ public class HiMockExceptionTest extends HiMockBaseTest {
 
     @Test(expected = UserUncheckedException.class)
     public void testThrowUncheckedExceptionForMethodDeclaredException() throws UserException {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
-        mock.expect(() -> {
+        expect(() -> {
             dummy.throwException();
-            mock.willThrow(new UserUncheckedException());
+            willThrow(new UserUncheckedException());
         });
 
         dummy.throwException();
@@ -196,11 +201,11 @@ public class HiMockExceptionTest extends HiMockBaseTest {
 
     @Test(expected = UserUncheckedException.class)
     public void testUseWillReturnSetNotSuitableUncheckedException() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
-        mock.expect(() -> {
+        expect(() -> {
             dummy.returnInt();
-            mock.willReturn(new UserUncheckedException());
+            willReturn(new UserUncheckedException());
         });
 
         dummy.returnInt();
@@ -208,11 +213,11 @@ public class HiMockExceptionTest extends HiMockBaseTest {
 
     @Test(expected = UserException.class)
     public void testUseWillReturnSetCheckedExceptionNotMatchReturnTypeButExceptionType() throws UserException {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
-        mock.expect(() -> {
+        expect(() -> {
             dummy.throwException();
-            mock.willReturn(new UserException());
+            willReturn(new UserException());
         });
 
         dummy.throwException();
@@ -221,10 +226,10 @@ public class HiMockExceptionTest extends HiMockBaseTest {
     @Test
     public void testUseWillReturnSetCheckedExceptionNotMatchEitherReturnTypeOrExceptionType() throws UserException {
         reportTest(() -> {
-                    MockedInterface dummy = mock.mock(MockedInterface.class);
-                    mock.expect(() -> {
+                    MockedInterface dummy = mock(MockedInterface.class);
+                    expect(() -> {
                         dummy.throwException();
-                        mock.willReturn(new Exception());
+                        willReturn(new Exception());
                     });
                 }, "Mock Process Error:\n" +
                         "\texception type is not match:\n" +
@@ -247,27 +252,27 @@ public class HiMockExceptionTest extends HiMockBaseTest {
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
     @Test
     public void testUseWillReturnSetUncheckedExceptionOfTheReturnTypeShouldReturn() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
         UserUncheckedException exception = new UserUncheckedException();
-        mock.expect(() -> {
+        expect(() -> {
             dummy.returnUserUncheckedException();
-            mock.willReturn(exception);
+            willReturn(exception);
         });
 
         assertEquals(exception, dummy.returnUserUncheckedException());
 
-        mock.verify();
+        verify();
     }
 
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
     @Test(expected = AnotherUserUncheckedException.class)
     public void testUseWillReturnSetUncheckedExceptionNotTheSameWithTheReturnTypeShouldThrow() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
-        mock.expect(() -> {
+        expect(() -> {
             dummy.returnUserUncheckedException();
-            mock.willReturn(new AnotherUserUncheckedException());
+            willReturn(new AnotherUserUncheckedException());
         });
 
         dummy.returnUserUncheckedException();
@@ -276,28 +281,28 @@ public class HiMockExceptionTest extends HiMockBaseTest {
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
     @Test
     public void testUseWillReturnSetCheckedExceptionOfTheReturnTypeShouldReturn() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
         UserException exception = new UserException();
-        mock.expect(() -> {
+        expect(() -> {
             dummy.returnUserException();
-            mock.willReturn(exception);
+            willReturn(exception);
         });
 
         assertEquals(exception, dummy.returnUserException());
 
-        mock.verify();
+        verify();
     }
 
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
     @Test
     public void testUseWillReturnSetCheckedExceptionNotTheSameWithTheReturnTypeAndNotDeclaredShouldFail() {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
         reportTest(() -> {
-                    mock.expect(() -> {
+                    expect(() -> {
                         dummy.returnUserException();
-                        mock.willReturn(new Exception());
+                        willReturn(new Exception());
                     });
                 }, "Mock Process Error:\n" +
                         "\texception type is not match:\n" +
@@ -320,12 +325,12 @@ public class HiMockExceptionTest extends HiMockBaseTest {
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
     @Test(expected = Exception.class)
     public void testUseWillReturnSetCheckedExceptionNotTheSameWithTheReturnTypeButDeclaredShouldThrow() throws Exception {
-        MockedInterface dummy = mock.mock(MockedInterface.class);
+        MockedInterface dummy = mock(MockedInterface.class);
 
         Exception exception = new Exception();
-        mock.expect(() -> {
+        expect(() -> {
             dummy.returnUserExceptionAndThrow();
-            mock.willReturn(exception);
+            willReturn(exception);
         });
 
         dummy.returnUserExceptionAndThrow();
