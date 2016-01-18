@@ -21,6 +21,7 @@ public class HiMockTimerTest extends HiMockBaseTest {
         mock.verify();
     }
 
+    @SuppressWarnings("CodeBlock2Expr")
     @Test
     public void testSetTimerOutExpectShouldFail() {
         reportTest(() -> {
@@ -32,5 +33,19 @@ public class HiMockTimerTest extends HiMockBaseTest {
                         "\t   at cn.michaelwang.himock.HiMockTimerTest.testSetTimerOutExpectShouldFail(HiMockTimerTest.java:?)\n"
 
         );
+    }
+
+    @Test
+    public void testTimerInVerification() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        dummy.doNothing();
+        dummy.doNothing();
+        dummy.doNothing();
+
+        mock.verify(() -> {
+            dummy.doNothing();
+            mock.times(3);
+        });
     }
 }

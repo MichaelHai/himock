@@ -191,8 +191,11 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
     }
 
     private class VerificationState implements MockState {
+        private Invocation lastInvocation;
+
         @Override
         public Object methodCalled(Invocation invocation) {
+            lastInvocation = invocation;
             newVerification(invocation);
             return new NullExpectation(invocation).getReturnValue();
         }
@@ -209,7 +212,7 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 
         @Override
         public void lastReturnTimer(int times) {
-            throw new TimerOutsideExpectReporter();
+            methodCalled(lastInvocation);
         }
     }
 

@@ -5,6 +5,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 
 @SuppressWarnings("CodeBlock2Expr")
 public class HiMockArgMatcherTest extends HiMockBaseTest {
