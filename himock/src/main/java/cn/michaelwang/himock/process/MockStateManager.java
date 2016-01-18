@@ -46,14 +46,15 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 
     @Override
     public void toVerifyState() {
-        this.state = new VerificationState();
+        NormalVerifier verifier = new NormalVerifier();
+        createVerificationState(verifier);
     }
 
     @Override
     public void toOrderedVerifyState() {
         InOrderVerifier verifier = new InOrderVerifier();
         verifiers.add(verifier);
-        this.state = new VerificationInOrderState(verifier);
+        this.state = new VerificationState(verifier);
     }
 
     @Override
@@ -95,10 +96,14 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
         return state.methodCalled(invocation);
     }
 
+    private void createVerificationState(NormalVerifier verifier) {
+        verifiers.add(verifier);
+        this.state = new VerificationState(verifier);
+    }
+
     private Verification newVerification(Invocation invocation) {
         Verification verification = new VerificationImpl(invocation, matchers);
         matchers = new ArrayList<>();
-        verifier.addVerification(verification);
         return verification;
     }
 
@@ -193,10 +198,16 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
     private class VerificationState implements MockState {
         private Invocation lastInvocation;
 
+        protected Verifier verifier;
+
+        public VerificationState(Verifier verifier) {
+            this.verifier = verifier;
+        }
+
         @Override
         public Object methodCalled(Invocation invocation) {
             lastInvocation = invocation;
-            newVerification(invocation);
+            verifier.addVerification(newVerification(invocation));
             return new NullExpectation(invocation).getReturnValue();
         }
 
@@ -213,21 +224,6 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
         @Override
         public void lastReturnTimer(int times) {
             methodCalled(lastInvocation);
-        }
-    }
-
-    private class VerificationInOrderState extends VerificationState {
-        private InOrderVerifier verifier;
-
-        public VerificationInOrderState(InOrderVerifier verifier) {
-            this.verifier = verifier;
-        }
-
-        @Override
-        public Object methodCalled(Invocation invocation) {
-            Verification verification = newVerification(invocation);
-            this.verifier.addVerification(verification);
-            return new NullExpectation(invocation).getReturnValue();
         }
     }
 }
