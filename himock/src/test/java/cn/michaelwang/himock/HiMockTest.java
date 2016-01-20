@@ -136,7 +136,6 @@ public class HiMockTest extends HiMockBaseTest {
         });
     }
 
-    @Ignore
     @Test(expected = HiMockReporter.class)
     public void testCalledOnceButVerifiedTwiceShouldFail() {
         MockedInterface dummy = mock(MockedInterface.class);

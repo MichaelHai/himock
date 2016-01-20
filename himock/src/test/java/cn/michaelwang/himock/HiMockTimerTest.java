@@ -36,4 +36,18 @@ public class HiMockTimerTest extends HiMockBaseTest {
 
         );
     }
+
+    @Test
+    public void testTimerInVerification() {
+        MockedInterface dummy = mock.mock(MockedInterface.class);
+
+        dummy.doNothing();
+        dummy.doNothing();
+        dummy.doNothing();
+
+        mock.verify(() -> {
+            dummy.doNothing();
+            mock.times(3);
+        });
+    }
 }

@@ -8,7 +8,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class NormalVerifier implements Verifier {
-    private Set<Verification> verifications = new HashSet<>();
+    private List<Verification> verifications = new ArrayList<>();
 
     @Override
     public void addVerification(Verification verification) {
@@ -17,9 +17,13 @@ public class NormalVerifier implements Verifier {
 
     @Override
     public void verify(List<Invocation> toBeVerified) {
-        List<Verification> notSatisfied = verifications.stream()
-                .filter(verification -> !toBeVerified.stream().anyMatch(verification::satisfyWith))
-                .collect(Collectors.toList());
+        toBeVerified.forEach(invocation ->
+                verifications.stream()
+                .filter(verification -> verification.satisfyWith(invocation))
+                .findFirst()
+                .ifPresent(verifications::remove));
+
+        List<Verification> notSatisfied = verifications.stream().collect(Collectors.toList());
 
         List<VerificationFailure> failures = generateFailures(toBeVerified, notSatisfied);
 
