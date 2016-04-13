@@ -217,6 +217,7 @@ public class HiMockTest extends HiMockBaseTest {
         verify();
     }
 
+    @SuppressWarnings("Duplicates")
     @Test(expected = VerificationFailedReporter.class)
     public void testTwoMockObjectOfTheSameInterfaceBothExpectedAndCalledFromWrongObjectShouldFail() {
         MockedInterface dummy1 = mock(MockedInterface.class);

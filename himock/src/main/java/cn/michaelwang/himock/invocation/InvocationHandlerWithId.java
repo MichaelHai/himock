@@ -14,6 +14,12 @@ public class InvocationHandlerWithId implements InvocationHandler {
         this.invocationListener = invocationListener;
     }
 
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        List<Class<Throwable>> typeChecked = getExceptions(method);
+        InvocationImpl invocation = new InvocationImpl(id, getInvocationName(method), method.getParameterTypes(), args, method.getReturnType(), typeChecked);
+        return invocationListener.methodCalled(invocation);
+    }
 
     @SuppressWarnings("unchecked")
     private List<Class<Throwable>> getExceptions(Method method) {
@@ -25,13 +31,6 @@ public class InvocationHandlerWithId implements InvocationHandler {
             }
         }
         return typeChecked;
-    }
-
-    @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        List<Class<Throwable>> typeChecked = getExceptions(method);
-        InvocationImpl invocation = new InvocationImpl(id, getInvocationName(method), method.getParameterTypes(), args, method.getReturnType(), typeChecked);
-        return invocationListener.methodCalled(invocation);
     }
 
     private String getInvocationName(Method method) {

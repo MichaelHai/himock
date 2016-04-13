@@ -10,10 +10,12 @@ import static cn.michaelwang.himock.HiMock.*;
  * The tests in this class should be run together. Any single case in this test class should pass.
  * However, without the HiMockTestRule, the second test will fail when run after the first test.
  */
+@SuppressWarnings({"CodeBlock2Expr", "Convert2MethodRef"})
 public class HiMockRuleTest {
     @Rule
     public HiMockTestRule rule = new HiMockTestRule();
 
+    @SuppressWarnings("Duplicates")
     @Test(expected = VerificationFailedReporter.class)
     public void testTwoMockObjectOfTheSameInterfaceBothExpectedAndCalledFromWrongObjectShouldFail() {
         MockedInterface dummy1 = mock(MockedInterface.class);
