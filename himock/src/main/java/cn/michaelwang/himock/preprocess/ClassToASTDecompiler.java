@@ -9,11 +9,11 @@ import com.strobel.decompiler.languages.java.ast.CompilationUnit;
 
 import java.net.URL;
 
-public class ClassToASTDecompiler<T> {
+public class ClassToASTDecompiler {
 
-    private final Class<T> clazz;
+    private final Class<?> clazz;
 
-    public ClassToASTDecompiler(Class<T> clazz) {
+    public ClassToASTDecompiler(Class<?> clazz) {
         this.clazz = clazz;
     }
 

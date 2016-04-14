@@ -10,7 +10,7 @@ import static junit.framework.Assert.assertEquals;
 public class ClassToASTDecompilerTest {
     @Test
     public void testStringClassCanBeDecompileToAST() {
-        ClassToASTDecompiler<String> stringDecompiler = new ClassToASTDecompiler<>(String.class);
+        ClassToASTDecompiler stringDecompiler = new ClassToASTDecompiler(String.class);
         CompilationUnit ast = stringDecompiler.decompile();
 
         assertEquals(1, ast.getTypes().size());
@@ -19,7 +19,7 @@ public class ClassToASTDecompilerTest {
 
     @Test
     public void testUserTypeCanBeDecompileToAST() {
-        ClassToASTDecompiler<MockedInterface> stringDecompiler = new ClassToASTDecompiler<>(MockedInterface.class);
+        ClassToASTDecompiler stringDecompiler = new ClassToASTDecompiler(MockedInterface.class);
         CompilationUnit ast = stringDecompiler.decompile();
 
         assertEquals(1, ast.getTypes().size());
@@ -28,7 +28,7 @@ public class ClassToASTDecompilerTest {
 
     @Test
     public void testLibClassCanBeDecompileToAST() {
-        ClassToASTDecompiler<Decompiler> stringDecompiler = new ClassToASTDecompiler<>(Decompiler.class);
+        ClassToASTDecompiler stringDecompiler = new ClassToASTDecompiler(Decompiler.class);
         CompilationUnit ast = stringDecompiler.decompile();
 
         assertEquals(1, ast.getTypes().size());
