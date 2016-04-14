@@ -14,4 +14,10 @@ public class Utils {
                 || type.equals(Short.class) || type.equals(Integer.class) || type.equals(Long.class)
                 || type.equals(Float.class) || type.equals(Double.class) || type.equals(Boolean.class);
     }
+
+    public static boolean isNameOfPrimitiveType(String type) {
+        return type.equals("byte") || type.equals("char") || type.equals("short")
+                || type.equals("int") || type.equals("long") || type.equals("float")
+                || type.equals("double") || type.equals("boolean");
+    }
 }
