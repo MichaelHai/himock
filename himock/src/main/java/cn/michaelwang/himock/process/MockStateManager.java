@@ -196,9 +196,8 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
     }
 
     private class VerificationState implements MockState {
-        private Invocation lastInvocation;
-
         protected Verifier verifier;
+        private Invocation lastInvocation;
 
         public VerificationState(Verifier verifier) {
             this.verifier = verifier;

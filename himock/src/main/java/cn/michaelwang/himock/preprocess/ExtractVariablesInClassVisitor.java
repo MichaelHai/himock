@@ -2,14 +2,20 @@ package cn.michaelwang.himock.preprocess;
 
 import com.strobel.decompiler.languages.java.ast.DepthFirstAstVisitor;
 import com.strobel.decompiler.languages.java.ast.FieldDeclaration;
+import com.strobel.decompiler.languages.java.ast.MethodDeclaration;
 import com.strobel.decompiler.languages.java.ast.VariableDeclarationStatement;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ExtractVariablesInClassVisitor extends DepthFirstAstVisitor<Object, Object> {
     private List<VariableWithType> allVariables = new ArrayList<>();
     private List<VariableWithType> members = new ArrayList<>();
+    private Map<String, List<VariableWithType>> localVariables = new HashMap<>();
+
+    private String currentMethod = null;
 
     public List<VariableWithType> getAllLocalVariables() {
         return allVariables;
@@ -19,6 +25,17 @@ public class ExtractVariablesInClassVisitor extends DepthFirstAstVisitor<Object,
         return members;
     }
 
+    public List<VariableWithType> getLocalVariablesIn(String aMethodWithLocalVariables) {
+        return localVariables.get(aMethodWithLocalVariables);
+    }
+
+    @Override
+    public Object visitMethodDeclaration(MethodDeclaration node, Object data) {
+        currentMethod = node.getName();
+        localVariables.put(currentMethod, new ArrayList<>());
+        return super.visitMethodDeclaration(node, data);
+    }
+
     @Override
     public Object visitVariableDeclaration(VariableDeclarationStatement node, Object data) {
         VariableType type = VariableType.convertToType(node.getType().getText());
@@ -26,6 +43,7 @@ public class ExtractVariablesInClassVisitor extends DepthFirstAstVisitor<Object,
             String variable = variableInitializer.getName();
             VariableWithType variableWithType = new VariableWithType(variable, type);
             allVariables.add(variableWithType);
+            localVariables.get(currentMethod).add(variableWithType);
         });
 
         return super.visitVariableDeclaration(node, data);

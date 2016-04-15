@@ -1,6 +1,5 @@
 package cn.michaelwang.himock.preprocess;
 
-import com.strobel.decompiler.ast.Variable;
 import com.strobel.decompiler.languages.java.ast.CompilationUnit;
 import org.junit.Test;
 
@@ -167,5 +166,42 @@ public class ExtractVariablesInClassVisitorTest {
         assertEquals("objectMember", members.get(0).getName());
         assertEquals(VariableType.PRIMITIVE, members.get(1).getType());
         assertEquals("intMember", members.get(1).getName());
+    }
+
+    @Test
+    public void testGetVariablesViaMethodName() {
+        @SuppressWarnings("unused")
+        class LocalVariablesInMultipleMethods {
+            public void aMethodWithLocalVariables() {
+                String localVariable = "hello";
+                String anotherLocalVariable = "world";
+            }
+
+            public void anotherMethodWithLocalVariables() {
+                String localVariableInSecondMethod = "hello";
+                String anotherLocalVariableInSecondMethod = "world";
+                int theThirdLocalVariableInSecondMethod = 2;
+            }
+        }
+
+        ExtractVariablesInClassVisitor visitor = new ExtractVariablesInClassVisitor();
+        CompilationUnit ast = new ClassToASTDecompiler(LocalVariablesInMultipleMethods.class).decompile();
+        ast.acceptVisitor(visitor, null);
+
+        List<VariableWithType> variablesInTheFirstMethod = visitor.getLocalVariablesIn("aMethodWithLocalVariables");
+        assertEquals(2, variablesInTheFirstMethod.size());
+        assertEquals(VariableType.OBJECT, variablesInTheFirstMethod.get(0).getType());
+        assertEquals("localVariable", variablesInTheFirstMethod.get(0).getName());
+        assertEquals(VariableType.OBJECT, variablesInTheFirstMethod.get(1).getType());
+        assertEquals("anotherLocalVariable", variablesInTheFirstMethod.get(1).getName());
+
+        List<VariableWithType> variablesInTheSecondMethod = visitor.getLocalVariablesIn("anotherMethodWithLocalVariables");
+        assertEquals(3, variablesInTheSecondMethod.size());
+        assertEquals(VariableType.OBJECT, variablesInTheSecondMethod.get(0).getType());
+        assertEquals("localVariableInSecondMethod", variablesInTheSecondMethod.get(0).getName());
+        assertEquals(VariableType.OBJECT, variablesInTheSecondMethod.get(1).getType());
+        assertEquals("anotherLocalVariableInSecondMethod", variablesInTheSecondMethod.get(1).getName());
+        assertEquals(VariableType.PRIMITIVE, variablesInTheSecondMethod.get(2).getType());
+        assertEquals("theThirdLocalVariableInSecondMethod", variablesInTheSecondMethod.get(2).getName());
     }
 }

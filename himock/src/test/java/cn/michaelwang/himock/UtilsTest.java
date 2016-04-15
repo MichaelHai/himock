@@ -3,8 +3,8 @@ package cn.michaelwang.himock;
 import cn.michaelwang.himock.utils.Utils;
 import org.junit.Test;
 
-import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 import static junit.framework.TestCase.assertEquals;
 
 public class UtilsTest {

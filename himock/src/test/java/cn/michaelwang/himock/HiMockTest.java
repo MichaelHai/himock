@@ -2,7 +2,6 @@ package cn.michaelwang.himock;
 
 import cn.michaelwang.himock.report.HiMockReporter;
 import cn.michaelwang.himock.verify.VerificationFailedReporter;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;

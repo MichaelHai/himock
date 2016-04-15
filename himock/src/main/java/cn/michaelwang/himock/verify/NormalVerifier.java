@@ -4,7 +4,9 @@ import cn.michaelwang.himock.Invocation;
 import cn.michaelwang.himock.verify.failure.ArgumentsNotMatchFailure;
 import cn.michaelwang.himock.verify.failure.ExpectedInvocationNotHappenedFailure;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class NormalVerifier implements Verifier {
@@ -19,9 +21,9 @@ public class NormalVerifier implements Verifier {
     public void verify(List<Invocation> toBeVerified) {
         toBeVerified.forEach(invocation ->
                 verifications.stream()
-                .filter(verification -> verification.satisfyWith(invocation))
-                .findFirst()
-                .ifPresent(verifications::remove));
+                        .filter(verification -> verification.satisfyWith(invocation))
+                        .findFirst()
+                        .ifPresent(verifications::remove));
 
         List<Verification> notSatisfied = verifications.stream().collect(Collectors.toList());
 
