@@ -18,7 +18,7 @@ public class ClassToASTDecompiler {
     }
 
     public CompilationUnit decompile() {
-        String path = "/" + clazz.getCanonicalName().replaceAll("\\.", "/") + ".class";
+        String path = "/" + clazz.getName().replaceAll("\\.", "/") + ".class";
         URL resource = clazz.getResource(path);
 
         String filePath = resource.getFile();
@@ -26,7 +26,7 @@ public class ClassToASTDecompiler {
             // user type
             filePath = filePath.substring(1);
         } else {
-            // type in lib
+            // not find, type in lib
             filePath = clazz.getCanonicalName();
         }
 
