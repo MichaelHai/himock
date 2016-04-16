@@ -1,30 +1,35 @@
 package cn.michaelwang.himock.preprocess;
 
-import com.strobel.decompiler.languages.java.ast.DepthFirstAstVisitor;
-import com.strobel.decompiler.languages.java.ast.FieldDeclaration;
-import com.strobel.decompiler.languages.java.ast.MethodDeclaration;
-import com.strobel.decompiler.languages.java.ast.VariableDeclarationStatement;
+import com.strobel.decompiler.languages.java.ast.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ExtractVariablesInClassVisitor extends DepthFirstAstVisitor<Object, Object> {
+public class ASTVisitorVariablesExtractor extends DepthFirstAstVisitor<Object, Object> implements VariablesExtractor {
     private List<VariableWithType> allVariables = new ArrayList<>();
     private List<VariableWithType> members = new ArrayList<>();
     private Map<String, List<VariableWithType>> localVariables = new HashMap<>();
 
     private String currentMethod = null;
 
+    public ASTVisitorVariablesExtractor(Class<?> localVariablesInMethodClass) {
+        CompilationUnit ast = new ClassToASTDecompiler(localVariablesInMethodClass).decompile();
+        ast.acceptVisitor(this, null);
+    }
+
+    @Override
     public List<VariableWithType> getAllLocalVariables() {
         return allVariables;
     }
 
+    @Override
     public List<VariableWithType> getMembers() {
         return members;
     }
 
+    @Override
     public List<VariableWithType> getLocalVariablesIn(String aMethodWithLocalVariables) {
         return localVariables.get(aMethodWithLocalVariables);
     }

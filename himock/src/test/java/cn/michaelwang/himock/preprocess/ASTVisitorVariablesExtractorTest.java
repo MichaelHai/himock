@@ -1,6 +1,5 @@
 package cn.michaelwang.himock.preprocess;
 
-import com.strobel.decompiler.languages.java.ast.CompilationUnit;
 import org.junit.Test;
 
 import java.util.List;
@@ -8,7 +7,7 @@ import java.util.List;
 import static junit.framework.Assert.assertEquals;
 
 @SuppressWarnings("Duplicates")
-public class ExtractVariablesInClassVisitorTest {
+public class ASTVisitorVariablesExtractorTest {
     @Test
     public void testExtractLocalVariablesInMethod() {
         @SuppressWarnings("unused")
@@ -19,9 +18,7 @@ public class ExtractVariablesInClassVisitorTest {
             }
         }
 
-        ExtractVariablesInClassVisitor visitor = new ExtractVariablesInClassVisitor();
-        CompilationUnit ast = new ClassToASTDecompiler(LocalVariablesInMethod.class).decompile();
-        ast.acceptVisitor(visitor, null);
+        ASTVisitorVariablesExtractor visitor = new ASTVisitorVariablesExtractor(LocalVariablesInMethod.class);
 
         List<VariableWithType> variables = visitor.getAllLocalVariables();
         assertEquals(2, variables.size());
@@ -46,9 +43,7 @@ public class ExtractVariablesInClassVisitorTest {
             }
         }
 
-        ExtractVariablesInClassVisitor visitor = new ExtractVariablesInClassVisitor();
-        CompilationUnit ast = new ClassToASTDecompiler(LocalVariablesInMultipleMethods.class).decompile();
-        ast.acceptVisitor(visitor, null);
+        ASTVisitorVariablesExtractor visitor = new ASTVisitorVariablesExtractor(LocalVariablesInMultipleMethods.class);
 
         List<VariableWithType> variables = visitor.getAllLocalVariables();
         assertEquals(4, variables.size());
@@ -77,9 +72,7 @@ public class ExtractVariablesInClassVisitorTest {
             }
         }
 
-        ExtractVariablesInClassVisitor visitor = new ExtractVariablesInClassVisitor();
-        CompilationUnit ast = new ClassToASTDecompiler(LocalVariablesWithTheSameNameInMultipleMethods.class).decompile();
-        ast.acceptVisitor(visitor, null);
+        ASTVisitorVariablesExtractor visitor = new ASTVisitorVariablesExtractor(LocalVariablesWithTheSameNameInMultipleMethods.class);
 
         List<VariableWithType> variables = visitor.getAllLocalVariables();
         assertEquals(4, variables.size());
@@ -103,9 +96,7 @@ public class ExtractVariablesInClassVisitorTest {
             }
         }
 
-        ExtractVariablesInClassVisitor visitor = new ExtractVariablesInClassVisitor();
-        CompilationUnit ast = new ClassToASTDecompiler(LocalVariablesInMethod.class).decompile();
-        ast.acceptVisitor(visitor, null);
+        ASTVisitorVariablesExtractor visitor = new ASTVisitorVariablesExtractor(LocalVariablesInMethod.class);
 
         List<VariableWithType> variables = visitor.getAllLocalVariables();
         assertEquals(2, variables.size());
@@ -123,9 +114,7 @@ public class ExtractVariablesInClassVisitorTest {
             private int intMember = 1;
         }
 
-        ExtractVariablesInClassVisitor visitor = new ExtractVariablesInClassVisitor();
-        CompilationUnit ast = new ClassToASTDecompiler(ClassWithMember.class).decompile();
-        ast.acceptVisitor(visitor, null);
+        ASTVisitorVariablesExtractor visitor = new ASTVisitorVariablesExtractor(ClassWithMember.class);
 
         List<VariableWithType> members = visitor.getMembers();
         assertEquals(2, members.size());
@@ -148,9 +137,7 @@ public class ExtractVariablesInClassVisitorTest {
             }
         }
 
-        ExtractVariablesInClassVisitor visitor = new ExtractVariablesInClassVisitor();
-        CompilationUnit ast = new ClassToASTDecompiler(ClassWithMemberAndLocalVariable.class).decompile();
-        ast.acceptVisitor(visitor, null);
+        ASTVisitorVariablesExtractor visitor = new ASTVisitorVariablesExtractor(ClassWithMemberAndLocalVariable.class);
 
         List<VariableWithType> members = visitor.getMembers();
         assertEquals(2, members.size());
@@ -184,9 +171,7 @@ public class ExtractVariablesInClassVisitorTest {
             }
         }
 
-        ExtractVariablesInClassVisitor visitor = new ExtractVariablesInClassVisitor();
-        CompilationUnit ast = new ClassToASTDecompiler(LocalVariablesInMultipleMethods.class).decompile();
-        ast.acceptVisitor(visitor, null);
+        ASTVisitorVariablesExtractor visitor = new ASTVisitorVariablesExtractor(LocalVariablesInMultipleMethods.class);
 
         List<VariableWithType> variablesInTheFirstMethod = visitor.getLocalVariablesIn("aMethodWithLocalVariables");
         assertEquals(2, variablesInTheFirstMethod.size());
