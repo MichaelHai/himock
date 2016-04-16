@@ -14,8 +14,8 @@ public class ASTVisitorVariablesExtractor extends DepthFirstAstVisitor<Object, O
 
     private String currentMethod = null;
 
-    public ASTVisitorVariablesExtractor(Class<?> localVariablesInMethodClass) {
-        CompilationUnit ast = new ClassToASTDecompiler(localVariablesInMethodClass).decompile();
+    public ASTVisitorVariablesExtractor(Class<?> clazz) {
+        CompilationUnit ast = ASTPool.getInstance().getAST(clazz);
         ast.acceptVisitor(this, null);
     }
 
