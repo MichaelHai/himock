@@ -1,11 +1,13 @@
 package cn.michaelwang.himock;
 
 import cn.michaelwang.himock.report.HiMockReporter;
+
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
 import static cn.michaelwang.himock.HiMock.*;
-import static junit.framework.Assert.assertEquals;
 
 @SuppressWarnings("CodeBlock2Expr")
 public class HiMockArgMatcherTest extends HiMockBaseTest {

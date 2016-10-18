@@ -7,7 +7,9 @@ import cn.michaelwang.himock.report.ReportBuilder;
 import java.util.List;
 
 public class ExceptionTypeIsNotSuitableReporter extends MockProcessErrorReporter {
-    private Invocation invocation;
+	private static final long serialVersionUID = -6402248681173019841L;
+	
+	private Invocation invocation;
     private Class<?> toSet;
 
     public ExceptionTypeIsNotSuitableReporter(Invocation invocation, Throwable toSet) {

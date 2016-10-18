@@ -4,8 +4,9 @@ import cn.michaelwang.himock.process.MockProcessErrorReporter;
 import cn.michaelwang.himock.report.ReportBuilder;
 
 public class ExpectReturnOutsideExpectReporter extends MockProcessErrorReporter {
+	private static final long serialVersionUID = 7995777191893256740L;
 
-    @Override
+	@Override
     public void buildProcessError(ReportBuilder reportBuilder) {
         reportBuilder.appendLine("return value cannot be set outside expectation:");
         reportBuilder.appendStackTrace(getStackTrace());

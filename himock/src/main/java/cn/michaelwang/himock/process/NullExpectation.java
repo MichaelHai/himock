@@ -6,8 +6,7 @@ import java.util.Collections;
 
 public class NullExpectation extends ExpectationImpl {
     public NullExpectation(Invocation invocation) {
-        //noinspection unchecked
-        super(invocation, Collections.EMPTY_LIST);
+        super(invocation, Collections.emptyList());
     }
 
     @Override

@@ -4,7 +4,9 @@ import cn.michaelwang.himock.report.HiMockReporter;
 import cn.michaelwang.himock.report.ReportBuilder;
 
 public abstract class MockProcessErrorReporter extends HiMockReporter {
-    @Override
+	private static final long serialVersionUID = 3113510354071408544L;
+
+	@Override
     public void buildReport(ReportBuilder reportBuilder) {
         reportBuilder.appendLine("Mock Process Error:");
         reportBuilder.buildNextLevel(this::buildProcessError);

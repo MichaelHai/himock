@@ -2,9 +2,10 @@ package cn.michaelwang.himock.preprocess;
 
 import cn.michaelwang.himock.MockedInterface;
 import com.strobel.decompiler.languages.java.ast.CompilationUnit;
+
 import org.junit.Test;
 
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertTrue;
 
 public class ASTPoolTest {
     @Test

@@ -17,7 +17,7 @@ public class ReportBuilder {
         levelEnd();
     }
 
-    public <T> void appendLine(T... lines) {
+    public <T> void appendLine(@SuppressWarnings("unchecked") T... lines) {
         lineStart();
         for (T line : lines) {
             append(line);

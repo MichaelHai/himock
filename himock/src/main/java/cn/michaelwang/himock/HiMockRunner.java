@@ -7,7 +7,7 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
 
 public class HiMockRunner extends BlockJUnit4ClassRunner {
-    public HiMockRunner(Class testClass) throws InitializationError {
+    public HiMockRunner(Class<?> testClass) throws InitializationError {
         super(testClass);
     }
 

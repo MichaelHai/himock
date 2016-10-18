@@ -5,7 +5,9 @@ import cn.michaelwang.himock.process.MockProcessErrorReporter;
 import cn.michaelwang.himock.report.ReportBuilder;
 
 public class NoReturnTypeReporter extends MockProcessErrorReporter {
-    private Invocation invocation;
+	private static final long serialVersionUID = -6880109008418479992L;
+
+	private Invocation invocation;
 
     public NoReturnTypeReporter(Invocation invocation) {
         this.invocation = invocation;
