@@ -59,6 +59,7 @@ public class HiMockArgumentsTest extends HiMockBaseTest {
 
     @Test
     public void testMockWithObjectArgumentsAndCalledWithNotTheSameArgumentsShouldFail() {
+    	
         reportTest(() -> {
                     MockedInterface dummy = mock(MockedInterface.class);
 

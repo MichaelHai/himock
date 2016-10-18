@@ -18,211 +18,228 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MockStateManager implements MockProcessManager, InvocationListener {
-    private MockFactory mockFactory;
-    private InvocationRecorder invocationRecorder;
+	private MockFactory mockFactory;
+	private InvocationRecorder invocationRecorder;
 
-    private MockState state = new NormalState();
+	private MockState state = new NormalState();
 
-    private List<Verifier> verifiers = new ArrayList<>();
-    private Verifier verifier;
-    private List<Matcher<?>> matchers = new ArrayList<>();
+	private List<Verifier> verifiers = new ArrayList<>();
+	private Verifier verifier;
+	private List<Matcher<?>> matchers = new ArrayList<>();
 
-    public MockStateManager(MockFactory mockFactory, InvocationRecorder invocationRecorder) {
-        this.mockFactory = mockFactory;
-        this.invocationRecorder = invocationRecorder;
-        this.verifier = new NormalVerifier();
-        verifiers.add(verifier);
-    }
+	public MockStateManager(MockFactory mockFactory, InvocationRecorder invocationRecorder) {
+		this.mockFactory = mockFactory;
+		this.invocationRecorder = invocationRecorder;
+		this.verifier = new NormalVerifier();
+		verifiers.add(verifier);
+	}
 
-    @Override
-    public void toNormalState() {
-        this.state = new NormalState();
-    }
+	@Override
+	public void toNormalState() {
+		this.state = new NormalState();
+	}
 
-    @Override
-    public void toExpectState() {
-        this.state = new ExpectState();
-    }
+	@Override
+	public void toExpectState() {
+		this.state = new ExpectState();
+	}
 
-    @Override
-    public void toVerifyState() {
-        NormalVerifier verifier = new NormalVerifier();
-        createVerificationState(verifier);
-    }
+	@Override
+	public void toVerifyState() {
+		NormalVerifier verifier = new NormalVerifier();
+		createVerificationState(verifier);
+	}
 
-    @Override
-    public void toOrderedVerifyState() {
-        InOrderVerifier verifier = new InOrderVerifier();
-        verifiers.add(verifier);
-        this.state = new VerificationState(verifier);
-    }
+	@Override
+	public void toOrderedVerifyState() {
+		InOrderVerifier verifier = new InOrderVerifier();
+		verifiers.add(verifier);
+		this.state = new VerificationState(verifier);
+	}
 
-    @Override
-    public <T> T mock(Class<T> mockedInterface) {
-        if (!mockedInterface.isInterface()) {
-            throw new MockNoninterfaceReporter(mockedInterface);
-        }
+	@Override
+	public <T> T mock(Class<T> mockedInterface) {
+		if (!mockedInterface.isInterface()) {
+			throw new MockNoninterfaceReporter(mockedInterface);
+		}
 
-        return mockFactory.createMock(mockedInterface, this);
-    }
+		return mockFactory.createMock(mockedInterface, this);
+	}
 
-    @Override
-    public <T> void lastCallReturn(T returnValue, Class<?> type) {
-        state.lastCallReturn(returnValue, type);
-    }
+	@Override
+	public <T> void lastCallReturn(T returnValue, Class<?> type) {
+		state.lastCallReturn(returnValue, type);
+	}
 
-    @Override
-    public void lastCallThrow(Throwable e) {
-        state.lastCallThrow(e);
-    }
+	@Override
+	public void lastCallThrow(Throwable e) {
+		state.lastCallThrow(e);
+	}
 
-    @Override
-    public void lastReturnTimer(int times) {
-        state.lastReturnTimer(times);
-    }
+	@Override
+	public void lastReturnTimer(int times) {
+		state.lastReturnTimer(times);
+	}
 
-    @Override
-    public void doVerify() {
-        verifiers.forEach((verifier) -> verifier.verify(invocationRecorder.getActuallyInvocations()));
-    }
+	@Override
+	public void doVerify() {
+		verifiers.forEach((verifier) -> verifier.verify(invocationRecorder.getActuallyInvocations()));
+	}
 
-    @Override
-    public <T> void addMatcher(Matcher<T> matcher) {
-        matchers.add(matcher);
-    }
+	@Override
+	public <T> void addMatcher(Matcher<T> matcher) {
+		state.addMatcher(matcher);
+	}
 
-    @Override
-    public Object methodCalled(Invocation invocation) throws Throwable {
-        return state.methodCalled(invocation);
-    }
+	@Override
+	public Object methodCalled(Invocation invocation) throws Throwable {
+		return state.methodCalled(invocation);
+	}
 
-    private void createVerificationState(NormalVerifier verifier) {
-        verifiers.add(verifier);
-        this.state = new VerificationState(verifier);
-    }
+	private void createVerificationState(NormalVerifier verifier) {
+		verifiers.add(verifier);
+		this.state = new VerificationState(verifier);
+	}
 
-    private Verification newVerification(Invocation invocation) {
-        Verification verification = new VerificationImpl(invocation, matchers);
-        matchers = new ArrayList<>();
-        return verification;
-    }
+	private Verification newVerification(Invocation invocation) {
+		Verification verification = new VerificationImpl(invocation, matchers);
+		matchers = new ArrayList<>();
+		return verification;
+	}
 
-    private interface MockState {
-        Object methodCalled(Invocation invocation) throws Throwable;
+	private interface MockState {
+		Object methodCalled(Invocation invocation) throws Throwable;
 
-        <T> void lastCallReturn(T returnValue, Class<?> type);
+		<T> void lastCallReturn(T returnValue, Class<?> type);
 
-        void lastCallThrow(Throwable e);
+		void lastCallThrow(Throwable e);
 
-        void lastReturnTimer(int times);
-    }
+		void lastReturnTimer(int times);
 
-    private class NormalState implements MockState {
-        @Override
-        public Object methodCalled(Invocation invocation) throws Throwable {
-            Object[] arguments = invocation.getArguments();
-            for (int i = 0; i < arguments.length; i++) {
-                Object param = arguments[i];
-                if (param == null) {
-                    arguments[i] = NullObjectPlaceHolder.getInstance();
-                }
-            }
-            return invocationRecorder.actuallyCall(invocation);
-        }
+		<T> void addMatcher(Matcher<T> matcher);
+	}
 
-        @Override
-        public <T> void lastCallReturn(T returnValue, Class<?> type) {
-            throw new ExpectReturnOutsideExpectReporter();
-        }
+	private class NormalState implements MockState {
+		@Override
+		public Object methodCalled(Invocation invocation) throws Throwable {
+			Object[] arguments = invocation.getArguments();
+			for (int i = 0; i < arguments.length; i++) {
+				Object param = arguments[i];
+				if (param == null) {
+					arguments[i] = NullObjectPlaceHolder.getInstance();
+				}
+			}
+			return invocationRecorder.actuallyCall(invocation);
+		}
 
-        @Override
-        public void lastCallThrow(Throwable e) {
-            throw new ExpectThrowOutsideExpectReporter();
-        }
+		@Override
+		public <T> void lastCallReturn(T returnValue, Class<?> type) {
+			throw new ExpectReturnOutsideExpectReporter();
+		}
 
-        @Override
-        public void lastReturnTimer(int times) {
-            throw new TimerOutsideExpectReporter();
-        }
-    }
+		@Override
+		public void lastCallThrow(Throwable e) {
+			throw new ExpectThrowOutsideExpectReporter();
+		}
 
-    private class ExpectState implements MockState {
-        private Expectation lastCall;
+		@Override
+		public void lastReturnTimer(int times) {
+			throw new TimerOutsideExpectReporter();
+		}
 
-        @Override
-        public Object methodCalled(Invocation invocation) {
-            lastCall = invocationRecorder.expect(invocation, matchers);
-            matchers = new ArrayList<>();
-            verifier.addVerification(lastCall.generateVerification());
-            return new NullExpectation(invocation).getReturnValue();
-        }
+		@Override
+		public <T> void addMatcher(Matcher<T> matcher) {
+			throw new InvalidMatchPositionReporter();
+		}
+	}
 
-        @Override
-        public <T> void lastCallReturn(T returnValue, Class<?> type) {
-            if (lastCall == null) {
-                throw new ExpectReturnBeforeInvocationReporter();
-            }
+	private class ExpectState implements MockState {
+		private Expectation lastCall;
 
-            try {
-                lastCall.addReturnValue(returnValue, type);
-            } catch (NoReturnTypeException e) {
-                throw new NoReturnTypeReporter(e.getInvocation());
-            } catch (ReturnTypeIsNotSuitableException e) {
-                if (returnValue instanceof Throwable) {
-                    lastCallThrow((Throwable) returnValue);
-                } else {
-                    throw new ReturnTypeIsNotSuitableReporter(e.getInvocation(), e.getToSetType());
-                }
-            }
-        }
+		@Override
+		public Object methodCalled(Invocation invocation) {
+			lastCall = invocationRecorder.expect(invocation, matchers);
+			matchers = new ArrayList<>();
+			verifier.addVerification(lastCall.generateVerification());
+			return new NullExpectation(invocation).getReturnValue();
+		}
 
-        @Override
-        public void lastCallThrow(Throwable toThrow) {
-            if (lastCall == null) {
-                throw new ExpectExceptionBeforeInvocationReporter();
-            }
+		@Override
+		public <T> void lastCallReturn(T returnValue, Class<?> type) {
+			if (lastCall == null) {
+				throw new ExpectReturnBeforeInvocationReporter();
+			}
 
-            try {
-                lastCall.addException(toThrow);
-            } catch (ExceptionTypeIsNotSuitableException e) {
-                throw new ExceptionTypeIsNotSuitableReporter(e.getInvocation(), e.getToThrow());
-            }
-        }
+			try {
+				lastCall.addReturnValue(returnValue, type);
+			} catch (NoReturnTypeException e) {
+				throw new NoReturnTypeReporter(e.getInvocation());
+			} catch (ReturnTypeIsNotSuitableException e) {
+				if (returnValue instanceof Throwable) {
+					lastCallThrow((Throwable) returnValue);
+				} else {
+					throw new ReturnTypeIsNotSuitableReporter(e.getInvocation(), e.getToSetType());
+				}
+			}
+		}
 
-        @Override
-        public void lastReturnTimer(int times) {
-            lastCall.answerMore(times - 1);
-        }
-    }
+		@Override
+		public void lastCallThrow(Throwable toThrow) {
+			if (lastCall == null) {
+				throw new ExpectExceptionBeforeInvocationReporter();
+			}
 
-    private class VerificationState implements MockState {
-        protected Verifier verifier;
-        private Invocation lastInvocation;
+			try {
+				lastCall.addException(toThrow);
+			} catch (ExceptionTypeIsNotSuitableException e) {
+				throw new ExceptionTypeIsNotSuitableReporter(e.getInvocation(), e.getToThrow());
+			}
+		}
 
-        public VerificationState(Verifier verifier) {
-            this.verifier = verifier;
-        }
+		@Override
+		public void lastReturnTimer(int times) {
+			lastCall.answerMore(times - 1);
+		}
 
-        @Override
-        public Object methodCalled(Invocation invocation) {
-            lastInvocation = invocation;
-            verifier.addVerification(newVerification(invocation));
-            return new NullExpectation(invocation).getReturnValue();
-        }
+		@Override
+		public <T> void addMatcher(Matcher<T> matcher) {
+			matchers.add(matcher);
+		}
+	}
 
-        @Override
-        public <T> void lastCallReturn(T returnValue, Class<?> type) {
-            throw new ExpectReturnOutsideExpectReporter();
-        }
+	private class VerificationState implements MockState {
+		protected Verifier verifier;
+		private Invocation lastInvocation;
 
-        @Override
-        public void lastCallThrow(Throwable e) {
-            throw new ExpectThrowOutsideExpectReporter();
-        }
+		public VerificationState(Verifier verifier) {
+			this.verifier = verifier;
+		}
 
-        @Override
-        public void lastReturnTimer(int times) {
-            methodCalled(lastInvocation);
-        }
-    }
+		@Override
+		public Object methodCalled(Invocation invocation) {
+			lastInvocation = invocation;
+			verifier.addVerification(newVerification(invocation));
+			return new NullExpectation(invocation).getReturnValue();
+		}
+
+		@Override
+		public <T> void lastCallReturn(T returnValue, Class<?> type) {
+			throw new ExpectReturnOutsideExpectReporter();
+		}
+
+		@Override
+		public void lastCallThrow(Throwable e) {
+			throw new ExpectThrowOutsideExpectReporter();
+		}
+
+		@Override
+		public void lastReturnTimer(int times) {
+			methodCalled(lastInvocation);
+		}
+
+		@Override
+		public <T> void addMatcher(Matcher<T> matcher) {
+			matchers.add(matcher);
+		}
+	}
 }
