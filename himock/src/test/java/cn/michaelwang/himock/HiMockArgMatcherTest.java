@@ -138,13 +138,14 @@ public class HiMockArgMatcherTest extends HiMockBaseTest {
 			MockedInterface dummy = mock(MockedInterface.class);
 			dummy.withStringArgument(match(str -> str.length() == 5));
 		}, "Mock Process Error:\n"
-				+ "\tmatchers cannot be used outside expectation or verification:\n"
+				+ "\tmatchers cannot be used outside expectations' or verifications' invocation:\n"
 				+ "\t-> at cn.michaelwang.himock.HiMockArgMatcherTest.lambda$testMatcherCannotBeUsedOutsideExpectOrVerification$?(HiMockArgMatcherTest.java:?)\n"
 				+ "\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n"
 				+ "\t   at cn.michaelwang.himock.HiMockArgMatcherTest.testMatcherCannotBeUsedOutsideExpectOrVerification(HiMockArgMatcherTest.java:?)\n");
 	}
 
 	@Test
+	@Ignore
 	public void testCreateMatcherOutsideTheInvocation() {
 		MockedInterface dummy = mock(MockedInterface.class);
 
@@ -153,6 +154,19 @@ public class HiMockArgMatcherTest extends HiMockBaseTest {
 		verify(() -> {
 			String strMatcher = match(arg -> arg.length() == 5);
 			dummy.withObjectArguments(strMatcher, "world");
+		});
+	}
+
+	@Test
+	@Ignore
+	public void testCreateMatcherOutsideTheInvocationUsedWithAnotherMatcher() {
+		MockedInterface dummy = mock(MockedInterface.class);
+
+		dummy.withObjectArguments("hello", "world");
+
+		verify(() -> {
+			String strMatcher = match(arg -> arg.length() == 5);
+			dummy.withObjectArguments(match(arg -> arg.equals("hello")), strMatcher);
 		});
 	}
 

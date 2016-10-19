@@ -8,7 +8,7 @@ public class InvalidMatchPositionReporter extends MockProcessErrorReporter {
 
 	@Override
 	public void buildProcessError(ReportBuilder reportBuilder) {
-		reportBuilder.appendLine("matchers cannot be used outside expectation or verification:");
+		reportBuilder.appendLine("matchers cannot be used outside expectations' or verifications' invocation:");
 		reportBuilder.appendStackTrace(getStackTrace());
 	}
 }
