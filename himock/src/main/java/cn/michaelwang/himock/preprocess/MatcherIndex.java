@@ -14,7 +14,7 @@ public class MatcherIndex implements IMatcherIndex {
 	private Map<Integer, Map<String, Queue<String[]>>> matcherUsages = new HashMap<>();
 
 	@Override
-	public void addMatcherMark(int lineNumber, String mark) {
+	public void markMatcher(int lineNumber, String mark) {
 		Queue<String> line = marks.getOrDefault(lineNumber, new LinkedList<>());
 		marks.putIfAbsent(lineNumber, line);
 
@@ -22,7 +22,7 @@ public class MatcherIndex implements IMatcherIndex {
 	}
 
 	@Override
-	public void addMatcherUsage(int lineNumber, String methodName, String[] args) {
+	public void useMatcher(int lineNumber, String methodName, String[] args) {
 		Map<String, Queue<String[]>> lineUsage = matcherUsages.getOrDefault(lineNumber, new HashMap<>());
 		matcherUsages.putIfAbsent(lineNumber, lineUsage);
 

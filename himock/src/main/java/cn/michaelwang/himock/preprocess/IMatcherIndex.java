@@ -4,7 +4,7 @@ import cn.michaelwang.himock.Matcher;
 
 public interface IMatcherIndex {
 
-	void addMatcherMark(int lineNumber, String mark);
+	void markMatcher(int lineNumber, String mark);
 	
 	/**
 	 * @param lineNumber
@@ -14,7 +14,7 @@ public interface IMatcherIndex {
 	 *            The name of the arguments in the invocation. Non-matcher
 	 *            arguments are set to null.
 	 */
-	void addMatcherUsage(int lineNumber, String methodName, String[] args);
+	void useMatcher(int lineNumber, String methodName, String[] args);
 
 	void addMatcher(int lineNumber, Matcher<?> aMatcher);
 

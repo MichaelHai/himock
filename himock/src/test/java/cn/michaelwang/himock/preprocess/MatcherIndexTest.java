@@ -13,8 +13,8 @@ public class MatcherIndexTest {
 		Matcher<?> aMatcher = Mockito.mock(Matcher.class);
 
 		IMatcherIndex matchers = new MatcherIndex();
-		matchers.addMatcherMark(5, "aMatcherName");
-		matchers.addMatcherUsage(5, "invokedMethod", new String[] { "aMatcherName" });
+		matchers.markMatcher(5, "aMatcherName");
+		matchers.useMatcher(5, "invokedMethod", new String[] { "aMatcherName" });
 		matchers.addMatcher(5, aMatcher);
 
 		assertEquals(aMatcher, matchers.getMatcher(5, "invokedMethod", 0));
@@ -25,8 +25,8 @@ public class MatcherIndexTest {
 		Matcher<?> aMatcher = Mockito.mock(Matcher.class);
 
 		IMatcherIndex matchers = new MatcherIndex();
-		matchers.addMatcherMark(3, "aMatcherName");
-		matchers.addMatcherUsage(5, "invokedMethod", new String[] { "aMatcherName" });
+		matchers.markMatcher(3, "aMatcherName");
+		matchers.useMatcher(5, "invokedMethod", new String[] { "aMatcherName" });
 		matchers.addMatcher(3, aMatcher);
 
 		assertEquals(aMatcher, matchers.getMatcher(5, "invokedMethod", 0));
@@ -38,9 +38,9 @@ public class MatcherIndexTest {
 		Matcher<?> anotherMatcher = Mockito.mock(Matcher.class);
 
 		IMatcherIndex matchers = new MatcherIndex();
-		matchers.addMatcherMark(3, "aMatcherName");
-		matchers.addMatcherMark(4, "anotherMatcherName");
-		matchers.addMatcherUsage(5, "invokedMethod", new String[] { "aMatcherName" });
+		matchers.markMatcher(3, "aMatcherName");
+		matchers.markMatcher(4, "anotherMatcherName");
+		matchers.useMatcher(5, "invokedMethod", new String[] { "aMatcherName" });
 		matchers.addMatcher(3, aMatcher);
 		matchers.addMatcher(4, anotherMatcher);
 
@@ -52,8 +52,8 @@ public class MatcherIndexTest {
 		Matcher<?> aMatcher = Mockito.mock(Matcher.class);
 
 		IMatcherIndex matchers = new MatcherIndex();
-		matchers.addMatcherMark(3, "aMatcherName");
-		matchers.addMatcherUsage(5, "invokedMethod", new String[] { null, "aMatcherName" });
+		matchers.markMatcher(3, "aMatcherName");
+		matchers.useMatcher(5, "invokedMethod", new String[] { null, "aMatcherName" });
 		matchers.addMatcher(3, aMatcher);
 
 		assertEquals(aMatcher, matchers.getMatcher(5, "invokedMethod", 1));
@@ -64,8 +64,8 @@ public class MatcherIndexTest {
 		Matcher<?> aMatcher = Mockito.mock(Matcher.class);
 
 		IMatcherIndex matchers = new MatcherIndex();
-		matchers.addMatcherMark(3, "aMatcherName");
-		matchers.addMatcherUsage(5, "invokedMethod", new String[] { null, "aMatcherName" });
+		matchers.markMatcher(3, "aMatcherName");
+		matchers.useMatcher(5, "invokedMethod", new String[] { null, "aMatcherName" });
 		matchers.addMatcher(3, aMatcher);
 
 		matchers.getMatcher(5, "invokedMethod", 0);
