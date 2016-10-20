@@ -14,6 +14,7 @@ public class InvocationImpl implements Invocation {
     private List<Class<Throwable>> exceptionTypes;
 
     private StackTraceElement[] stackTraceElements;
+	private int lineNumber;
 
     public InvocationImpl(int objectId, String methodName, Class<?>[] parameterTypes, Object[] args, Class<?> returnType, List<Class<Throwable>> exceptionTypes) {
         this.objectId = objectId;
@@ -23,6 +24,7 @@ public class InvocationImpl implements Invocation {
         this.returnType = returnType;
         this.exceptionTypes = exceptionTypes;
         this.stackTraceElements = new Exception().getStackTrace();
+        this.lineNumber = stackTraceElements[3].getLineNumber();
     }
 
     @Override
@@ -59,6 +61,11 @@ public class InvocationImpl implements Invocation {
     public StackTraceElement[] getInvocationStackTrace() {
         return stackTraceElements;
     }
+
+	@Override
+	public int getLineNumber() {
+		return lineNumber;
+	}
 
     @Override
     public boolean sameMethod(Invocation invocation) {

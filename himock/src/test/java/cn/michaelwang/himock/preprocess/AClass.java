@@ -2,6 +2,7 @@ package cn.michaelwang.himock.preprocess;
 
 import static cn.michaelwang.himock.HiMock.match;
 import static cn.michaelwang.himock.HiMock.matchInt;
+import static cn.michaelwang.himock.HiMock.expect;
 
 // Modify this class will cause the position in tests changes
 public class AClass {
@@ -23,6 +24,22 @@ public class AClass {
 
 	private AInterface getMock() {
 		return null;
+	}
+
+	public void matcherUsedInDifferentLinesInOneInvocation() {
+		AInterface mock = getMock();
+
+		mock.aFunctionWithArgs(a,
+				match((arg) -> true));
+	}
+
+	public void matcherInSideExpect() {
+		AInterface mock = getMock();
+		
+		expect(() -> {
+			System.out.println("hello");
+			mock.aFunctionWithArgs(a, a);
+		});
 	}
 }
 

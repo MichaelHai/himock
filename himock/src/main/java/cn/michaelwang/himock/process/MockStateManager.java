@@ -1,5 +1,6 @@
 package cn.michaelwang.himock.process;
 
+import cn.michaelwang.himock.IMatcherIndex;
 import cn.michaelwang.himock.Invocation;
 import cn.michaelwang.himock.Matcher;
 import cn.michaelwang.himock.MockProcessManager;
@@ -20,16 +21,18 @@ import java.util.List;
 public class MockStateManager implements MockProcessManager, InvocationListener {
 	private MockFactory mockFactory;
 	private InvocationRecorder invocationRecorder;
+	private IMatcherIndex matcherIndex;
 
 	private MockState state = new NormalState();
 
 	private List<Verifier> verifiers = new ArrayList<>();
 	private Verifier verifier;
-	private List<Matcher<?>> matchers = new ArrayList<>();
 
-	public MockStateManager(MockFactory mockFactory, InvocationRecorder invocationRecorder) {
+	public MockStateManager(MockFactory mockFactory, InvocationRecorder invocationRecorder,
+			IMatcherIndex matcherIndex) {
 		this.mockFactory = mockFactory;
 		this.invocationRecorder = invocationRecorder;
+		this.matcherIndex = matcherIndex;
 		this.verifier = new NormalVerifier();
 		verifiers.add(verifier);
 	}
@@ -88,7 +91,9 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 
 	@Override
 	public <T> void addMatcher(Matcher<T> matcher) {
-		state.addMatcher(matcher);
+		StackTraceElement[] traces = new Exception().getStackTrace();
+		int lineNumber = traces[2].getLineNumber();
+		matcherIndex.addMatcher(lineNumber, matcher);
 	}
 
 	@Override
@@ -102,9 +107,25 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 	}
 
 	private Verification newVerification(Invocation invocation) {
+		List<Matcher<?>> matchers = getMatchers(invocation);
 		Verification verification = new VerificationImpl(invocation, matchers);
-		matchers = new ArrayList<>();
 		return verification;
+	}
+
+	private List<Matcher<?>> getMatchers(Invocation invocation) {
+		int lineNumber = invocation.getLineNumber();
+		String methodName = invocation.getMethodName();
+		Object[] args = invocation.getArguments();
+
+		List<Matcher<?>> matchers = new ArrayList<>();
+		for (int i = 0; i < args.length; i++) {
+			Matcher<?> matcher = matcherIndex.getMatcher(lineNumber, methodName, i);
+			if (matcher != null) {
+				matchers.add(matcher);
+			}
+		}
+
+		return matchers;
 	}
 
 	private interface MockState {
@@ -115,8 +136,6 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 		void lastCallThrow(Throwable e);
 
 		void lastReturnTimer(int times);
-
-		<T> void addMatcher(Matcher<T> matcher);
 	}
 
 	private class NormalState implements MockState {
@@ -146,11 +165,6 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 		public void lastReturnTimer(int times) {
 			throw new TimerOutsideExpectReporter();
 		}
-
-		@Override
-		public <T> void addMatcher(Matcher<T> matcher) {
-			throw new InvalidMatchPositionReporter();
-		}
 	}
 
 	private class ExpectState implements MockState {
@@ -158,8 +172,8 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 
 		@Override
 		public Object methodCalled(Invocation invocation) {
+			List<Matcher<?>> matchers = getMatchers(invocation);
 			lastCall = invocationRecorder.expect(invocation, matchers);
-			matchers = new ArrayList<>();
 			verifier.addVerification(lastCall.generateVerification());
 			return new NullExpectation(invocation).getReturnValue();
 		}
@@ -200,11 +214,6 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 		public void lastReturnTimer(int times) {
 			lastCall.answerMore(times - 1);
 		}
-
-		@Override
-		public <T> void addMatcher(Matcher<T> matcher) {
-			matchers.add(matcher);
-		}
 	}
 
 	private class VerificationState implements MockState {
@@ -235,11 +244,6 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 		@Override
 		public void lastReturnTimer(int times) {
 			methodCalled(lastInvocation);
-		}
-
-		@Override
-		public <T> void addMatcher(Matcher<T> matcher) {
-			matchers.add(matcher);
 		}
 	}
 }

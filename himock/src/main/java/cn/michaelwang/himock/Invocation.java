@@ -16,6 +16,8 @@ public interface Invocation {
     List<Class<Throwable>> getExceptionTypes();
 
     StackTraceElement[] getInvocationStackTrace();
+    
+    int getLineNumber();
 
     boolean sameMethod(Invocation invocation);
 }

@@ -1,17 +1,25 @@
 package cn.michaelwang.himock.preprocess;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.strobel.assembler.InputTypeLoader;
 import com.strobel.assembler.metadata.DeobfuscationUtilities;
 import com.strobel.assembler.metadata.ITypeLoader;
 import com.strobel.assembler.metadata.MetadataSystem;
+import com.strobel.assembler.metadata.MethodDefinition;
 import com.strobel.assembler.metadata.TypeDefinition;
 import com.strobel.assembler.metadata.TypeReference;
 import com.strobel.decompiler.DecompilationOptions;
 import com.strobel.decompiler.DecompilerSettings;
 import com.strobel.decompiler.languages.java.JavaLanguage;
 import com.strobel.decompiler.languages.java.ast.CompilationUnit;
+import com.strobel.decompiler.languages.java.ast.ConstructorDeclaration;
+import com.strobel.decompiler.languages.java.ast.DepthFirstAstVisitor;
+import com.strobel.decompiler.languages.java.ast.Keys;
+import com.strobel.decompiler.languages.java.ast.LambdaExpression;
+import com.strobel.decompiler.languages.java.ast.MethodDeclaration;
 
 public class ClassToASTDecompiler {
 
@@ -38,6 +46,9 @@ public class ClassToASTDecompiler {
 		MetadataSystem metadataSystem = new MetadataSystem(typeLoader);
 		TypeReference type = metadataSystem.lookupType(filePath);
 		TypeDefinition resolvedType = type.resolve();
+
+		List<MethodDefinition> methods = resolvedType.getDeclaredMethods();
+
 		DeobfuscationUtilities.processType(resolvedType);
 		DecompilationOptions options = new DecompilationOptions();
 		DecompilerSettings settings = DecompilerSettings.javaDefaults();
@@ -45,6 +56,62 @@ public class ClassToASTDecompiler {
 		options.setSettings(settings);
 		options.setFullDecompilation(true);
 
-		return new JavaLanguage().decompileTypeToAst(resolvedType, options);
+		CompilationUnit ast = new JavaLanguage().decompileTypeToAst(resolvedType, options);
+
+		InjectLambdaMethodDefinitionVisitor visitor = new InjectLambdaMethodDefinitionVisitor(methods);
+		ast.acceptVisitor(visitor, null);
+
+		return ast;
+	}
+
+	class InjectLambdaMethodDefinitionVisitor extends DepthFirstAstVisitor<Object, Object> {
+
+		private List<MethodDefinition> methods;
+
+		public InjectLambdaMethodDefinitionVisitor(List<MethodDefinition> methods) {
+			this.methods = new ArrayList<>();
+			for (MethodDefinition method : methods) {
+				this.methods.add(method);
+			}
+		}
+
+		private String currentMethod;
+
+		@Override
+		public Object visitConstructorDeclaration(ConstructorDeclaration node, Object data) {
+			currentMethod = "new";
+			return super.visitConstructorDeclaration(node, data);
+		}
+
+		@Override
+		public Object visitMethodDeclaration(MethodDeclaration node, Object data) {
+			currentMethod = node.getName();
+			return super.visitMethodDeclaration(node, data);
+		}
+
+		@Override
+		public Object visitLambdaExpression(LambdaExpression node, Object data) {
+			String name = "lambda$" + currentMethod + "$";
+			MethodDefinition method = findMethod(name);
+			
+			node.putUserData(Keys.METHOD_DEFINITION, method);
+			methods.remove(method);
+
+			return super.visitLambdaExpression(node, data);
+		}
+
+		private MethodDefinition findMethod(String name) {
+			// The definition in the class file is reversed from the source
+			// file.
+			for (int i = methods.size() - 1; i >= 0; i--) {
+				MethodDefinition method = methods.get(i);
+				String methodName = method.getName();
+				if (methodName.startsWith(name)) {
+					return method;
+				}
+			}
+
+			return null;
+		}
 	}
 }

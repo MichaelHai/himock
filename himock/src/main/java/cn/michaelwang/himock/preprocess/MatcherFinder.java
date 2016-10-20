@@ -14,13 +14,14 @@ import com.strobel.assembler.metadata.MethodDefinition;
 import com.strobel.decompiler.languages.java.LineNumberTableConverter;
 import com.strobel.decompiler.languages.java.OffsetToLineNumberConverter;
 import com.strobel.decompiler.languages.java.ast.AssignmentExpression;
+import com.strobel.decompiler.languages.java.ast.AstNode;
 import com.strobel.decompiler.languages.java.ast.CompilationUnit;
 import com.strobel.decompiler.languages.java.ast.ConstructorDeclaration;
 import com.strobel.decompiler.languages.java.ast.DepthFirstAstVisitor;
-import com.strobel.decompiler.languages.java.ast.EntityDeclaration;
 import com.strobel.decompiler.languages.java.ast.Expression;
 import com.strobel.decompiler.languages.java.ast.InvocationExpression;
 import com.strobel.decompiler.languages.java.ast.Keys;
+import com.strobel.decompiler.languages.java.ast.LambdaExpression;
 import com.strobel.decompiler.languages.java.ast.MethodDeclaration;
 
 import cn.michaelwang.himock.IMatcherIndex;
@@ -64,18 +65,30 @@ public class MatcherFinder {
 			return super.visitConstructorDeclaration(node, data);
 		}
 
-		private void retrieveLineNumberTable(EntityDeclaration node) {
+		@Override
+		public Object visitLambdaExpression(LambdaExpression node, Object data) {
+			retrieveLineNumberTable(node);
+
+			return super.visitLambdaExpression(node, data);
+		}
+
+		private void retrieveLineNumberTable(AstNode node) {
 			MethodDefinition method = node.getUserData(Keys.METHOD_DEFINITION);
 			LineNumberTableAttribute lineNumberTable = SourceAttribute.find(
 					AttributeNames.LineNumberTable,
 					method != null ? method.getSourceAttributes()
 							: Collections.<SourceAttribute> emptyList());
-			converter = new LineNumberTableConverter(lineNumberTable);
+			if (lineNumberTable != null) {
+				converter = new LineNumberTableConverter(lineNumberTable);
+			}
 		}
-
+		
 		@Override
 		public Object visitInvocationExpression(InvocationExpression node, Object data) {
 			int offset = node.getOffset();
+			if (offset < 0) {
+				offset = 0;
+			}
 			int lineNumber = converter.getLineForOffset(offset);
 
 			String name = node.getTarget().getText();
@@ -85,15 +98,20 @@ public class MatcherFinder {
 					return markMatcher(node, lineNumber);
 				}
 			} else {
-				useMatcher(node, lineNumber, name);
+				boolean hasMatcher = useMatcher(node, lineNumber, name);
+				if (hasMatcher) {
+					return null;
+				}
 			}
-			return null;
+
+			return super.visitInvocationExpression(node, data);
 		}
 
 		private Object markMatcher(InvocationExpression node, int lineNumber) {
 			String mark = "anonymous";
 			if (node.getParent() instanceof AssignmentExpression) {
 				mark = ((AssignmentExpression) node.getParent()).getLeft().getText();
+				mark = cutToFunctionName(mark);
 			}
 
 			int id = markIds.getOrDefault(mark, 0);
@@ -106,7 +124,8 @@ public class MatcherFinder {
 			return markWithId;
 		}
 
-		private void useMatcher(InvocationExpression node, int lineNumber, String name) {
+		private boolean useMatcher(InvocationExpression node, int lineNumber, String name) {
+			name = cutToFunctionName(name);
 			Iterator<Expression> arguments = node.getArguments().iterator();
 			List<String> marks = new ArrayList<>();
 			boolean hasMatcher = false;
@@ -117,9 +136,11 @@ public class MatcherFinder {
 					Object result = this.visitInvocationExpression((InvocationExpression) arg, null);
 					if (result != null) {
 						marks.add(result.toString());
+						hasMatcher = true;
 					}
 				} else {
 					String matcherMark = arg.getText();
+					matcherMark = cutToFunctionName(matcherMark);
 					if (markIds.containsKey(matcherMark)) {
 						int id = markIds.get(matcherMark);
 						marks.add(matcherMark + (id - 1));
@@ -134,7 +155,14 @@ public class MatcherFinder {
 				String[] args = new String[marks.size()];
 				marks.toArray(args);
 				matcherIndex.useMatcher(lineNumber, name, args);
+				return true;
 			}
+
+			return false;
+		}
+
+		private String cutToFunctionName(String name) {
+			return name.substring(name.lastIndexOf(".") + 1);
 		}
 
 	}

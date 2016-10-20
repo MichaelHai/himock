@@ -41,11 +41,15 @@ public class MatcherIndex implements IMatcherIndex {
 
 	@Override
 	public Matcher<?> getMatcher(int lineNumber, String methodName, int argIndex) {
-		String mark = matcherUsages.get(lineNumber).get(methodName).poll()[argIndex];
-		if (mark == null) {
-			throw new RetrieveMatcherForNonMatcherArgException();
+		try {
+			String mark = matcherUsages.get(lineNumber).get(methodName).poll()[argIndex];
+			if (mark == null) {
+				throw new RetrieveMatcherForNonMatcherArgException();
+			}
+			return matchers.get(mark);
+		} catch (Exception ex) {
+			return null;
 		}
-		return matchers.get(mark);
 	}
 
 }
