@@ -80,19 +80,31 @@ public class MatcherFinder {
 			if (name.startsWith("HiMock.")) {
 				name = name.substring(7);
 				if (NameRepository.matchers.contains(name)) {
-					AssignmentNameVisitor visitor = new AssignmentNameVisitor();
-					node.getParent().acceptVisitor(visitor, null);
-					String mark = visitor.getName();
-					int id = markIds.getOrDefault(mark, 0);
-					String markWithId = mark + id;
-					matcherIndex.markMatcher(lineNumber, markWithId);
-					id++;
-					markIds.put(mark, id);
-
-					return markWithId;
+					return markMatcher(node, lineNumber);
 				}
+			} else {
+				useMatcher(node, lineNumber, name);
+			}
+			return null;
+		}
+
+		private Object markMatcher(InvocationExpression node, int lineNumber) {
+			String mark = "anonymous";
+			if (node.getParent() instanceof AssignmentExpression) {
+				mark = ((AssignmentExpression) node.getParent()).getLeft().getText();
 			}
 
+			int id = markIds.getOrDefault(mark, 0);
+			String markWithId = mark + id;
+			matcherIndex.markMatcher(lineNumber, markWithId);
+
+			id++;
+			markIds.put(mark, id);
+
+			return markWithId;
+		}
+
+		private void useMatcher(InvocationExpression node, int lineNumber, String name) {
 			Iterator<Expression> arguments = node.getArguments().iterator();
 			List<String> marks = new ArrayList<>();
 			boolean hasMatcher = false;
@@ -100,7 +112,7 @@ public class MatcherFinder {
 				Expression arg = arguments.next();
 
 				if (arg instanceof InvocationExpression) {
-					Object result = this.visitInvocationExpression((InvocationExpression) arg, data);
+					Object result = this.visitInvocationExpression((InvocationExpression) arg, null);
 					if (result != null) {
 						marks.add(result.toString());
 					}
@@ -121,24 +133,7 @@ public class MatcherFinder {
 				marks.toArray(args);
 				matcherIndex.useMatcher(lineNumber, name, args);
 			}
-
-			return null;
 		}
 
-	}
-
-	class AssignmentNameVisitor extends DepthFirstAstVisitor<Object, Object> {
-		private String assignedName = "anonymous";
-
-		@Override
-		public Object visitAssignmentExpression(AssignmentExpression node, Object data) {
-			assignedName = node.getLeft().getText();
-
-			return null;
-		}
-
-		public String getName() {
-			return assignedName;
-		}
 	}
 }
