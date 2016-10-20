@@ -4,6 +4,8 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
+import cn.michaelwang.himock.IMatcherIndex;
+
 public class MatcherFinderTest {
 	@Test
 	public void matchesCanBeFound() {

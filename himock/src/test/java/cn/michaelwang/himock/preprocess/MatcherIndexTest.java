@@ -12,7 +12,7 @@ public class MatcherIndexTest {
 	public void testLinesNumbersCanGetMatchers() {
 		Matcher<?> aMatcher = Mockito.mock(Matcher.class);
 
-		IMatcherIndex matchers = new MatcherIndex();
+		MatcherIndex matchers = new MatcherIndex();
 		matchers.markMatcher(5, "aMatcherName");
 		matchers.useMatcher(5, "invokedMethod", new String[] { "aMatcherName" });
 		matchers.addMatcher(5, aMatcher);
@@ -24,7 +24,7 @@ public class MatcherIndexTest {
 	public void testMatchersMarkedInDifferentLineWithInvocation() {
 		Matcher<?> aMatcher = Mockito.mock(Matcher.class);
 
-		IMatcherIndex matchers = new MatcherIndex();
+		MatcherIndex matchers = new MatcherIndex();
 		matchers.markMatcher(3, "aMatcherName");
 		matchers.useMatcher(5, "invokedMethod", new String[] { "aMatcherName" });
 		matchers.addMatcher(3, aMatcher);
@@ -37,7 +37,7 @@ public class MatcherIndexTest {
 		Matcher<?> aMatcher = Mockito.mock(Matcher.class);
 		Matcher<?> anotherMatcher = Mockito.mock(Matcher.class);
 
-		IMatcherIndex matchers = new MatcherIndex();
+		MatcherIndex matchers = new MatcherIndex();
 		matchers.markMatcher(3, "aMatcherName");
 		matchers.markMatcher(4, "anotherMatcherName");
 		matchers.useMatcher(5, "invokedMethod", new String[] { "aMatcherName" });
@@ -51,7 +51,7 @@ public class MatcherIndexTest {
 	public void testMixMatchersWithNonMatchersInInovcation() {
 		Matcher<?> aMatcher = Mockito.mock(Matcher.class);
 
-		IMatcherIndex matchers = new MatcherIndex();
+		MatcherIndex matchers = new MatcherIndex();
 		matchers.markMatcher(3, "aMatcherName");
 		matchers.useMatcher(5, "invokedMethod", new String[] { null, "aMatcherName" });
 		matchers.addMatcher(3, aMatcher);
@@ -63,7 +63,7 @@ public class MatcherIndexTest {
 	public void testGetMatcherForNonMatcherArgsWillThrowException() {
 		Matcher<?> aMatcher = Mockito.mock(Matcher.class);
 
-		IMatcherIndex matchers = new MatcherIndex();
+		MatcherIndex matchers = new MatcherIndex();
 		matchers.markMatcher(3, "aMatcherName");
 		matchers.useMatcher(5, "invokedMethod", new String[] { null, "aMatcherName" });
 		matchers.addMatcher(3, aMatcher);

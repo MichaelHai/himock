@@ -23,6 +23,8 @@ import com.strobel.decompiler.languages.java.ast.InvocationExpression;
 import com.strobel.decompiler.languages.java.ast.Keys;
 import com.strobel.decompiler.languages.java.ast.MethodDeclaration;
 
+import cn.michaelwang.himock.IMatcherIndex;
+
 public class MatcherFinder {
 	private IMatcherIndex matcherIndex;
 	private CompilationUnit ast;

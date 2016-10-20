@@ -1,6 +1,4 @@
-package cn.michaelwang.himock.preprocess;
-
-import cn.michaelwang.himock.Matcher;
+package cn.michaelwang.himock;
 
 public interface IMatcherIndex {
 

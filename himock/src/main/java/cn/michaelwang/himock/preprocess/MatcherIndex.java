@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
+import cn.michaelwang.himock.IMatcherIndex;
 import cn.michaelwang.himock.Matcher;
 
 public class MatcherIndex implements IMatcherIndex {
