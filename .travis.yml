@@ -3,9 +3,9 @@ jdk:
   - oraclejdk8
 
 script:
-- bundle exec cd himock
-- bundle exec mvn clean test
-- bundle exec cd ..
-- bundle exec cd examples
-- bundle exec mvn clean test
-- bundle exec cd ..
+- cd himock
+- mvn clean test
+- cd ..
+- cd examples
+- mvn clean test
+- cd ..
