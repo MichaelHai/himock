@@ -4,9 +4,9 @@ jdk:
 
 script:
 - cd himock
-- mvn clean test | egrep -v ' Download(ing|ed): '
-- mvn install | egrep -v ' Download(ing|ed): '
+- mvn clean test
+- mvn install
 - cd ..
 - cd examples
-- mvn clean test | egrep -v ' Download(ing|ed): '
+- mvn clean test
 - cd ..
