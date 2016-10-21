@@ -41,15 +41,32 @@ public class MatcherIndex implements IMatcherIndex {
 
 	@Override
 	public Matcher<?> getMatcher(int lineNumber, String methodName, int argIndex) {
-		try {
-			String mark = matcherUsages.get(lineNumber).get(methodName).poll()[argIndex];
-			if (mark == null) {
-				throw new RetrieveMatcherForNonMatcherArgException();
-			}
-			return matchers.get(mark);
-		} catch (Exception ex) {
+		String[] marks = matcherUsages.getOrDefault(lineNumber, new HashMap<>())
+				.getOrDefault(methodName, new LinkedList<>()).peek();
+		if (marks == null) {
 			return null;
 		}
+		String mark = marks[argIndex];
+		if (mark == null) {
+			return null;
+		}
+		marks[argIndex] = null;
+
+		if (allRetrieved(marks)) {
+			matcherUsages.get(lineNumber).get(methodName).poll();
+		}
+
+		return matchers.get(mark);
+	}
+
+	private boolean allRetrieved(String[] marks) {
+		for (String mark : marks) {
+			if (mark != null) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 }

@@ -1,8 +1,12 @@
 package cn.michaelwang.himock.preprocess;
 
+import static cn.michaelwang.himock.HiMock.expect;
 import static cn.michaelwang.himock.HiMock.match;
 import static cn.michaelwang.himock.HiMock.matchInt;
-import static cn.michaelwang.himock.HiMock.expect;
+import static cn.michaelwang.himock.HiMock.mock;
+import static cn.michaelwang.himock.HiMock.verify;
+
+import cn.michaelwang.himock.MockedInterface;
 
 // Modify this class will cause the position in tests changes
 public class AClass {
@@ -39,6 +43,18 @@ public class AClass {
 		expect(() -> {
 			System.out.println("hello");
 			mock.aFunctionWithArgs(a, a);
+			System.out.println("world");
+		});
+	}
+	
+	public void testIntArgumentCanBeMatchedInVerification() {
+		MockedInterface dummy = mock(MockedInterface.class);
+
+		dummy.withOneIntArgument(10);
+
+		verify(() -> {
+			dummy.withOneIntArgument(matchInt(arg -> arg == 10));
+			System.out.println("hello");
 		});
 	}
 }

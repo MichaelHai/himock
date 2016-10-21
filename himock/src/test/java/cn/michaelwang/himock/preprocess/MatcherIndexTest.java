@@ -1,6 +1,7 @@
 package cn.michaelwang.himock.preprocess;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
@@ -70,5 +71,18 @@ public class MatcherIndexTest {
 		matchers.addMatcher(3, aMatcher);
 
 		assertNull(matchers.getMatcher(5, "invokedMethod", 0));
+	}
+	
+	@Test
+	public void testAMatcherCanOnlyBeRetrievedOnce() {
+		Matcher<?> aMatcher = Mockito.mock(Matcher.class);
+
+		MatcherIndex matchers = new MatcherIndex();
+		matchers.markMatcher(3, "aMatcherName");
+		matchers.useMatcher(5, "invokedMethod", new String[] { null, "aMatcherName" });
+		matchers.addMatcher(3, aMatcher);
+
+		assertNotNull(matchers.getMatcher(5, "invokedMethod", 1));
+		assertNull(matchers.getMatcher(5, "invokedMethod", 1));
 	}
 }

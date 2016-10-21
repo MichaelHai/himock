@@ -12,8 +12,9 @@ import com.strobel.assembler.metadata.MethodDefinition;
 import com.strobel.assembler.metadata.TypeDefinition;
 import com.strobel.assembler.metadata.TypeReference;
 import com.strobel.decompiler.DecompilationOptions;
+import com.strobel.decompiler.DecompilerContext;
 import com.strobel.decompiler.DecompilerSettings;
-import com.strobel.decompiler.languages.java.JavaLanguage;
+import com.strobel.decompiler.languages.java.ast.AstBuilder;
 import com.strobel.decompiler.languages.java.ast.CompilationUnit;
 import com.strobel.decompiler.languages.java.ast.ConstructorDeclaration;
 import com.strobel.decompiler.languages.java.ast.DepthFirstAstVisitor;
@@ -47,7 +48,7 @@ public class ClassToASTDecompiler {
 		TypeReference type = metadataSystem.lookupType(filePath);
 		TypeDefinition resolvedType = type.resolve();
 
-		List<MethodDefinition> methods = resolvedType.getDeclaredMethods();
+//		List<MethodDefinition> methods = resolvedType.getDeclaredMethods();
 
 		DeobfuscationUtilities.processType(resolvedType);
 		DecompilationOptions options = new DecompilationOptions();
@@ -56,13 +57,44 @@ public class ClassToASTDecompiler {
 		options.setSettings(settings);
 		options.setFullDecompilation(true);
 
-		CompilationUnit ast = new JavaLanguage().decompileTypeToAst(resolvedType, options);
+//		CompilationUnit ast = new JavaLanguage().decompileTypeToAst(resolvedType, options);
+		CompilationUnit ast = buildAst(resolvedType, options).getCompilationUnit();
 
-		InjectLambdaMethodDefinitionVisitor visitor = new InjectLambdaMethodDefinitionVisitor(methods);
-		ast.acceptVisitor(visitor, null);
+//		InjectLambdaMethodDefinitionVisitor visitor = new InjectLambdaMethodDefinitionVisitor(methods);
+//		ast.acceptVisitor(visitor, null);
 
 		return ast;
 	}
+
+
+    private AstBuilder buildAst(final TypeDefinition type, final DecompilationOptions options) {
+        final AstBuilder builder = createAstBuilder(options, type, false);
+        builder.addType(type);
+        return builder;
+    }
+
+	private AstBuilder createAstBuilder(
+        final DecompilationOptions options,
+        final TypeDefinition currentType,
+        final boolean isSingleMember) {
+
+        final DecompilerSettings settings = options.getSettings();
+        final DecompilerContext context = new DecompilerContext();
+
+        context.setCurrentType(currentType);
+        context.setSettings(settings);
+
+        AstBuilder builder =  new AstBuilder(context);
+        
+//        CompilationUnit ast = builder.getCompilationUnit();
+//        new RewriteLocalClassesTransform(context).run(ast);
+//        new IntroduceOuterClassReferencesTransform(context).run(ast);
+//        new RewriteInnerClassConstructorCalls(context).run(ast);
+//        new DeclareLocalClassesTransform(context).run(ast);
+//		new RemoveHiddenMembersTransform(context).run(ast);
+        
+        return builder;
+    }
 
 	class InjectLambdaMethodDefinitionVisitor extends DepthFirstAstVisitor<Object, Object> {
 
