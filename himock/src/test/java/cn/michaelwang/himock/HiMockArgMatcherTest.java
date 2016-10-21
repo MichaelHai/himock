@@ -158,7 +158,6 @@ public class HiMockArgMatcherTest extends HiMockBaseTest {
 	}
 
 	@Test
-	@Ignore
 	public void testCreateMatcherOutsideTheInvocationUsedWithAnotherMatcher() {
 		MockedInterface dummy = mock(MockedInterface.class);
 

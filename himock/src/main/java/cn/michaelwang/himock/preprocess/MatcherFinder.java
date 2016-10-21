@@ -15,6 +15,7 @@ import com.strobel.decompiler.languages.java.LineNumberTableConverter;
 import com.strobel.decompiler.languages.java.OffsetToLineNumberConverter;
 import com.strobel.decompiler.languages.java.ast.AssignmentExpression;
 import com.strobel.decompiler.languages.java.ast.AstNode;
+import com.strobel.decompiler.languages.java.ast.CastExpression;
 import com.strobel.decompiler.languages.java.ast.CompilationUnit;
 import com.strobel.decompiler.languages.java.ast.ConstructorDeclaration;
 import com.strobel.decompiler.languages.java.ast.DepthFirstAstVisitor;
@@ -67,9 +68,10 @@ public class MatcherFinder {
 
 		@Override
 		public Object visitLambdaExpression(LambdaExpression node, Object data) {
-			retrieveLineNumberTable(node);
-
-			return super.visitLambdaExpression(node, data);
+			// retrieveLineNumberTable(node);
+			//
+			// return super.visitLambdaExpression(node, data);
+			return null;
 		}
 
 		private void retrieveLineNumberTable(AstNode node) {
@@ -82,7 +84,7 @@ public class MatcherFinder {
 				converter = new LineNumberTableConverter(lineNumberTable);
 			}
 		}
-		
+
 		@Override
 		public Object visitInvocationExpression(InvocationExpression node, Object data) {
 			int offset = node.getOffset();
@@ -109,9 +111,17 @@ public class MatcherFinder {
 
 		private Object markMatcher(InvocationExpression node, int lineNumber) {
 			String mark = "anonymous";
-			if (node.getParent() instanceof AssignmentExpression) {
-				mark = ((AssignmentExpression) node.getParent()).getLeft().getText();
+
+			AstNode nonCastExpressionNode = node.getParent();
+			if (nonCastExpressionNode instanceof CastExpression) {
+				nonCastExpressionNode = nonCastExpressionNode.getParent();
+			}
+
+			if (nonCastExpressionNode instanceof AssignmentExpression) {
+				mark = ((AssignmentExpression) nonCastExpressionNode).getLeft().getText();
 				mark = cutToFunctionName(mark);
+			} else if (node.getParent() instanceof CastExpression) {
+
 			}
 
 			int id = markIds.getOrDefault(mark, 0);
@@ -131,6 +141,10 @@ public class MatcherFinder {
 			boolean hasMatcher = false;
 			while (arguments.hasNext()) {
 				Expression arg = arguments.next();
+
+				if (arg instanceof CastExpression) {
+					arg = ((CastExpression) arg).getExpression();
+				}
 
 				if (arg instanceof InvocationExpression) {
 					Object result = this.visitInvocationExpression((InvocationExpression) arg, null);

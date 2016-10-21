@@ -10,6 +10,7 @@ import cn.michaelwang.himock.invocation.InvocationListener;
 import cn.michaelwang.himock.invocation.NoReturnTypeException;
 import cn.michaelwang.himock.invocation.ReturnTypeIsNotSuitableException;
 import cn.michaelwang.himock.process.reporters.*;
+import cn.michaelwang.himock.utils.Utils;
 import cn.michaelwang.himock.verify.InOrderVerifier;
 import cn.michaelwang.himock.verify.NormalVerifier;
 import cn.michaelwang.himock.verify.Verification;
@@ -115,6 +116,8 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 	private List<Matcher<?>> getMatchers(Invocation invocation) {
 		int lineNumber = invocation.getLineNumber();
 		String methodName = invocation.getMethodName();
+		methodName = Utils.removeParenthesesInFunctionName(methodName);
+		methodName = methodName.substring(methodName.lastIndexOf(".") + 1);
 		Object[] args = invocation.getArguments();
 
 		List<Matcher<?>> matchers = new ArrayList<>();
@@ -141,6 +144,11 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 	private class NormalState implements MockState {
 		@Override
 		public Object methodCalled(Invocation invocation) throws Throwable {
+			List<Matcher<?>> matchers = getMatchers(invocation);
+			if (!matchers.isEmpty()) {
+				throw new InvalidMatchPositionReporter();
+			}
+
 			Object[] arguments = invocation.getArguments();
 			for (int i = 0; i < arguments.length; i++) {
 				Object param = arguments[i];
