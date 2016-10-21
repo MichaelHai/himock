@@ -68,9 +68,6 @@ public class MatcherFinder {
 
 		@Override
 		public Object visitLambdaExpression(LambdaExpression node, Object data) {
-			// retrieveLineNumberTable(node);
-			//
-			// return super.visitLambdaExpression(node, data);
 			return null;
 		}
 
@@ -141,6 +138,10 @@ public class MatcherFinder {
 			boolean hasMatcher = false;
 			while (arguments.hasNext()) {
 				Expression arg = arguments.next();
+				
+				if (arg instanceof CastExpression) {
+					arg = ((CastExpression)arg).getExpression();
+				}
 
 				if (arg instanceof CastExpression) {
 					arg = ((CastExpression) arg).getExpression();
