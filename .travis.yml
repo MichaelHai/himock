@@ -10,3 +10,6 @@ script:
 - cd examples
 - mvn clean test
 - cd ..
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
