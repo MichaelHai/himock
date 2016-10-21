@@ -91,54 +91,54 @@ public class HiMock {
 		mockProcessManager.lastReturnTimer(times);
 	}
 
-	public static <T> T match(Matcher<T> matcher) {
-		mockProcessManager.addMatcher(matcher);
+	public static <T> T match(MatcherCondition<T> matcher) {
+		mockProcessManager.addMatcher(new ConditionMatcher<T>(matcher));
 		return null;
 	}
 
-	public static boolean matchBoolean(Matcher<Boolean> matcher) {
-		mockProcessManager.addMatcher(matcher);
+	public static boolean matchBoolean(MatcherCondition<Boolean> matcher) {
+		mockProcessManager.addMatcher(new ConditionMatcher<Boolean>(matcher));
 		return false;
 	}
 
 	@SuppressWarnings("unused") // simple function not tested
-	public static byte matchByte(Matcher<Byte> matcher) {
-		mockProcessManager.addMatcher(matcher);
+	public static byte matchByte(MatcherCondition<Byte> matcher) {
+		mockProcessManager.addMatcher(new ConditionMatcher<Byte>(matcher));
 		return 0;
 	}
 
 	@SuppressWarnings("unused") // simple function not tested
-	public static char matchChar(Matcher<Character> matcher) {
-		mockProcessManager.addMatcher(matcher);
+	public static char matchChar(MatcherCondition<Character> matcher) {
+		mockProcessManager.addMatcher(new ConditionMatcher<Character>(matcher));
 		return 0;
 	}
 
 	@SuppressWarnings("unused") // simple function not tested
-	public static short matchShort(Matcher<Short> matcher) {
-		mockProcessManager.addMatcher(matcher);
+	public static short matchShort(MatcherCondition<Short> matcher) {
+		mockProcessManager.addMatcher(new ConditionMatcher<Short>(matcher));
 		return 0;
 	}
 
-	public static int matchInt(Matcher<Integer> matcher) {
-		mockProcessManager.addMatcher(matcher);
-		return 0;
-	}
-
-	@SuppressWarnings("unused") // simple function not tested
-	public static long matchLong(Matcher<Long> matcher) {
-		mockProcessManager.addMatcher(matcher);
+	public static int matchInt(MatcherCondition<Integer> matcher) {
+		mockProcessManager.addMatcher(new ConditionMatcher<Integer>(matcher));
 		return 0;
 	}
 
 	@SuppressWarnings("unused") // simple function not tested
-	public static float matchFloat(Matcher<Float> matcher) {
-		mockProcessManager.addMatcher(matcher);
+	public static long matchLong(MatcherCondition<Long> matcher) {
+		mockProcessManager.addMatcher(new ConditionMatcher<Long>(matcher));
 		return 0;
 	}
 
 	@SuppressWarnings("unused") // simple function not tested
-	public static double matchDouble(Matcher<Double> matcher) {
-		mockProcessManager.addMatcher(matcher);
+	public static float matchFloat(MatcherCondition<Float> matcher) {
+		mockProcessManager.addMatcher(new ConditionMatcher<Float>(matcher));
+		return 0;
+	}
+
+	@SuppressWarnings("unused") // simple function not tested
+	public static double matchDouble(MatcherCondition<Double> matcher) {
+		mockProcessManager.addMatcher(new ConditionMatcher<Double>(matcher));
 		return 0;
 	}
 
@@ -168,5 +168,28 @@ public class HiMock {
 	@FunctionalInterface
 	public interface Verification {
 		void record();
+	}
+
+	@FunctionalInterface
+	public interface MatcherCondition<T> {
+		boolean isMatch(T actual);
+	}
+
+	private static class ConditionMatcher<T> implements Matcher<T> {
+		private MatcherCondition<T> condition;
+
+		ConditionMatcher(MatcherCondition<T> condition) {
+			this.condition = condition;
+		}
+
+		@Override
+		public boolean isMatch(T actual) {
+			return condition.isMatch(actual);
+		}
+
+		@Override
+		public String toString() {
+			return "'matcher'";
+		}
 	}
 }

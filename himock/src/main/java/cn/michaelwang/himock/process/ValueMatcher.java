@@ -14,4 +14,8 @@ public class ValueMatcher<T> implements Matcher<T> {
 		return value == null ? (actual == null) : value.equals(actual);
 	}
 
+	@Override
+	public String toString() {
+		return value.toString();
+	}
 }
