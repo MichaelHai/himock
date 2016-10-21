@@ -37,7 +37,7 @@ public class ClassToASTDecompiler {
 		String filePath = resource.getFile();
 		if (filePath.startsWith("/")) {
 			// user type
-			filePath = filePath.substring(1);
+			filePath = filePath.substring(0);
 		} else {
 			// not find, type in lib
 			filePath = clazz.getCanonicalName();
