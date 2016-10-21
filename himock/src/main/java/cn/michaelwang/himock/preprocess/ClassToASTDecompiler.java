@@ -45,7 +45,6 @@ public class ClassToASTDecompiler {
 
 		ITypeLoader typeLoader = new InputTypeLoader();
 		MetadataSystem metadataSystem = new MetadataSystem(typeLoader);
-		System.out.println(filePath);
 		TypeReference type = metadataSystem.lookupType(filePath);
 		TypeDefinition resolvedType = type.resolve();
 

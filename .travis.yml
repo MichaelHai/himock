@@ -5,6 +5,7 @@ jdk:
 script:
 - cd himock
 - mvn clean test
+- mvn install
 - cd ..
 - cd examples
 - mvn clean test
