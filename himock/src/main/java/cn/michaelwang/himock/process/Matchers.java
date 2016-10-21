@@ -1,18 +1,15 @@
 package cn.michaelwang.himock.process;
 
-import cn.michaelwang.himock.Matcher;
-import cn.michaelwang.himock.NullObjectPlaceHolder;
-import cn.michaelwang.himock.utils.Utils;
-
 import java.util.List;
+
+import cn.michaelwang.himock.Matcher;
+import cn.michaelwang.himock.utils.Utils;
 
 public class Matchers {
     private List<Matcher<?>> matchers;
-    private Object[] args;
 
-    public Matchers(List<Matcher<?>> matchers, Object[] args) {
+    public Matchers(List<Matcher<?>> matchers) {
         this.matchers = matchers;
-        this.args = args;
     }
 
     public List<Matcher<?>> getMatchers() {
@@ -21,25 +18,12 @@ public class Matchers {
 
     @SuppressWarnings("unchecked")
     protected boolean match(Object[] toMatchArgs) {
-        int matcherIndex = 0;
-        for (int i = 0; i < args.length; i++) {
-            Object thisArg = args[i];
+        for (int i = 0; i < matchers.size(); i++) {
+            Matcher<Object> thisArg = (Matcher<Object>) matchers.get(i);
             Object toCompareArg = toMatchArgs[i];
-
-            if (toCompareArg == NullObjectPlaceHolder.getInstance()) {
-                if (!isNullValue(thisArg)) {
-                    return false;
-                }
-            } else {
-                if (isNullValue(thisArg)) {
-                    Matcher<Object> matcher = (Matcher<Object>) matchers.get(matcherIndex);
-                    matcherIndex++;
-                    if (!matcher.isMatch(toCompareArg)) {
-                        return false;
-                    }
-                } else if (!thisArg.equals(toCompareArg)) {
-                    return false;
-                }
+            
+            if (!thisArg.isMatch(toCompareArg)) {
+            	return false;
             }
         }
 

@@ -1,23 +1,30 @@
 package cn.michaelwang.himock.process;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import cn.michaelwang.himock.IMatcherIndex;
 import cn.michaelwang.himock.Invocation;
 import cn.michaelwang.himock.Matcher;
 import cn.michaelwang.himock.MockProcessManager;
-import cn.michaelwang.himock.NullObjectPlaceHolder;
 import cn.michaelwang.himock.invocation.ExceptionTypeIsNotSuitableException;
 import cn.michaelwang.himock.invocation.InvocationListener;
 import cn.michaelwang.himock.invocation.NoReturnTypeException;
 import cn.michaelwang.himock.invocation.ReturnTypeIsNotSuitableException;
-import cn.michaelwang.himock.process.reporters.*;
+import cn.michaelwang.himock.process.reporters.ExceptionTypeIsNotSuitableReporter;
+import cn.michaelwang.himock.process.reporters.ExpectReturnBeforeInvocationReporter;
+import cn.michaelwang.himock.process.reporters.ExpectReturnOutsideExpectReporter;
+import cn.michaelwang.himock.process.reporters.ExpectThrowOutsideExpectReporter;
+import cn.michaelwang.himock.process.reporters.InvalidMatchPositionReporter;
+import cn.michaelwang.himock.process.reporters.MockNoninterfaceReporter;
+import cn.michaelwang.himock.process.reporters.NoReturnTypeReporter;
+import cn.michaelwang.himock.process.reporters.ReturnTypeIsNotSuitableReporter;
+import cn.michaelwang.himock.process.reporters.TimerOutsideExpectReporter;
 import cn.michaelwang.himock.utils.Utils;
 import cn.michaelwang.himock.verify.InOrderVerifier;
 import cn.michaelwang.himock.verify.NormalVerifier;
 import cn.michaelwang.himock.verify.Verification;
 import cn.michaelwang.himock.verify.Verifier;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MockStateManager implements MockProcessManager, InvocationListener {
 	private MockFactory mockFactory;
@@ -125,6 +132,8 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 			Matcher<?> matcher = matcherIndex.getMatcher(lineNumber, methodName, i);
 			if (matcher != null) {
 				matchers.add(matcher);
+			} else {
+				matchers.add(new ValueMatcher<>(args[i]));
 			}
 		}
 
@@ -145,17 +154,10 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 		@Override
 		public Object methodCalled(Invocation invocation) throws Throwable {
 			List<Matcher<?>> matchers = getMatchers(invocation);
-			if (!matchers.isEmpty()) {
+			if (!matchers.stream().allMatch((matcher) -> matcher instanceof ValueMatcher)) {
 				throw new InvalidMatchPositionReporter();
 			}
 
-			Object[] arguments = invocation.getArguments();
-			for (int i = 0; i < arguments.length; i++) {
-				Object param = arguments[i];
-				if (param == null) {
-					arguments[i] = NullObjectPlaceHolder.getInstance();
-				}
-			}
 			return invocationRecorder.actuallyCall(invocation);
 		}
 

@@ -21,7 +21,7 @@ public class ExpectationImpl implements Expectation, Verification {
 
     public ExpectationImpl(Invocation invocation, List<Matcher<?>> matchers) {
         this.invocation = invocation;
-        this.matchers = new Matchers(matchers, invocation.getArguments());
+        this.matchers = new Matchers(matchers);
     }
 
     @Override

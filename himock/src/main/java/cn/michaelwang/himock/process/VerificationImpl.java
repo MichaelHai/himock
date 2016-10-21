@@ -12,7 +12,7 @@ public class VerificationImpl implements Verification {
 
     public VerificationImpl(Invocation invocation, List<Matcher<?>> matchers) {
         this.invocation = invocation;
-        this.matchers = new Matchers(matchers, invocation.getArguments());
+        this.matchers = new Matchers(matchers);
     }
 
     @Override
