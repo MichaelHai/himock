@@ -228,7 +228,7 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 
 	private class VerificationState implements MockState {
 		protected Verifier verifier;
-		private Invocation lastInvocation;
+		private Verification lastVerification;
 
 		public VerificationState(Verifier verifier) {
 			this.verifier = verifier;
@@ -236,8 +236,8 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 
 		@Override
 		public Object methodCalled(Invocation invocation) {
-			lastInvocation = invocation;
-			verifier.addVerification(newVerification(invocation));
+			lastVerification = newVerification(invocation);
+			verifier.addVerification(lastVerification);
 			return new NullExpectation(invocation).getReturnValue();
 		}
 
@@ -253,7 +253,9 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 
 		@Override
 		public void lastReturnTimer(int times) {
-			methodCalled(lastInvocation);
+			for (int i = 0; i < times - 1; i++) {
+				verifier.addVerification(lastVerification);
+			}
 		}
 	}
 }

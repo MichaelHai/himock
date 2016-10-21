@@ -8,6 +8,7 @@ import static cn.michaelwang.himock.HiMock.mock;
 import static cn.michaelwang.himock.HiMock.verify;
 import static cn.michaelwang.himock.HiMock.verifyInOrder;
 import static cn.michaelwang.himock.HiMock.willReturn;
+import static cn.michaelwang.himock.HiMock.times;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
@@ -213,7 +214,7 @@ public class HiMockArgMatcherTest extends HiMockBaseTest {
 	}
 
 	@Test
-	public void testmatcherDescriptionWhenParamMatchingInVerifyFailed() {
+	public void testMatcherDescriptionWhenParamMatchingInVerifyFailed() {
 		MockedInterface dummy = mock(MockedInterface.class);
 
 		reportTest(() -> {
@@ -227,38 +228,51 @@ public class HiMockArgMatcherTest extends HiMockBaseTest {
 				+ "\t\tmethod called:\tcn.michaelwang.himock.MockedInterface.withObjectArguments\n"
 				+ "\t\targuments expected:\t'matcher'\tworld\n"
 				+ "\t\t-> at cn.michaelwang.himock.HiMockArgMatcherTest.lambda$null$?(HiMockArgMatcherTest.java:?)\n"
-				+ "\t\t   at cn.michaelwang.himock.HiMockArgMatcherTest.lambda$testmatcherDescriptionWhenParamMatchingInVerifyFailed$?(HiMockArgMatcherTest.java:?)\n"
+				+ "\t\t   at cn.michaelwang.himock.HiMockArgMatcherTest.lambda$testMatcherDescriptionWhenParamMatchingInVerifyFailed$?(HiMockArgMatcherTest.java:?)\n"
 				+ "\t\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n"
-				+ "\t\t   at cn.michaelwang.himock.HiMockArgMatcherTest.testmatcherDescriptionWhenParamMatchingInVerifyFailed(HiMockArgMatcherTest.java:?)\n"
+				+ "\t\t   at cn.michaelwang.himock.HiMockArgMatcherTest.testMatcherDescriptionWhenParamMatchingInVerifyFailed(HiMockArgMatcherTest.java:?)\n"
 				+ "\t\targuments actually:\thello\tworld\n"
-				+ "\t\t-> at cn.michaelwang.himock.HiMockArgMatcherTest.lambda$testmatcherDescriptionWhenParamMatchingInVerifyFailed$?(HiMockArgMatcherTest.java:?)\n"
+				+ "\t\t-> at cn.michaelwang.himock.HiMockArgMatcherTest.lambda$testMatcherDescriptionWhenParamMatchingInVerifyFailed$?(HiMockArgMatcherTest.java:?)\n"
 				+ "\t\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n"
-				+ "\t\t   at cn.michaelwang.himock.HiMockArgMatcherTest.testmatcherDescriptionWhenParamMatchingInVerifyFailed(HiMockArgMatcherTest.java:?)\n");
+				+ "\t\t   at cn.michaelwang.himock.HiMockArgMatcherTest.testMatcherDescriptionWhenParamMatchingInVerifyFailed(HiMockArgMatcherTest.java:?)\n");
 	}
 
 	@Test
-	public void testmatcherDescriptionWhenParamMatchingInExpectFailed() {
+	public void testMatcherDescriptionWhenParamMatchingInExpectFailed() {
 		MockedInterface dummy = mock(MockedInterface.class);
 
 		reportTest(() -> {
 			expect(() -> {
 				dummy.withObjectArguments(match(arg -> arg.length() == 4), "world");
 			});
-			
+
 			dummy.withObjectArguments("hello", "world");
-			
+
 			verify();
 		}, "Verification failed:\n"
 				+ "\tinvocation with unexpected arguments:\n"
 				+ "\t\tmethod called:\tcn.michaelwang.himock.MockedInterface.withObjectArguments\n"
 				+ "\t\targuments expected:\t'matcher'\tworld\n"
 				+ "\t\t-> at cn.michaelwang.himock.HiMockArgMatcherTest.lambda$null$?(HiMockArgMatcherTest.java:?)\n"
-				+ "\t\t   at cn.michaelwang.himock.HiMockArgMatcherTest.lambda$testmatcherDescriptionWhenParamMatchingInExpectFailed$?(HiMockArgMatcherTest.java:?)\n"
+				+ "\t\t   at cn.michaelwang.himock.HiMockArgMatcherTest.lambda$testMatcherDescriptionWhenParamMatchingInExpectFailed$?(HiMockArgMatcherTest.java:?)\n"
 				+ "\t\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n"
-				+ "\t\t   at cn.michaelwang.himock.HiMockArgMatcherTest.testmatcherDescriptionWhenParamMatchingInExpectFailed(HiMockArgMatcherTest.java:?)\n"
+				+ "\t\t   at cn.michaelwang.himock.HiMockArgMatcherTest.testMatcherDescriptionWhenParamMatchingInExpectFailed(HiMockArgMatcherTest.java:?)\n"
 				+ "\t\targuments actually:\thello\tworld\n"
-				+ "\t\t-> at cn.michaelwang.himock.HiMockArgMatcherTest.lambda$testmatcherDescriptionWhenParamMatchingInExpectFailed$?(HiMockArgMatcherTest.java:?)\n"
+				+ "\t\t-> at cn.michaelwang.himock.HiMockArgMatcherTest.lambda$testMatcherDescriptionWhenParamMatchingInExpectFailed$?(HiMockArgMatcherTest.java:?)\n"
 				+ "\t\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n"
-				+ "\t\t   at cn.michaelwang.himock.HiMockArgMatcherTest.testmatcherDescriptionWhenParamMatchingInExpectFailed(HiMockArgMatcherTest.java:?)\n");
+				+ "\t\t   at cn.michaelwang.himock.HiMockArgMatcherTest.testMatcherDescriptionWhenParamMatchingInExpectFailed(HiMockArgMatcherTest.java:?)\n");
+	}
+
+	@Test
+	public void testMatcherWithTimes() {
+		MockedInterface dummy = mock(MockedInterface.class);
+
+		dummy.withObjectArguments("hello", "world");
+		dummy.withObjectArguments("hi", "shanghai");
+
+		verify(() -> {
+			dummy.withObjectArguments(match(str -> str.startsWith("h")), match(str -> str.length() >= 5));
+			times(2);
+		});
 	}
 }
