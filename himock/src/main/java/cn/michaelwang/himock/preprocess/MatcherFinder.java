@@ -45,12 +45,11 @@ public class MatcherFinder {
 	class MatcherVisitor extends DepthFirstAstVisitor<Object, Object> {
 		private IMatcherIndex matcherIndex;
 		private Map<String, Integer> markIds = new HashMap<>();
+		private OffsetToLineNumberConverter converter;
 
 		public MatcherVisitor(IMatcherIndex matcherIndex) {
 			this.matcherIndex = matcherIndex;
 		}
-
-		private OffsetToLineNumberConverter converter;
 
 		@Override
 		public Object visitMethodDeclaration(MethodDeclaration node, Object data) {
@@ -71,24 +70,9 @@ public class MatcherFinder {
 			return null;
 		}
 
-		private void retrieveLineNumberTable(AstNode node) {
-			MethodDefinition method = node.getUserData(Keys.METHOD_DEFINITION);
-			LineNumberTableAttribute lineNumberTable = SourceAttribute.find(
-					AttributeNames.LineNumberTable,
-					method != null ? method.getSourceAttributes()
-							: Collections.<SourceAttribute> emptyList());
-			if (lineNumberTable != null) {
-				converter = new LineNumberTableConverter(lineNumberTable);
-			}
-		}
-
 		@Override
 		public Object visitInvocationExpression(InvocationExpression node, Object data) {
-			int offset = node.getOffset();
-			if (offset < 0) {
-				offset = 0;
-			}
-			int lineNumber = converter.getLineForOffset(offset);
+			int lineNumber = getLineNumber(node);
 
 			String name = node.getTarget().getText();
 			if (name.startsWith("HiMock.")) {
@@ -106,6 +90,26 @@ public class MatcherFinder {
 			return super.visitInvocationExpression(node, data);
 		}
 
+		private void retrieveLineNumberTable(AstNode node) {
+			MethodDefinition method = node.getUserData(Keys.METHOD_DEFINITION);
+			LineNumberTableAttribute lineNumberTable = SourceAttribute.find(
+					AttributeNames.LineNumberTable,
+					method != null ? method.getSourceAttributes()
+							: Collections.<SourceAttribute> emptyList());
+			if (lineNumberTable != null) {
+				converter = new LineNumberTableConverter(lineNumberTable);
+			}
+		}
+
+		private int getLineNumber(InvocationExpression node) {
+			int offset = node.getOffset();
+			if (offset < 0) {
+				offset = 0;
+			}
+			int lineNumber = converter.getLineForOffset(offset);
+			return lineNumber;
+		}
+
 		private Object markMatcher(InvocationExpression node, int lineNumber) {
 			String mark = "anonymous";
 
@@ -116,9 +120,7 @@ public class MatcherFinder {
 
 			if (nonCastExpressionNode instanceof AssignmentExpression) {
 				mark = ((AssignmentExpression) nonCastExpressionNode).getLeft().getText();
-				mark = cutToFunctionName(mark);
-			} else if (node.getParent() instanceof CastExpression) {
-
+				mark = cutToName(mark);
 			}
 
 			int id = markIds.getOrDefault(mark, 0);
@@ -131,17 +133,13 @@ public class MatcherFinder {
 			return markWithId;
 		}
 
-		private boolean useMatcher(InvocationExpression node, int lineNumber, String name) {
-			name = cutToFunctionName(name);
+		private boolean useMatcher(InvocationExpression node, int lineNumber, String invocation) {
+			invocation = cutToName(invocation);
 			Iterator<Expression> arguments = node.getArguments().iterator();
 			List<String> marks = new ArrayList<>();
 			boolean hasMatcher = false;
 			while (arguments.hasNext()) {
 				Expression arg = arguments.next();
-				
-				if (arg instanceof CastExpression) {
-					arg = ((CastExpression)arg).getExpression();
-				}
 
 				if (arg instanceof CastExpression) {
 					arg = ((CastExpression) arg).getExpression();
@@ -155,7 +153,7 @@ public class MatcherFinder {
 					}
 				} else {
 					String matcherMark = arg.getText();
-					matcherMark = cutToFunctionName(matcherMark);
+					matcherMark = cutToName(matcherMark);
 					if (markIds.containsKey(matcherMark)) {
 						int id = markIds.get(matcherMark);
 						marks.add(matcherMark + (id - 1));
@@ -169,16 +167,14 @@ public class MatcherFinder {
 			if (hasMatcher) {
 				String[] args = new String[marks.size()];
 				marks.toArray(args);
-				matcherIndex.useMatcher(lineNumber, name, args);
-				return true;
+				matcherIndex.useMatcher(lineNumber, invocation, args);
 			}
 
-			return false;
+			return hasMatcher;
 		}
 
-		private String cutToFunctionName(String name) {
+		private String cutToName(String name) {
 			return name.substring(name.lastIndexOf(".") + 1);
 		}
-
 	}
 }

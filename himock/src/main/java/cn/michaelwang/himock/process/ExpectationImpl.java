@@ -53,7 +53,8 @@ public class ExpectationImpl implements Expectation, Verification {
 	public void addException(Throwable toThrow) {
 		List<Class<Throwable>> exceptionTypes = invocation.getExceptionTypes();
 		if (toThrow instanceof RuntimeException
-				|| exceptionTypes.stream()
+				|| exceptionTypes
+						.stream()
 						.anyMatch(exceptionType -> exceptionType.isAssignableFrom(toThrow.getClass()))) {
 			lastAnswer = new ThrowAnswer(toThrow);
 			returnValue.offer(lastAnswer);

@@ -64,8 +64,7 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 	@Override
 	public void toOrderedVerifyState() {
 		InOrderVerifier verifier = new InOrderVerifier();
-		verifiers.add(verifier);
-		this.state = new VerificationState(verifier);
+		createVerificationState(verifier);
 	}
 
 	@Override
@@ -109,15 +108,9 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 		return state.methodCalled(invocation);
 	}
 
-	private void createVerificationState(NormalVerifier verifier) {
+	private void createVerificationState(Verifier verifier) {
 		verifiers.add(verifier);
 		this.state = new VerificationState(verifier);
-	}
-
-	private Verification newVerification(Invocation invocation) {
-		List<Matcher<?>> matchers = getMatchers(invocation);
-		Verification verification = new VerificationImpl(invocation, matchers);
-		return verification;
 	}
 
 	private List<Matcher<?>> getMatchers(Invocation invocation) {
@@ -256,6 +249,12 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 			for (int i = 0; i < times - 1; i++) {
 				verifier.addVerification(lastVerification);
 			}
+		}
+
+		private Verification newVerification(Invocation invocation) {
+			List<Matcher<?>> matchers = getMatchers(invocation);
+			Verification verification = new VerificationImpl(invocation, matchers);
+			return verification;
 		}
 	}
 }

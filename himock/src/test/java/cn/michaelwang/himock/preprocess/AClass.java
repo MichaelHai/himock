@@ -39,14 +39,14 @@ public class AClass {
 
 	public void matcherInSideExpect() {
 		AInterface mock = getMock();
-		
+
 		expect(() -> {
 			System.out.println("hello");
 			mock.aFunctionWithArgs(a, a);
 			System.out.println("world");
 		});
 	}
-	
+
 	public void testIntArgumentCanBeMatchedInVerification() {
 		MockedInterface dummy = mock(MockedInterface.class);
 
