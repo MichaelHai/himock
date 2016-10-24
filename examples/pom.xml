@@ -14,7 +14,7 @@
     </modules>
 
     <properties>
-        <himock.version>0.2-SNAPSHOT</himock.version>
+        <himock.version>0.2</himock.version>
     </properties>
 
     <build>
