@@ -1,107 +1,161 @@
 package cn.michaelwang.himock;
 
 import cn.michaelwang.himock.mockup.MockFactoryImpl;
+import cn.michaelwang.himock.preprocess.Preprocessor;
+import cn.michaelwang.himock.process.InvocationRecorder;
 import cn.michaelwang.himock.process.MockFactory;
 import cn.michaelwang.himock.process.MockStateManager;
-import cn.michaelwang.himock.record.InvocationRecorder;
 import cn.michaelwang.himock.report.HiMockReporter;
-import cn.michaelwang.himock.verify.Verifier;
 
 public class HiMock {
-    private MockProcessManager mockProcessManager;
+    private static MockProcessManager mockProcessManager;
 
-    public HiMock() {
-        MockFactory mockFactory = MockFactoryImpl.getInstance();
-        InvocationRecorder invocationRecorder = new InvocationRecorder();
-        Verifier verifier = new Verifier();
-        mockProcessManager = new MockStateManager(mockFactory, invocationRecorder, verifier);
+    private HiMock() {
     }
 
-    public <T> T mock(Class<T> mockedInterface) {
+    public static void setup(Class<?> testSuits) {
+        Preprocessor preprocessor = new Preprocessor(testSuits);
+        preprocessor.doPreprocess();
+
+        IMatcherIndex matcherIndex = preprocessor.getMatcherIndex();
+
+        MockFactory mockFactory = MockFactoryImpl.getInstance();
+        InvocationRecorder invocationRecorder = new InvocationRecorder();
+        mockProcessManager = new MockStateManager(mockFactory, invocationRecorder, matcherIndex);
+    }
+
+    public static <T> T mock(Class<T> mockedInterface) {
         return mockProcessManager.mock(mockedInterface);
     }
 
-    public void expect(Expectation expectation) {
+    public static void expect(Expectation expectation) {
         mockProcessManager.toExpectState();
         try {
             expectation.expect();
+        } catch (HiMockReporter reporter) {
+            throw reporter;
         } catch (Throwable throwable) {
-            if (throwable instanceof HiMockReporter) {
-                throw (HiMockReporter) throwable;
-            }
+            // do nothing
         }
         mockProcessManager.toNormalState();
     }
 
-    public <T> HiMock willReturn(T returnValue) {
+    public static <T> void willReturn(T returnValue) {
         mockProcessManager.lastCallReturn(returnValue, returnValue.getClass());
-        return this;
     }
 
-    public HiMock willReturn(boolean returnValue) {
+    public static void willReturn(boolean returnValue) {
         mockProcessManager.lastCallReturn(returnValue, boolean.class);
-        return this;
     }
 
     @SuppressWarnings("unused") // simple function not tested
-    public HiMock willReturn(byte returnValue) {
+    public static void willReturn(byte returnValue) {
         mockProcessManager.lastCallReturn(returnValue, byte.class);
-        return this;
     }
 
     @SuppressWarnings("unused") // simple function not tested
-    public HiMock willReturn(char returnValue) {
+    public static void willReturn(char returnValue) {
         mockProcessManager.lastCallReturn(returnValue, char.class);
-        return this;
     }
 
     @SuppressWarnings("unused") // simple function not tested
-    public HiMock willReturn(short returnValue) {
+    public static void willReturn(short returnValue) {
         mockProcessManager.lastCallReturn(returnValue, short.class);
-        return this;
     }
 
     @SuppressWarnings("unused") // simple function not tested
-    public HiMock willReturn(int returnValue) {
+    public static void willReturn(int returnValue) {
         mockProcessManager.lastCallReturn(returnValue, int.class);
-        return this;
     }
 
     @SuppressWarnings("unused") // simple function not tested
-    public HiMock willReturn(long returnValue) {
+    public static void willReturn(long returnValue) {
         mockProcessManager.lastCallReturn(returnValue, long.class);
-        return this;
     }
 
     @SuppressWarnings("unused") // simple function not tested
-    public HiMock willReturn(float returnValue) {
+    public static void willReturn(float returnValue) {
         mockProcessManager.lastCallReturn(returnValue, float.class);
-        return this;
     }
 
     @SuppressWarnings("unused") // simple function not tested
-    public HiMock willReturn(double returnValue) {
+    public static void willReturn(double returnValue) {
         mockProcessManager.lastCallReturn(returnValue, double.class);
-        return this;
     }
 
-    public HiMock willThrow(Throwable e) {
+    public static void willThrow(Throwable e) {
         mockProcessManager.lastCallThrow(e);
-        return this;
     }
 
-    public HiMock times(int times) {
+    public static void times(int times) {
         mockProcessManager.lastReturnTimer(times);
-        return this;
     }
 
-    public void verify() {
+    public static <T> T match(MatcherCondition<T> matcher) {
+        mockProcessManager.addMatcher(new ConditionMatcher<T>(matcher));
+        return null;
+    }
+
+    public static boolean matchBoolean(MatcherCondition<Boolean> matcher) {
+        mockProcessManager.addMatcher(new ConditionMatcher<Boolean>(matcher));
+        return false;
+    }
+
+    @SuppressWarnings("unused") // simple function not tested
+    public static byte matchByte(MatcherCondition<Byte> matcher) {
+        mockProcessManager.addMatcher(new ConditionMatcher<Byte>(matcher));
+        return 0;
+    }
+
+    @SuppressWarnings("unused") // simple function not tested
+    public static char matchChar(MatcherCondition<Character> matcher) {
+        mockProcessManager.addMatcher(new ConditionMatcher<Character>(matcher));
+        return 0;
+    }
+
+    @SuppressWarnings("unused") // simple function not tested
+    public static short matchShort(MatcherCondition<Short> matcher) {
+        mockProcessManager.addMatcher(new ConditionMatcher<Short>(matcher));
+        return 0;
+    }
+
+    public static int matchInt(MatcherCondition<Integer> matcher) {
+        mockProcessManager.addMatcher(new ConditionMatcher<Integer>(matcher));
+        return 0;
+    }
+
+    @SuppressWarnings("unused") // simple function not tested
+    public static long matchLong(MatcherCondition<Long> matcher) {
+        mockProcessManager.addMatcher(new ConditionMatcher<Long>(matcher));
+        return 0;
+    }
+
+    @SuppressWarnings("unused") // simple function not tested
+    public static float matchFloat(MatcherCondition<Float> matcher) {
+        mockProcessManager.addMatcher(new ConditionMatcher<Float>(matcher));
+        return 0;
+    }
+
+    @SuppressWarnings("unused") // simple function not tested
+    public static double matchDouble(MatcherCondition<Double> matcher) {
+        mockProcessManager.addMatcher(new ConditionMatcher<Double>(matcher));
+        return 0;
+    }
+
+    public static void verify() {
         mockProcessManager.doVerify();
     }
 
-    public void verify(Verification verify) {
+    public static void verify(Verification verification) {
         mockProcessManager.toVerifyState();
-        verify.verify();
+        verification.record();
+        mockProcessManager.toNormalState();
+        verify();
+    }
+
+    public static void verifyInOrder(Verification verification) {
+        mockProcessManager.toOrderedVerifyState();
+        verification.record();
         mockProcessManager.toNormalState();
         verify();
     }
@@ -113,6 +167,29 @@ public class HiMock {
 
     @FunctionalInterface
     public interface Verification {
-        void verify();
+        void record();
+    }
+
+    @FunctionalInterface
+    public interface MatcherCondition<T> {
+        boolean isMatch(T actual);
+    }
+
+    private static class ConditionMatcher<T> implements Matcher<T> {
+        private MatcherCondition<T> condition;
+
+        ConditionMatcher(MatcherCondition<T> condition) {
+            this.condition = condition;
+        }
+
+        @Override
+        public boolean isMatch(T actual) {
+            return condition.isMatch(actual);
+        }
+
+        @Override
+        public String toString() {
+            return "'matcher'";
+        }
     }
 }

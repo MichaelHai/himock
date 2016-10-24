@@ -8,3 +8,8 @@
 out
 gen
 target/
+
+# Eclipse project files
+.project
+.settings/
+.classpath

@@ -8,6 +8,7 @@ import java.util.List;
 public class ReportBuilder {
     private final String LEVEL_INDICATOR = "\t";
     private StringBuilder sb = new StringBuilder();
+
     private int level = 0;
 
     public void buildNextLevel(Level level) {
@@ -16,8 +17,7 @@ public class ReportBuilder {
         levelEnd();
     }
 
-    @SafeVarargs // safe
-    public final <T> void appendLine(T... lines) {
+    public <T> void appendLine(@SuppressWarnings("unchecked") T... lines) {
         lineStart();
         for (T line : lines) {
             append(line);
@@ -38,14 +38,31 @@ public class ReportBuilder {
         }
     }
 
-    public void appendParameters(String label, Object[] parameters) {
+    public void appendParameters(String description, Object[] parameters) {
         lineStart();
 
-        append(label);
+        append(description);
         for (Object parameter : parameters) {
             append("\t");
             append(parameter);
         }
+
+        lineEnd();
+    }
+
+    public void appendInvocationMessage(String methodName, Object[] args) {
+        lineStart();
+
+        sb.append(Utils.removeParenthesesInFunctionName(methodName));
+        sb.append("(");
+        for (Object parameter : args) {
+            sb.append(parameter);
+            sb.append(", ");
+        }
+        if (sb.lastIndexOf(",") != -1) {
+            sb.delete(sb.lastIndexOf(","), sb.length());
+        }
+        sb.append(")");
 
         lineEnd();
     }
@@ -74,21 +91,6 @@ public class ReportBuilder {
 
     private void lineEnd() {
         sb.append("\n");
-    }
-
-    private void appendInvocationMessage(String methodName, Object[] args) {
-        lineStart();
-        sb.append(Utils.removeParenthesesInFunctionName(methodName));
-        sb.append("(");
-        if (args != null) {
-            for (Object parameter : args) {
-                sb.append(parameter);
-                sb.append(", ");
-            }
-            sb.delete(sb.lastIndexOf(","), sb.length());
-        }
-        sb.append(")");
-        lineEnd();
     }
 
     private StackTraceElement[] simplifyTheStackTraces(StackTraceElement[] traces) {

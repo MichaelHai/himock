@@ -4,8 +4,9 @@ import cn.michaelwang.himock.process.MockProcessErrorReporter;
 import cn.michaelwang.himock.report.ReportBuilder;
 
 public class MockNoninterfaceReporter extends MockProcessErrorReporter {
+	private static final long serialVersionUID = 1436742152819640924L;
 
-    private Class<?> mockedClass;
+	private Class<?> mockedClass;
 
     public MockNoninterfaceReporter(Class<?> mockedClass) {
         this.mockedClass = mockedClass;

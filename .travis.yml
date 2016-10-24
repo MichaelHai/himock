@@ -1,0 +1,15 @@
+language: java
+jdk:
+  - oraclejdk8
+
+script:
+- cd himock
+- mvn clean test
+- mvn install
+- cd ..
+- cd examples
+- mvn clean test
+- cd ..
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)

@@ -1,7 +1,11 @@
 package cn.michaelwang.himock.invocation;
 
-public class ReturnTypeIsNotSuitableException extends Exception {
-    private final Invocation invocation;
+import cn.michaelwang.himock.Invocation;
+
+public class ReturnTypeIsNotSuitableException extends RuntimeException {
+	private static final long serialVersionUID = 7369768452877029652L;
+	
+	private final Invocation invocation;
     private final Class<?> toSetType;
 
     public ReturnTypeIsNotSuitableException(Invocation invocation, Class<?> toSetType) {

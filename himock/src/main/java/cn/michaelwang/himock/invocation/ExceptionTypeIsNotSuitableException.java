@@ -1,7 +1,11 @@
 package cn.michaelwang.himock.invocation;
 
+import cn.michaelwang.himock.Invocation;
+
 public class ExceptionTypeIsNotSuitableException extends RuntimeException {
-    private final Invocation invocation;
+	private static final long serialVersionUID = 3688032659954119147L;
+	
+	private final Invocation invocation;
     private final Throwable toThrow;
 
     public ExceptionTypeIsNotSuitableException(Invocation invocation, Throwable toThrow) {

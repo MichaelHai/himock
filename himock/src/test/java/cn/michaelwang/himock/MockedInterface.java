@@ -5,15 +5,27 @@ public interface MockedInterface {
 
     int returnInt();
 
+    int returnInt(int i);
+
     boolean returnBoolean();
 
     Object returnObject();
 
-    void withOneIntParameter(int i);
+    void withOneIntArgument(int i);
 
-    void withMultipleIntParameters(int i, int i1);
+    void withMultipleIntArguments(int i, int i1);
 
-    void withObjectParameters(String o1, String o2);
+    void withObjectArguments(String o1, String o2);
+
+    int withStringArgument(String string);
+
+    void withBooleanParameter(boolean b);
 
     int throwException() throws UserException;
+
+    UserUncheckedException returnUserUncheckedException();
+
+    UserException returnUserException();
+
+    UserException returnUserExceptionAndThrow() throws Exception;
 }
