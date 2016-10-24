@@ -16,8 +16,8 @@ public class Utils {
     }
 
     public static boolean isNameOfPrimitiveType(String type) {
-        return type.equals("byte") || type.equals("char") || type.equals("short")
-                || type.equals("int") || type.equals("long") || type.equals("float")
-                || type.equals("double") || type.equals("boolean");
+        return "byte".equals(type) || "char".equals(type) || "short".equals(type)
+                || "int".equals(type) || "long".equals(type) || "float".equals(type)
+                || "double".equals(type) || "boolean".equals(type);
     }
 }

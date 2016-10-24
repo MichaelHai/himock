@@ -36,34 +36,32 @@ public class ClassToASTDecompiler {
 		TypeReference type = metadataSystem.lookupType(filePath);
 		TypeDefinition resolvedType = type.resolve();
 		DeobfuscationUtilities.processType(resolvedType);
-		
+
 		DecompilationOptions options = new DecompilationOptions();
 		DecompilerSettings settings = DecompilerSettings.javaDefaults();
 		settings.setShowDebugLineNumbers(true);
 		options.setSettings(settings);
 		options.setFullDecompilation(true);
-		
+
 		return buildAst(resolvedType, options).getCompilationUnit();
 	}
 
-
-    private AstBuilder buildAst(final TypeDefinition type, final DecompilationOptions options) {
-        final AstBuilder builder = createAstBuilder(options, type, false);
-        builder.addType(type);
-        return builder;
-    }
+	private AstBuilder buildAst(final TypeDefinition type, final DecompilationOptions options) {
+		final AstBuilder builder = createAstBuilder(options, type);
+		builder.addType(type);
+		return builder;
+	}
 
 	private AstBuilder createAstBuilder(
-        final DecompilationOptions options,
-        final TypeDefinition currentType,
-        final boolean isSingleMember) {
+			final DecompilationOptions options,
+			final TypeDefinition currentType) {
 
-        final DecompilerSettings settings = options.getSettings();
-        final DecompilerContext context = new DecompilerContext();
+		final DecompilerSettings settings = options.getSettings();
+		final DecompilerContext context = new DecompilerContext();
 
-        context.setCurrentType(currentType);
-        context.setSettings(settings);
+		context.setCurrentType(currentType);
+		context.setSettings(settings);
 
-        return new AstBuilder(context);
-    }
+		return new AstBuilder(context);
+	}
 }

@@ -134,7 +134,7 @@ public class MatcherFinder {
 		}
 
 		private boolean useMatcher(InvocationExpression node, int lineNumber, String invocation) {
-			invocation = cutToName(invocation);
+			String invocationName = cutToName(invocation);
 			Iterator<Expression> arguments = node.getArguments().iterator();
 			List<String> marks = new ArrayList<>();
 			boolean hasMatcher = false;
@@ -167,7 +167,7 @@ public class MatcherFinder {
 			if (hasMatcher) {
 				String[] args = new String[marks.size()];
 				marks.toArray(args);
-				matcherIndex.useMatcher(lineNumber, invocation, args);
+				matcherIndex.useMatcher(lineNumber, invocationName, args);
 			}
 
 			return hasMatcher;

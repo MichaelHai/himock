@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class ASTPool {
     private static ASTPool instance;
-    Map<Class<?>, CompilationUnit> asts = new HashMap<>();
+    private Map<Class<?>, CompilationUnit> asts = new HashMap<>();
 
     private ASTPool() {
     }

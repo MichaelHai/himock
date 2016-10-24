@@ -118,9 +118,9 @@ public class ExpectationImpl implements Expectation, Verification {
 
 			if (thisTypeName.startsWith("java.lang.")) {
 				thisTypeName = thisTypeName.substring("java.lang.".length());
-				if (thisTypeName.toLowerCase().equals(targetTypeName)
-						|| (thisTypeName.equals("Integer") && targetTypeName.equals("int"))
-						|| (thisTypeName.equals("Character") && targetTypeName.equals("char"))) {
+				if (thisTypeName.equalsIgnoreCase(targetTypeName)
+						|| ("Integer".equals(thisTypeName) && "int".equals(targetTypeName))
+						|| ("Character".equals(thisTypeName) && "char".equals(targetTypeName))) {
 					return true;
 				}
 			}

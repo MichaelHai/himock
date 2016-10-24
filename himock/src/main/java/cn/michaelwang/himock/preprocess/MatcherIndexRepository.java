@@ -7,6 +7,8 @@ import cn.michaelwang.himock.IMatcherIndex;
 
 public class MatcherIndexRepository {
 	private static MatcherIndexRepository instance;
+	
+	private Map<Class<?>, IMatcherIndex> matcherIndexes = new HashMap<>();
 
 	private MatcherIndexRepository() {
 	}
@@ -19,7 +21,6 @@ public class MatcherIndexRepository {
 		return instance;
 	}
 
-	private Map<Class<?>, IMatcherIndex> matcherIndexes = new HashMap<>();
 
 	public IMatcherIndex getMatcherIndex(Class<?> testSuit) {
 		if (!matcherIndexes.containsKey(testSuit)) {
