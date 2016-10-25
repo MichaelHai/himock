@@ -1,4 +1,4 @@
-package cn.michaelwang.himock.invocation;
+package cn.michaelwang.himock.mockup;
 
 import cn.michaelwang.himock.Invocation;
 
@@ -24,7 +24,14 @@ public class InvocationImpl implements Invocation {
         this.returnType = returnType;
         this.exceptionTypes = exceptionTypes;
         this.stackTraceElements = new Exception().getStackTrace();
-        this.lineNumber = stackTraceElements[3].getLineNumber();
+        /*
+         * 0: here
+         * 1: factory
+         * 2: handler
+         * 3: mocked object
+         * 4: code in test
+         */
+        this.lineNumber = stackTraceElements[4].getLineNumber();
     }
 
     @Override

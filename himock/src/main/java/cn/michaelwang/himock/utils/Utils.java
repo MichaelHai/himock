@@ -20,4 +20,15 @@ public class Utils {
                 || "int".equals(type) || "long".equals(type) || "float".equals(type)
                 || "double".equals(type) || "boolean".equals(type);
     }
+    
+    public static Object nullValue(Class<?> type) {
+		if (Utils.isPrimitiveOrBoxType(type)) {
+			if (type.equals(Boolean.TYPE) || type.equals(Boolean.class)) {
+				return false;
+			}
+			return 0;
+		}
+
+		return null;
+    }
 }

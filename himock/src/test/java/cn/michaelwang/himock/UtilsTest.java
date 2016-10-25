@@ -37,4 +37,26 @@ public class UtilsTest {
         assertFalse(Utils.isNameOfPrimitiveType("Object"));
         assertFalse(Utils.isNameOfPrimitiveType("Integer"));
     }
+    
+    @Test
+    public void testNullValue() {
+    	assertEquals(0, Utils.nullValue(byte.class));
+    	assertEquals(0, Utils.nullValue(char.class));
+    	assertEquals(0, Utils.nullValue(short.class));
+    	assertEquals(0, Utils.nullValue(int.class));
+    	assertEquals(0, Utils.nullValue(long.class));
+    	assertEquals(0, Utils.nullValue(float.class));
+    	assertEquals(0, Utils.nullValue(double.class));
+    	assertEquals(false, Utils.nullValue(boolean.class));
+    	assertEquals(null, Utils.nullValue(Object.class));
+    	assertEquals(null, Utils.nullValue(String.class));
+    	assertEquals(0, Utils.nullValue(Byte.class));
+    	assertEquals(0, Utils.nullValue(Character.class));
+    	assertEquals(0, Utils.nullValue(Short.class));
+    	assertEquals(0, Utils.nullValue(Integer.class));
+    	assertEquals(0, Utils.nullValue(Long.class));
+    	assertEquals(0, Utils.nullValue(Float.class));
+    	assertEquals(0, Utils.nullValue(Double.class));
+    	assertEquals(false, Utils.nullValue(Boolean.class));
+    }
 }

@@ -5,6 +5,7 @@ import java.util.List;
 
 import cn.michaelwang.himock.Invocation;
 import cn.michaelwang.himock.Matcher;
+import cn.michaelwang.himock.mockup.NoExpectedInvocationException;
 
 public class InvocationRecorder {
 	private List<Expectation> expectedInvocations = new ArrayList<>();
@@ -15,7 +16,7 @@ public class InvocationRecorder {
 		return expectedInvocations.stream()
 				.filter(expectation -> expectation.match(invocation))
 				.findFirst()
-				.orElse(new NullExpectation(invocation))
+				.orElseThrow(() -> new NoExpectedInvocationException())
 				.getReturnValue();
 	}
 

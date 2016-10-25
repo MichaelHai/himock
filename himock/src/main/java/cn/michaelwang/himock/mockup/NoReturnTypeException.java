@@ -1,4 +1,4 @@
-package cn.michaelwang.himock.invocation;
+package cn.michaelwang.himock.mockup;
 
 import cn.michaelwang.himock.Invocation;
 

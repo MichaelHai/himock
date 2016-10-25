@@ -2,9 +2,9 @@ package cn.michaelwang.himock.process;
 
 import cn.michaelwang.himock.Invocation;
 import cn.michaelwang.himock.Matcher;
-import cn.michaelwang.himock.invocation.ExceptionTypeIsNotSuitableException;
-import cn.michaelwang.himock.invocation.NoReturnTypeException;
-import cn.michaelwang.himock.invocation.ReturnTypeIsNotSuitableException;
+import cn.michaelwang.himock.mockup.ExceptionTypeIsNotSuitableException;
+import cn.michaelwang.himock.mockup.NoReturnTypeException;
+import cn.michaelwang.himock.mockup.ReturnTypeIsNotSuitableException;
 import cn.michaelwang.himock.utils.Utils;
 import cn.michaelwang.himock.verify.Verification;
 
@@ -99,14 +99,7 @@ public class ExpectationImpl implements Expectation, Verification {
 
 	protected Object nullValue() {
 		Class<?> returnType = invocation.getReturnType();
-		if (Utils.isPrimitiveOrBoxType(returnType)) {
-			if (returnType.equals(Boolean.TYPE) || returnType.equals(Boolean.class)) {
-				return false;
-			}
-			return 0;
-		}
-
-		return null;
+		return Utils.nullValue(returnType);
 	}
 
 	private boolean isSuitableType(Class<?> thisType, Class<?> targetType) {
