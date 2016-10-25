@@ -2,9 +2,7 @@ package cn.michaelwang.himock;
 
 import cn.michaelwang.himock.preprocess.Preprocessor;
 import cn.michaelwang.himock.process.InvocationRecorder;
-import cn.michaelwang.himock.process.MockFactory;
 import cn.michaelwang.himock.process.MockStateManager;
-import cn.michaelwang.himock.process.mockup.MockFactoryImpl;
 import cn.michaelwang.himock.report.HiMockReporter;
 
 public class HiMock {
@@ -18,10 +16,8 @@ public class HiMock {
         preprocessor.doPreprocess();
 
         IMatcherIndex matcherIndex = preprocessor.getMatcherIndex();
-
-        MockFactory mockFactory = MockFactoryImpl.getInstance();
         InvocationRecorder invocationRecorder = new InvocationRecorder();
-        mockProcessManager = new MockStateManager(mockFactory, invocationRecorder, matcherIndex);
+        mockProcessManager = new MockStateManager(invocationRecorder, matcherIndex);
     }
 
     public static <T> T mock(Class<T> mockedInterface) {

@@ -10,6 +10,7 @@ import cn.michaelwang.himock.MockProcessManager;
 import cn.michaelwang.himock.process.exceptions.ExceptionTypeIsNotSuitableException;
 import cn.michaelwang.himock.process.exceptions.NoReturnTypeException;
 import cn.michaelwang.himock.process.exceptions.ReturnTypeIsNotSuitableException;
+import cn.michaelwang.himock.process.mockup.MockFactoryImpl;
 import cn.michaelwang.himock.process.reporters.ExceptionTypeIsNotSuitableReporter;
 import cn.michaelwang.himock.process.reporters.ExpectExceptionBeforeInvocationReporter;
 import cn.michaelwang.himock.process.reporters.ExpectReturnBeforeInvocationReporter;
@@ -33,9 +34,9 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 	private List<Verifier> verifiers = new ArrayList<>();
 	private Verifier verifier;
 
-	public MockStateManager(MockFactory mockFactory, InvocationRecorder invocationRecorder,
+	public MockStateManager(InvocationRecorder invocationRecorder,
 			IMatcherIndex matcherIndex) {
-		this.mockFactory = mockFactory;
+		this.mockFactory = MockFactoryImpl.getInstance();
 		this.invocationRecorder = invocationRecorder;
 		this.matcherIndex = matcherIndex;
 		this.verifier = new NormalVerifier();
