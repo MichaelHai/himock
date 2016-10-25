@@ -1,4 +1,4 @@
-package cn.michaelwang.himock.mockup;
+package cn.michaelwang.himock.process.mockup;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -13,11 +13,14 @@ import org.mockito.Mockito;
 
 import cn.michaelwang.himock.Invocation;
 import cn.michaelwang.himock.MockedClass;
+import cn.michaelwang.himock.process.InvocationListener;
+import cn.michaelwang.himock.process.exceptions.NoExpectedInvocationException;
+import cn.michaelwang.himock.process.mockup.ClassMockBuilder;
 
 public class MockBuilderTest {
 	@Test
 	public void testClassCanBeMocked() {
-		MockBuilder<MockedClass> builder = new MockBuilder<>(MockedClass.class);
+		ClassMockBuilder<MockedClass> builder = new ClassMockBuilder<>(MockedClass.class);
 		MockedClass dummy = builder.createMock(0);
 
 		assertNotNull(dummy);
@@ -25,7 +28,7 @@ public class MockBuilderTest {
 
 	@Test
 	public void testMockedClassShouldResponseAsCreatedOneIfNoExpectIsSettled() {
-		MockBuilder<MockedClass> builder = new MockBuilder<>(MockedClass.class);
+		ClassMockBuilder<MockedClass> builder = new ClassMockBuilder<>(MockedClass.class);
 		MockedClass dummy = builder.createMock(0);
 
 		assertEquals(5, dummy.add(2, 3));
@@ -33,7 +36,7 @@ public class MockBuilderTest {
 
 	@Test
 	public void testInvocationHandlerCanBeUsed() throws NoExpectedInvocationException, Throwable {
-		MockBuilder<MockedClass> builder = new MockBuilder<>(MockedClass.class);
+		ClassMockBuilder<MockedClass> builder = new ClassMockBuilder<>(MockedClass.class);
 
 		InvocationListener listener = Mockito.mock(InvocationListener.class);
 		builder.setInvocationListener(listener);
@@ -60,7 +63,7 @@ public class MockBuilderTest {
 
 	@Test
 	public void testListnerReturnedValueShouldBeReturned() throws NoExpectedInvocationException, Throwable {
-		MockBuilder<MockedClass> builder = new MockBuilder<>(MockedClass.class);
+		ClassMockBuilder<MockedClass> builder = new ClassMockBuilder<>(MockedClass.class);
 
 		InvocationListener listener = Mockito.mock(InvocationListener.class);
 		builder.setInvocationListener(listener);
@@ -76,7 +79,7 @@ public class MockBuilderTest {
 	@Test
 	public void testListnerHasNoExpectationShouldInvokeTheOriginalMethod()
 			throws NoExpectedInvocationException, Throwable {
-		MockBuilder<MockedClass> builder = new MockBuilder<>(MockedClass.class);
+		ClassMockBuilder<MockedClass> builder = new ClassMockBuilder<>(MockedClass.class);
 
 		InvocationListener listener = Mockito.mock(InvocationListener.class);
 		builder.setInvocationListener(listener);

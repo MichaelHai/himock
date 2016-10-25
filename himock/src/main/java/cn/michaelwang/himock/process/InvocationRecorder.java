@@ -5,7 +5,7 @@ import java.util.List;
 
 import cn.michaelwang.himock.Invocation;
 import cn.michaelwang.himock.Matcher;
-import cn.michaelwang.himock.mockup.NoExpectedInvocationException;
+import cn.michaelwang.himock.process.exceptions.NoExpectedInvocationException;
 
 public class InvocationRecorder {
 	private List<Expectation> expectedInvocations = new ArrayList<>();

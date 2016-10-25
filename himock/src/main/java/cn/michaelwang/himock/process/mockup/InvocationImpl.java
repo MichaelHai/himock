@@ -1,9 +1,9 @@
-package cn.michaelwang.himock.mockup;
-
-import cn.michaelwang.himock.Invocation;
+package cn.michaelwang.himock.process.mockup;
 
 import java.util.Arrays;
 import java.util.List;
+
+import cn.michaelwang.himock.Invocation;
 
 public class InvocationImpl implements Invocation {
     private int objectId;

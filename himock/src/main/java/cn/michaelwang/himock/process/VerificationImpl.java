@@ -4,7 +4,6 @@ import java.util.List;
 
 import cn.michaelwang.himock.Invocation;
 import cn.michaelwang.himock.Matcher;
-import cn.michaelwang.himock.verify.Verification;
 
 public class VerificationImpl implements Verification {
 	private Invocation invocation;

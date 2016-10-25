@@ -1,7 +1,9 @@
-package cn.michaelwang.himock.verify;
+package cn.michaelwang.himock.process.verifiers;
 
 import cn.michaelwang.himock.Invocation;
-import cn.michaelwang.himock.verify.failure.OrderFailure;
+import cn.michaelwang.himock.process.Verification;
+import cn.michaelwang.himock.process.Verifier;
+import cn.michaelwang.himock.process.verifiers.failures.OrderFailure;
 
 import java.util.ArrayList;
 import java.util.HashSet;

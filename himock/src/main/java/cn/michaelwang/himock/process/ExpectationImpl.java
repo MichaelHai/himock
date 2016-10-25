@@ -2,11 +2,10 @@ package cn.michaelwang.himock.process;
 
 import cn.michaelwang.himock.Invocation;
 import cn.michaelwang.himock.Matcher;
-import cn.michaelwang.himock.mockup.ExceptionTypeIsNotSuitableException;
-import cn.michaelwang.himock.mockup.NoReturnTypeException;
-import cn.michaelwang.himock.mockup.ReturnTypeIsNotSuitableException;
+import cn.michaelwang.himock.process.exceptions.ExceptionTypeIsNotSuitableException;
+import cn.michaelwang.himock.process.exceptions.NoReturnTypeException;
+import cn.michaelwang.himock.process.exceptions.ReturnTypeIsNotSuitableException;
 import cn.michaelwang.himock.utils.Utils;
-import cn.michaelwang.himock.verify.Verification;
 
 import java.util.LinkedList;
 import java.util.List;

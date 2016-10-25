@@ -1,8 +1,8 @@
-package cn.michaelwang.himock.verify;
-
-import cn.michaelwang.himock.Invocation;
+package cn.michaelwang.himock.process;
 
 import java.util.List;
+
+import cn.michaelwang.himock.Invocation;
 
 public interface Verifier {
     void addVerification(Verification verification);

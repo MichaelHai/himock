@@ -1,6 +1,5 @@
 package cn.michaelwang.himock.process.reporters;
 
-import cn.michaelwang.himock.process.MockProcessErrorReporter;
 import cn.michaelwang.himock.report.ReportBuilder;
 
 public class TimerOutsideExpectReporter extends MockProcessErrorReporter {

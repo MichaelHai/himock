@@ -1,14 +1,18 @@
 package cn.michaelwang.himock;
 
-import cn.michaelwang.himock.report.HiMockReporter;
-import cn.michaelwang.himock.verify.VerificationFailedReporter;
-import org.junit.Test;
+import static cn.michaelwang.himock.HiMock.expect;
+import static cn.michaelwang.himock.HiMock.mock;
+import static cn.michaelwang.himock.HiMock.verify;
+import static cn.michaelwang.himock.HiMock.willReturn;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
-import static cn.michaelwang.himock.HiMock.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import org.junit.Test;
+
+import cn.michaelwang.himock.process.verifiers.VerificationFailedReporter;
+import cn.michaelwang.himock.report.HiMockReporter;
 
 @SuppressWarnings({"CodeBlock2Expr", "Convert2MethodRef"})
 public class HiMockTest extends HiMockBaseTest {
@@ -17,19 +21,6 @@ public class HiMockTest extends HiMockBaseTest {
     public void testMockObjectCanBeCreated() {
         MockedInterface mockedObject = mock(MockedInterface.class);
         assertNotNull("mockedObject should not be null", mockedObject);
-    }
-
-    @Test
-    public void testClassCannotBeMocked() {
-        reportTest(() -> {
-                    mock(String.class);
-                }, "Mock Process Error:\n" +
-                        "\tonly interface can(should) be mocked:\n" +
-                        "\t\tclass being mocked: java.lang.String\n" +
-                        "\t\t-> at cn.michaelwang.himock.HiMockTest.lambda$testClassCannotBeMocked$?(HiMockTest.java:?)\n" +
-                        "\t\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n" +
-                        "\t\t   at cn.michaelwang.himock.HiMockTest.testClassCannotBeMocked(HiMockTest.java:?)\n"
-        );
     }
 
     @Test

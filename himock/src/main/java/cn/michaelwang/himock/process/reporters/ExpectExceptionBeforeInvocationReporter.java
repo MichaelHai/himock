@@ -1,4 +1,4 @@
-package cn.michaelwang.himock.process;
+package cn.michaelwang.himock.process.reporters;
 
 import cn.michaelwang.himock.report.ReportBuilder;
 

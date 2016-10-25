@@ -1,7 +1,8 @@
 package cn.michaelwang.himock;
 
-import cn.michaelwang.himock.verify.VerificationFailedReporter;
 import org.junit.Test;
+
+import cn.michaelwang.himock.process.verifiers.VerificationFailedReporter;
 
 import static cn.michaelwang.himock.HiMock.*;
 

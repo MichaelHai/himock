@@ -2,7 +2,6 @@ package cn.michaelwang.himock.process;
 
 import cn.michaelwang.himock.Invocation;
 import cn.michaelwang.himock.Matcher;
-import cn.michaelwang.himock.verify.Verification;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package cn.michaelwang.himock.verify;
+package cn.michaelwang.himock.process.verifiers;
 
 import cn.michaelwang.himock.report.Reportable;
 

@@ -1,8 +1,8 @@
-package cn.michaelwang.himock.verify.failure;
+package cn.michaelwang.himock.process.verifiers.failures;
 
 import cn.michaelwang.himock.Invocation;
+import cn.michaelwang.himock.process.verifiers.VerificationFailure;
 import cn.michaelwang.himock.report.ReportBuilder;
-import cn.michaelwang.himock.verify.VerificationFailure;
 
 import java.util.List;
 

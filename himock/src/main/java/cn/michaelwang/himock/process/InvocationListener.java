@@ -1,6 +1,7 @@
-package cn.michaelwang.himock.mockup;
+package cn.michaelwang.himock.process;
 
 import cn.michaelwang.himock.Invocation;
+import cn.michaelwang.himock.process.exceptions.NoExpectedInvocationException;
 
 public interface InvocationListener {
 	/**

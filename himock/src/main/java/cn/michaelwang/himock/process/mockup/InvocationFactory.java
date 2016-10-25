@@ -1,4 +1,4 @@
-package cn.michaelwang.himock.mockup;
+package cn.michaelwang.himock.process.mockup;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

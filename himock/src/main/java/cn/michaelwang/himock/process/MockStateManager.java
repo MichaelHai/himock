@@ -7,24 +7,21 @@ import cn.michaelwang.himock.IMatcherIndex;
 import cn.michaelwang.himock.Invocation;
 import cn.michaelwang.himock.Matcher;
 import cn.michaelwang.himock.MockProcessManager;
-import cn.michaelwang.himock.mockup.ExceptionTypeIsNotSuitableException;
-import cn.michaelwang.himock.mockup.InvocationListener;
-import cn.michaelwang.himock.mockup.NoReturnTypeException;
-import cn.michaelwang.himock.mockup.ReturnTypeIsNotSuitableException;
+import cn.michaelwang.himock.process.exceptions.ExceptionTypeIsNotSuitableException;
+import cn.michaelwang.himock.process.exceptions.NoReturnTypeException;
+import cn.michaelwang.himock.process.exceptions.ReturnTypeIsNotSuitableException;
 import cn.michaelwang.himock.process.reporters.ExceptionTypeIsNotSuitableReporter;
+import cn.michaelwang.himock.process.reporters.ExpectExceptionBeforeInvocationReporter;
 import cn.michaelwang.himock.process.reporters.ExpectReturnBeforeInvocationReporter;
 import cn.michaelwang.himock.process.reporters.ExpectReturnOutsideExpectReporter;
 import cn.michaelwang.himock.process.reporters.ExpectThrowOutsideExpectReporter;
 import cn.michaelwang.himock.process.reporters.InvalidMatchPositionReporter;
-import cn.michaelwang.himock.process.reporters.MockNoninterfaceReporter;
 import cn.michaelwang.himock.process.reporters.NoReturnTypeReporter;
 import cn.michaelwang.himock.process.reporters.ReturnTypeIsNotSuitableReporter;
 import cn.michaelwang.himock.process.reporters.TimerOutsideExpectReporter;
+import cn.michaelwang.himock.process.verifiers.InOrderVerifier;
+import cn.michaelwang.himock.process.verifiers.NormalVerifier;
 import cn.michaelwang.himock.utils.Utils;
-import cn.michaelwang.himock.verify.InOrderVerifier;
-import cn.michaelwang.himock.verify.NormalVerifier;
-import cn.michaelwang.himock.verify.Verification;
-import cn.michaelwang.himock.verify.Verifier;
 
 public class MockStateManager implements MockProcessManager, InvocationListener {
 	private MockFactory mockFactory;
@@ -68,12 +65,8 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 	}
 
 	@Override
-	public <T> T mock(Class<T> mockedInterface) {
-		if (!mockedInterface.isInterface()) {
-			throw new MockNoninterfaceReporter(mockedInterface);
-		}
-
-		return mockFactory.createMock(mockedInterface, this);
+	public <T> T mock(Class<T> mockedType) {
+		return mockFactory.createMock(mockedType, this);
 	}
 
 	@Override

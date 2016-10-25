@@ -1,10 +1,10 @@
 package cn.michaelwang.himock;
 
-import cn.michaelwang.himock.mockup.MockFactoryImpl;
 import cn.michaelwang.himock.preprocess.Preprocessor;
 import cn.michaelwang.himock.process.InvocationRecorder;
 import cn.michaelwang.himock.process.MockFactory;
 import cn.michaelwang.himock.process.MockStateManager;
+import cn.michaelwang.himock.process.mockup.MockFactoryImpl;
 import cn.michaelwang.himock.report.HiMockReporter;
 
 public class HiMock {
