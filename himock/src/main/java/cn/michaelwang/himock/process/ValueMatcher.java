@@ -1,5 +1,7 @@
 package cn.michaelwang.himock.process;
 
+import java.util.Arrays;
+
 import cn.michaelwang.himock.Matcher;
 
 public class ValueMatcher<T> implements Matcher<T> {
@@ -11,7 +13,11 @@ public class ValueMatcher<T> implements Matcher<T> {
 
 	@Override
 	public boolean isMatch(Object actual) {
-		return value == null ? (actual == null) : value.equals(actual);
+		return value == null
+				? (actual == null)
+				: (actual instanceof Object[] && value instanceof Object[]
+						? Arrays.deepEquals((Object[]) actual, (Object[]) value)
+						: value.equals(actual));
 	}
 
 	@Override
