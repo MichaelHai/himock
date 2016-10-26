@@ -3,6 +3,7 @@ package cn.michaelwang.himock;
 import static cn.michaelwang.himock.HiMock.expect;
 import static cn.michaelwang.himock.HiMock.mock;
 import static cn.michaelwang.himock.HiMock.verify;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
@@ -32,11 +33,20 @@ public class MockClassTest extends HiMockBaseTest {
 
 		verify();
 	}
-	
+
 	@Test
 	public void testAbstractFunctionCanBeAutomaticallyMocked() {
 		MockedAbstractClass dummy = mock(MockedAbstractClass.class);
-		
+
 		dummy.anAbstractFunction();
+	}
+
+	@Test
+	public void testConstructorWithParameterCanBeUsedToMockClass() {
+		MockedClassWithoutDefaultConstructor dummy = mock(MockedClassWithoutDefaultConstructor.class,
+				"Hello World");
+
+		assertEquals(0, dummy.aFunction());
+		assertEquals("Hello World", dummy.getParameter());
 	}
 }

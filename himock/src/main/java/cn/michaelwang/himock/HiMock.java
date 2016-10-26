@@ -20,8 +20,12 @@ public class HiMock {
         mockProcessManager = new MockStateManager(invocationRecorder, matcherIndex);
     }
 
-    public static <T> T mock(Class<T> mockedInterface) {
-        return mockProcessManager.mock(mockedInterface);
+    public static <T> T mock(Class<T> mockedType) {
+        return mockProcessManager.mock(mockedType);
+    }
+    
+    public static <T> T mock(Class<T> mockedType, Object... constructorParameters) {
+    	return mockProcessManager.mock(mockedType, constructorParameters);
     }
 
     public static void expect(Expectation expectation) {

@@ -9,7 +9,9 @@ public interface MockProcessManager {
 
     void toOrderedVerifyState();
 
-    <T> T mock(Class<T> mockedInterface);
+    <T> T mock(Class<T> mockedType);
+
+    <T> T mock(Class<T> mockedType, Object[] constructorParameters);
 
     <T> void lastCallReturn(T returnValue, Class<?> type);
 

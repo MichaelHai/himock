@@ -71,6 +71,11 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 	}
 
 	@Override
+	public <T> T mock(Class<T> mockedType, Object[] constructorParameters) {
+		return mockFactory.createMock(mockedType, this, constructorParameters);
+	}
+	
+	@Override
 	public <T> void lastCallReturn(T returnValue, Class<?> type) {
 		state.lastCallReturn(returnValue, type);
 	}
