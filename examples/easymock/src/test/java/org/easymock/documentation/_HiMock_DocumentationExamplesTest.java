@@ -9,7 +9,7 @@ import static cn.michaelwang.himock.HiMock.*;
 import static junit.framework.TestCase.assertEquals;
 
 @RunWith(HiMockRunner.class)
-public class DocumentationExamplesHiMockTest {
+public class _HiMock_DocumentationExamplesTest {
     @Test
     public void changingBehaviorForTheSameMethodCall() {
         Collaborator collaborator = mock(Collaborator.class);

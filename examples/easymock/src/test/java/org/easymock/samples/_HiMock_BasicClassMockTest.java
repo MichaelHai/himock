@@ -9,7 +9,7 @@ import static cn.michaelwang.himock.HiMock.mock;
 import static cn.michaelwang.himock.HiMock.verify;
 
 @RunWith(HiMockRunner.class)
-public class BasicClassMockHiMockTest {
+public class _HiMock_BasicClassMockTest {
     private Printer printer;
     private Document document;
 
