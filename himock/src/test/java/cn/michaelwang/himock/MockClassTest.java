@@ -32,4 +32,11 @@ public class MockClassTest extends HiMockBaseTest {
 
 		verify();
 	}
+	
+	@Test
+	public void testAbstractFunctionCanBeAutomaticallyMocked() {
+		MockedAbstractClass dummy = mock(MockedAbstractClass.class);
+		
+		dummy.anAbstractFunction();
+	}
 }
