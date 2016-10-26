@@ -8,4 +8,6 @@ public interface Verifier {
     void addVerification(Verification verification);
 
     void verify(List<Invocation> actuallyInvocations);
+
+	void lastVerificationTimes(int times);
 }

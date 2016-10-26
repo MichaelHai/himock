@@ -61,11 +61,20 @@ public class HiMockTimerTest extends HiMockBaseTest {
 				dummy.returnInt();
 				times(3);
 			});
-		}, "");
 
-		dummy.returnInt();
-		dummy.returnInt();
+			dummy.returnInt();
+			dummy.returnInt();
 
-		verify();
+			verify();
+		}, "Verification failed:\n"
+				+ "\texpected invocation times not satisfied:\n"
+				+ "\t\texpected: 3 times\n"
+				+ "\t\tactually: 2 times\n"
+				+ "\t\texpected invocation:\n"
+				+ "\t\tcn.michaelwang.himock.MockedInterface.returnInt()\n"
+				+ "\t\t-> at cn.michaelwang.himock.HiMockTimerTest.lambda$null$?(HiMockTimerTest.java:?)\n"
+				+ "\t\t   at cn.michaelwang.himock.HiMockTimerTest.lambda$testTimesExpectedButNotEnoughShouldReportError$?(HiMockTimerTest.java:?)\n"
+				+ "\t\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n"
+				+ "\t\t   at cn.michaelwang.himock.HiMockTimerTest.testTimesExpectedButNotEnoughShouldReportError(HiMockTimerTest.java:?)\n");
 	}
 }

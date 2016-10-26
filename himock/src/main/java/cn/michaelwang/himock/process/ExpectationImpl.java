@@ -11,7 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-public class ExpectationImpl implements Expectation, Verification {
+public class ExpectationImpl implements Expectation {
 	private Queue<Answer> returnValue = new LinkedList<>();
 	private Answer lastAnswer;
 
@@ -21,11 +21,6 @@ public class ExpectationImpl implements Expectation, Verification {
 	public ExpectationImpl(Invocation invocation, List<Matcher<?>> matchers) {
 		this.invocation = invocation;
 		this.matchers = new Matchers(matchers);
-	}
-
-	@Override
-	public Invocation getVerifiedInvocation() {
-		return new InvocationWithMatchers(invocation, matchers);
 	}
 
 	@Override
@@ -70,6 +65,11 @@ public class ExpectationImpl implements Expectation, Verification {
 	}
 
 	@Override
+	public boolean hasMultipleAnswer() {
+		return returnValue.size() > 1;
+	}
+
+	@Override
 	public Object getReturnValue() throws Throwable {
 		if (!returnValue.isEmpty()) {
 			lastAnswer = returnValue.poll();
@@ -79,21 +79,19 @@ public class ExpectationImpl implements Expectation, Verification {
 	}
 
 	@Override
-	public Verification generateVerification() {
-		return this;
+	public Invocation getInvocation() {
+		return invocation;
+	}
+
+	@Override
+	public List<Matcher<?>> getMatchers() {
+		return matchers.getMatchers();
 	}
 
 	@Override
 	public boolean equals(Invocation invocation, List<Matcher<?>> matchers) {
 		return this.invocation.sameMethod(invocation)
 				&& this.matchers.getMatchers().equals(matchers);
-	}
-
-	@Override
-	public boolean satisfyWith(Invocation invocation) {
-		return this.invocation.sameMethod(invocation)
-				&& matchers.match(invocation.getArguments())
-				&& isAllReturned();
 	}
 
 	protected Object nullValue() {
@@ -119,10 +117,6 @@ public class ExpectationImpl implements Expectation, Verification {
 		}
 
 		return false;
-	}
-
-	private boolean isAllReturned() {
-		return returnValue.isEmpty();
 	}
 
 	private class ReturnAnswer implements Answer {

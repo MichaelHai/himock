@@ -12,54 +12,64 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class InOrderVerifier implements Verifier {
-    private List<Verification> orderedVerifications = new ArrayList<>();
+	private List<Verification> orderedVerifications = new ArrayList<>();
+	private Verification lastVerification;
 
-    @Override
-    public void addVerification(Verification verification) {
-        orderedVerifications.add(verification);
-    }
+	@Override
+	public void addVerification(Verification verification) {
+		orderedVerifications.add(verification);
+		this.lastVerification = verification;
+	}
 
-    @Override
-    public void verify(List<Invocation> toBeVerified) {
-        int index = -1;
-        Set<Integer> foundIndexes = new HashSet<>();
-        for (int i = 0; i < orderedVerifications.size(); i++) {
-            Verification verification = orderedVerifications.get(i);
+	@Override
+	public void verify(List<Invocation> toBeVerified) {
+		int index = -1;
+		Set<Integer> foundIndexes = new HashSet<>();
+		for (int i = 0; i < orderedVerifications.size(); i++) {
+			Verification verification = orderedVerifications.get(i);
 
-            index = findAfter(index, toBeVerified, verification);
-            if (index == -1) {
-                generateFailure(toBeVerified, foundIndexes, i, verification);
-            } else {
-                foundIndexes.add(index);
-            }
-        }
-    }
+			index = findAfter(index, toBeVerified, verification);
+			if (index == -1) {
+				generateFailure(toBeVerified, foundIndexes, i, verification);
+			} else {
+				foundIndexes.add(index);
+			}
+		}
+	}
 
-    private void generateFailure(List<Invocation> toBeVerified, Set<Integer> foundIndexes, int verificationsEndIndex, Verification verification) {
-        int outOfOrderIndex = -1;
-        do {
-            outOfOrderIndex = findAfter(outOfOrderIndex, toBeVerified, verification);
-        } while (foundIndexes.contains(outOfOrderIndex));
-        foundIndexes.add(outOfOrderIndex);
+	private void generateFailure(List<Invocation> toBeVerified, Set<Integer> foundIndexes, int verificationsEndIndex,
+			Verification verification) {
+		int outOfOrderIndex = -1;
+		do {
+			outOfOrderIndex = findAfter(outOfOrderIndex, toBeVerified, verification);
+		} while (foundIndexes.contains(outOfOrderIndex));
+		foundIndexes.add(outOfOrderIndex);
 
-        List<Invocation> expectedOrder = orderedVerifications
-                .subList(0, verificationsEndIndex + 1).stream()
-                .map(Verification::getVerifiedInvocation)
-                .collect(Collectors.toList());
-        List<Invocation> actuallyOrder = foundIndexes.stream()
-                .sorted()
-                .map(toBeVerified::get)
-                .collect(Collectors.toList());
-        throw new VerificationFailedReporter(new OrderFailure(expectedOrder, actuallyOrder));
-    }
+		List<Invocation> expectedOrder = orderedVerifications
+				.subList(0, verificationsEndIndex + 1).stream()
+				.map(Verification::getVerifiedInvocation)
+				.collect(Collectors.toList());
+		List<Invocation> actuallyOrder = foundIndexes.stream()
+				.sorted()
+				.map(toBeVerified::get)
+				.collect(Collectors.toList());
+		throw new VerificationFailedReporter(new OrderFailure(expectedOrder, actuallyOrder));
+	}
 
-    private int findAfter(int index, List<Invocation> toBeVerified, Verification verification) {
-        for (int i = index + 1; i < toBeVerified.size(); i++) {
-            if (verification.satisfyWith(toBeVerified.get(i))) {
-                return i;
-            }
-        }
+	private int findAfter(int index, List<Invocation> toBeVerified, Verification verification) {
+		for (int i = index + 1; i < toBeVerified.size(); i++) {
+			if (verification.satisfyWith(toBeVerified.get(i))) {
+				return i;
+			}
+		}
 
-        return -1;
-    }
+		return -1;
+	}
+
+	@Override
+	public void lastVerificationTimes(int times) {
+		for (int i = 0; i < times - 1; i++) {
+			this.addVerification(lastVerification);
+		}
+	}
 }

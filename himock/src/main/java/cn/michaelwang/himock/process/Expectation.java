@@ -13,10 +13,14 @@ public interface Expectation {
     void addException(Throwable toThrow);
 
     void answerMore(int i);
-
+    
+    boolean hasMultipleAnswer();
+    
     Object getReturnValue() throws Throwable;
+    
+    Invocation getInvocation();
 
-    Verification generateVerification();
+	List<Matcher<?>> getMatchers();
 
     boolean equals(Invocation invocation, List<Matcher<?>> matchers);
 
