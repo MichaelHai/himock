@@ -4,12 +4,20 @@ jdk:
 
 script:
 - cd himock
-- mvn clean test
-- mvn install
+- mvn clean install
 - cd ..
 - cd examples
 - mvn clean test
 - cd ..
 
+cache:
+  directories:
+  - $HOME/.m2
+
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+  - curl -sL https://github.com/jpm4j/jpm4j.installers/raw/master/dist/biz.aQute.jpm.run.jar >jpm4j.jar
+  - java -jar jpm4j.jar -u init
+  - export PATH="/home/travis/jpm/bin:$PATH"
+  - jpm install com.codacy:codacy-coverage-reporter:assembly
+  - codacy-coverage-reporter -l Java -r himock/target/site/jacoco/jacoco.xml
