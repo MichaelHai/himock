@@ -31,12 +31,25 @@ public class NormalVerifier implements Verifier {
 		verificationCount.replaceAll((key, value) -> value == 0 ? 1 : value);
 
 		Map<Verification, Integer> actuallyCounts = new HashMap<>();
-		toBeVerified.forEach(invocation -> verifications.stream()
-				.filter(verification -> verification.satisfyWith(invocation))
-				.findFirst()
-				.ifPresent(verification -> {
-					actuallyCounts.merge(verification, 1, Math::addExact);
-				}));
+		toBeVerified.forEach(invocation -> {
+			List<Verification> candidateVerifications = verifications.stream()
+					.filter(verification -> verification.satisfyWith(invocation))
+					.collect(Collectors.toList());
+
+			if (!candidateVerifications.isEmpty()) {
+				Verification winner;
+				if (candidateVerifications.size() == 1) {
+					winner = candidateVerifications.get(0);
+				} else {
+					winner = candidateVerifications.stream()
+							.filter(verification -> actuallyCounts.getOrDefault(verification, 0) < verificationCount
+									.get(verification))
+							.findFirst()
+							.orElse(candidateVerifications.get(candidateVerifications.size() - 1));
+				}
+				actuallyCounts.merge(winner, 1, Math::addExact);
+			}
+		});
 
 		Map<Invocation, int[]> invocationDiff = new HashMap<>();
 		verificationCount.forEach((verification, expectedCount) -> {
