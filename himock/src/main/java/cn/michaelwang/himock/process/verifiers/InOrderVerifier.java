@@ -30,15 +30,16 @@ public class InOrderVerifier implements Verifier {
 
 			index = findAfter(index, toBeVerified, verification);
 			if (index == -1) {
-				generateFailure(toBeVerified, foundIndexes, i, verification);
+				OrderFailure failure = generateFailure(toBeVerified, foundIndexes, i, verification);
+				throw new VerificationFailedReporter(failure);
 			} else {
 				foundIndexes.add(index);
 			}
 		}
 	}
 
-	private void generateFailure(List<Invocation> toBeVerified, Set<Integer> foundIndexes, int verificationsEndIndex,
-			Verification verification) {
+	private OrderFailure generateFailure(List<Invocation> toBeVerified, Set<Integer> foundIndexes,
+			int verificationsEndIndex, Verification verification) {
 		int outOfOrderIndex = -1;
 		do {
 			outOfOrderIndex = findAfter(outOfOrderIndex, toBeVerified, verification);
@@ -53,7 +54,7 @@ public class InOrderVerifier implements Verifier {
 				.sorted()
 				.map(toBeVerified::get)
 				.collect(Collectors.toList());
-		throw new VerificationFailedReporter(new OrderFailure(expectedOrder, actuallyOrder));
+		return new OrderFailure(expectedOrder, actuallyOrder);
 	}
 
 	private int findAfter(int index, List<Invocation> toBeVerified, Verification verification) {

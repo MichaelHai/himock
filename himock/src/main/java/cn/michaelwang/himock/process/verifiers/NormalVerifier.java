@@ -30,6 +30,19 @@ public class NormalVerifier implements Verifier {
 	public void verify(List<Invocation> toBeVerified) {
 		verificationCount.replaceAll((key, value) -> value == 0 ? 1 : value);
 
+		Map<Verification, Integer> actuallyCounts = countInvocations(toBeVerified, verificationCount);
+		Map<Invocation, int[]> invocationDiff = calculateDiff(actuallyCounts, verificationCount);
+
+		List<Verification> notSatisfied = verifications.stream().collect(Collectors.toList());
+		List<VerificationFailure> failures = generateFailures(toBeVerified, notSatisfied, invocationDiff);
+
+		if (!failures.isEmpty()) {
+			throw new VerificationFailedReporter(failures);
+		}
+	}
+
+	private Map<Verification, Integer> countInvocations(List<Invocation> toBeVerified,
+			Map<Verification, Integer> verificationCount) {
 		Map<Verification, Integer> actuallyCounts = new HashMap<>();
 		toBeVerified.forEach(invocation -> {
 			List<Verification> candidateVerifications = verifications.stream()
@@ -50,7 +63,11 @@ public class NormalVerifier implements Verifier {
 				actuallyCounts.merge(winner, 1, Math::addExact);
 			}
 		});
+		return actuallyCounts;
+	}
 
+	private Map<Invocation, int[]> calculateDiff(Map<Verification, Integer> actuallyCounts,
+			Map<Verification, Integer> verificationCount) {
 		Map<Invocation, int[]> invocationDiff = new HashMap<>();
 		verificationCount.forEach((verification, expectedCount) -> {
 			Integer actuallyCount = actuallyCounts.get(verification);
@@ -67,14 +84,7 @@ public class NormalVerifier implements Verifier {
 				invocationDiff.put(verification.getVerifiedInvocation(), new int[] { expectedCount, actuallyCount });
 			}
 		});
-
-		List<Verification> notSatisfied = verifications.stream().collect(Collectors.toList());
-
-		List<VerificationFailure> failures = generateFailures(toBeVerified, notSatisfied, invocationDiff);
-
-		if (!failures.isEmpty()) {
-			throw new VerificationFailedReporter(failures);
-		}
+		return invocationDiff;
 	}
 
 	private List<VerificationFailure> generateFailures(List<Invocation> toBeVerified, List<Verification> notSatisfied,
