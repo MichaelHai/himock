@@ -28,6 +28,8 @@ public class NormalVerifier implements Verifier {
 
 	@Override
 	public void verify(List<Invocation> toBeVerified) {
+		verificationCount.replaceAll((key, value) -> value == 0 ? 1 : value);
+
 		Map<Verification, Integer> actuallyCounts = new HashMap<>();
 		toBeVerified.forEach(invocation -> verifications.stream()
 				.filter(verification -> verification.satisfyWith(invocation))
@@ -94,7 +96,7 @@ public class NormalVerifier implements Verifier {
 	}
 
 	@Override
-	public void lastVerificationTimes(int times) {
+	public void addVerificationTimes(int times) {
 		int count = verificationCount.get(lastVerification);
 		count += times;
 		verificationCount.put(lastVerification, count);

@@ -67,7 +67,7 @@ public class InOrderVerifier implements Verifier {
 	}
 
 	@Override
-	public void lastVerificationTimes(int times) {
+	public void addVerificationTimes(int times) {
 		for (int i = 0; i < times - 1; i++) {
 			this.addVerification(lastVerification);
 		}

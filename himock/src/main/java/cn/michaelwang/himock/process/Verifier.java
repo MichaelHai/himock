@@ -9,5 +9,5 @@ public interface Verifier {
 
     void verify(List<Invocation> actuallyInvocations);
 
-	void lastVerificationTimes(int times);
+	void addVerificationTimes(int times);
 }

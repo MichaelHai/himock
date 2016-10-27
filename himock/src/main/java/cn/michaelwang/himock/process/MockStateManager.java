@@ -171,6 +171,7 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 
 	private class ExpectState extends VerificationState {
 		private Expectation lastCall;
+		private boolean resultSet;
 
 		public ExpectState(Verifier verifier) {
 			super(verifier);
@@ -180,6 +181,7 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 		public Object methodCalled(Invocation invocation) {
 			List<Matcher<?>> matchers = getMatchers(invocation);
 			lastCall = invocationRecorder.expect(invocation, matchers);
+			resultSet = false;
 
 			createAndAddVerification(invocation, matchers);
 			return new NullExpectation(invocation).getReturnValue();
@@ -193,6 +195,7 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 
 			try {
 				lastCall.addReturnValue(returnValue, type);
+				resultSet = true;
 			} catch (NoReturnTypeException e) {
 				throw new NoReturnTypeReporter(e.getInvocation());
 			} catch (ReturnTypeIsNotSuitableException e) {
@@ -203,7 +206,7 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 				}
 			}
 
-			addVerificationForAnswer();
+			verifier.addVerificationTimes(1);
 		}
 
 		@Override
@@ -214,29 +217,23 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 
 			try {
 				lastCall.addException(toThrow);
+				resultSet = true;
 			} catch (ExceptionTypeIsNotSuitableException e) {
 				throw new ExceptionTypeIsNotSuitableReporter(e.getInvocation(), e.getToThrow());
 			}
 
-			addVerificationForAnswer();
+			verifier.addVerificationTimes(1);
 		}
 
 		@Override
 		public void lastReturnTimer(int times) {
 			lastCall.answerMore(times - 1);
-			super.lastReturnTimer(times);
-		}
-
-		private void addVerificationForAnswer() {
-			if (lastCall.hasMultipleAnswer()) {
-				createAndAddVerification(lastCall.getInvocation(), lastCall.getMatchers());
-			}
+			verifier.addVerificationTimes(resultSet ? times - 1 : times);
 		}
 	}
 
 	private class VerificationState implements MockState {
 		protected Verifier verifier;
-		private Verification lastVerification;
 
 		public VerificationState(Verifier verifier) {
 			this.verifier = verifier;
@@ -261,13 +258,12 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 
 		@Override
 		public void lastReturnTimer(int times) {
-			verifier.lastVerificationTimes(times);
+			verifier.addVerificationTimes(times);
 		}
 
 		protected void createAndAddVerification(Invocation invocation, List<Matcher<?>> matchers) {
 			Verification verification = new VerificationImpl(invocation, matchers);
 			verifier.addVerification(verification);
-			lastVerification = verification;
 		}
 	}
 }
