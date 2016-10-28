@@ -1,19 +1,17 @@
 package org.easymock.samples;
 
-import static cn.michaelwang.himock.HiMock.expect;
-import static cn.michaelwang.himock.HiMock.mock;
-import static cn.michaelwang.himock.HiMock.times;
-import static cn.michaelwang.himock.HiMock.verify;
-import static cn.michaelwang.himock.HiMock.willReturn;
+import static cn.michaelwang.himock.HiMock.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import cn.michaelwang.himock.HiMockRunner;
+
+import java.util.List;
 
 @RunWith(HiMockRunner.class)
 public class _HiMock_DocumentManagerTest {
@@ -34,6 +32,7 @@ public class _HiMock_DocumentManagerTest {
 
 	@Test
 	public void addDocument() {
+		//noinspection CodeBlock2Expr
 		expect(() -> {
 			mock.documentAdded("New Document");
 		});
@@ -93,8 +92,16 @@ public class _HiMock_DocumentManagerTest {
 	}
 	
 	@Test
-	@Ignore // delegation is not implemented yet
 	public void answerVsDelegate() {
-		
+		List l = mock(List.class);
+
+		expect(() -> {
+			l.remove(10);
+			willAnswer(params -> params[0].toString());
+		});
+
+		assertEquals("10", l.remove(10));
+
+		verify();
 	}
 }
