@@ -14,7 +14,7 @@ import static cn.michaelwang.himock.HiMock.*;
 @SuppressWarnings({"CodeBlock2Expr", "Convert2MethodRef"})
 public class HiMockRuleTest {
     @Rule
-    public HiMockTestRule rule = new HiMockTestRule();
+    public HiMockTestRule rule = new HiMockTestRule(this);
 
     @SuppressWarnings("Duplicates")
     @Test(expected = VerificationFailedReporter.class)

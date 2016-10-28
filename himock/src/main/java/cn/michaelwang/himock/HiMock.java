@@ -1,5 +1,7 @@
 package cn.michaelwang.himock;
 
+import cn.michaelwang.himock.annotations.AnnotationHandler;
+import cn.michaelwang.himock.annotations.DefaultAnnotationHandler;
 import cn.michaelwang.himock.preprocess.Preprocessor;
 import cn.michaelwang.himock.process.InvocationRecorder;
 import cn.michaelwang.himock.process.MockStateManager;
@@ -11,13 +13,16 @@ public class HiMock {
     private HiMock() {
     }
 
-    public static void setup(Class<?> testSuits) {
-        Preprocessor preprocessor = new Preprocessor(testSuits);
+    public static void setup(Object testSuits) throws IllegalArgumentException, IllegalAccessException {
+        Preprocessor preprocessor = new Preprocessor(testSuits.getClass());
         preprocessor.doPreprocess();
 
         IMatcherIndex matcherIndex = preprocessor.getMatcherIndex();
         InvocationRecorder invocationRecorder = new InvocationRecorder();
         mockProcessManager = new MockStateManager(invocationRecorder, matcherIndex);
+        
+        AnnotationHandler annotationHandler = new DefaultAnnotationHandler();
+        annotationHandler.process(testSuits);
     }
 
     public static <T> T mock(Class<T> mockedType) {

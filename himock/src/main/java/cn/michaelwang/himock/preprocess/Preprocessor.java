@@ -10,7 +10,7 @@ public class Preprocessor {
 		this.testSuit = testSuit;
 	}
 
-	public void doPreprocess() {
+	public void doPreprocess() throws IllegalArgumentException, IllegalAccessException {
 		this.matcherIndex = MatcherIndexRepository.getInstance().getMatcherIndex(testSuit);
 	}
 	

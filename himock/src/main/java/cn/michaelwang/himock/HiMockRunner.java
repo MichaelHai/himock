@@ -7,7 +7,9 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
 
 public class HiMockRunner extends BlockJUnit4ClassRunner {
-    public HiMockRunner(Class<?> testClass) throws InitializationError {
+    private Object testSuit;
+
+	public HiMockRunner(Class<?> testClass) throws InitializationError {
         super(testClass);
     }
 
@@ -15,13 +17,21 @@ public class HiMockRunner extends BlockJUnit4ClassRunner {
     public Description getDescription() {
         return super.getDescription();
     }
+    
+    
 
     @Override
+	protected Object createTest() throws Exception {
+		this.testSuit = super.createTest();
+		return this.testSuit;
+	}
+
+	@Override
     public void run(RunNotifier runNotifier) {
         runNotifier.addListener(new RunListener() {
             @Override
             public void testStarted(Description description) throws Exception {
-                HiMock.setup(description.getTestClass());
+                HiMock.setup(testSuit);
                 super.testStarted(description);
             }
         });
