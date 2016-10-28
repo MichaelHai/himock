@@ -48,7 +48,8 @@ public class HiMockRunner extends BlockJUnit4ClassRunner {
         runNotifier.addListener(new RunListener() {
             @Override
             public void testStarted(Description description) throws Exception {
-                HiMock.setup(testSuit);
+                HiMock.setup(testSuit.getClass());
+                HiMock.injectFields(testSuit);
                 super.testStarted(description);
             }
         });

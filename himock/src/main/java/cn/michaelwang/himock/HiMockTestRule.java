@@ -5,20 +5,20 @@ import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
 public class HiMockTestRule implements TestRule {
-	private Object testSuit;
-	
-	public HiMockTestRule(Object testSuit) {
-		this.testSuit = testSuit;
-	}
 	
     @Override
     public Statement apply(Statement statement, Description description) {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                HiMock.setup(testSuit);
+                HiMock.setup(description.getTestClass());
+                executeRule(description);
                 statement.evaluate();
             }
         };
+    }
+    
+    protected void executeRule(Description description) throws Throwable {
+    	// default do nothing
     }
 }

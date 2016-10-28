@@ -13,14 +13,16 @@ public class HiMock {
     private HiMock() {
     }
 
-    public static void setup(Object testSuits) throws IllegalArgumentException, IllegalAccessException {
-        Preprocessor preprocessor = new Preprocessor(testSuits.getClass());
+    public static void setup(Class<?> testSuits) throws IllegalArgumentException, IllegalAccessException {
+        Preprocessor preprocessor = new Preprocessor(testSuits);
         preprocessor.doPreprocess();
 
         IMatcherIndex matcherIndex = preprocessor.getMatcherIndex();
         InvocationRecorder invocationRecorder = new InvocationRecorder();
         mockProcessManager = new MockStateManager(invocationRecorder, matcherIndex);
-        
+    }
+    
+    protected static void injectFields(Object testSuits) throws IllegalArgumentException, IllegalAccessException {
         AnnotationHandler annotationHandler = new DefaultAnnotationHandler();
         annotationHandler.process(testSuits);
     }
