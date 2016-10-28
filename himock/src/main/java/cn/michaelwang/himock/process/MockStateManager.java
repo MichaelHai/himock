@@ -3,23 +3,12 @@ package cn.michaelwang.himock.process;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.michaelwang.himock.IMatcherIndex;
-import cn.michaelwang.himock.Invocation;
-import cn.michaelwang.himock.Matcher;
-import cn.michaelwang.himock.MockProcessManager;
+import cn.michaelwang.himock.*;
 import cn.michaelwang.himock.process.exceptions.ExceptionTypeIsNotSuitableException;
 import cn.michaelwang.himock.process.exceptions.NoReturnTypeException;
 import cn.michaelwang.himock.process.exceptions.ReturnTypeIsNotSuitableException;
 import cn.michaelwang.himock.process.mockup.MockFactoryImpl;
-import cn.michaelwang.himock.process.reporters.ExceptionTypeIsNotSuitableReporter;
-import cn.michaelwang.himock.process.reporters.ExpectExceptionBeforeInvocationReporter;
-import cn.michaelwang.himock.process.reporters.ExpectReturnBeforeInvocationReporter;
-import cn.michaelwang.himock.process.reporters.ExpectReturnOutsideExpectReporter;
-import cn.michaelwang.himock.process.reporters.ExpectThrowOutsideExpectReporter;
-import cn.michaelwang.himock.process.reporters.InvalidMatchPositionReporter;
-import cn.michaelwang.himock.process.reporters.NoReturnTypeReporter;
-import cn.michaelwang.himock.process.reporters.ReturnTypeIsNotSuitableReporter;
-import cn.michaelwang.himock.process.reporters.TimerOutsideExpectReporter;
+import cn.michaelwang.himock.process.reporters.*;
 import cn.michaelwang.himock.process.verifiers.InOrderVerifier;
 import cn.michaelwang.himock.process.verifiers.NormalVerifier;
 import cn.michaelwang.himock.utils.Utils;
@@ -86,6 +75,11 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 	}
 
 	@Override
+	public void lastCallAnswer(Answer answer) {
+		state.lastCallAnswer(answer);
+	}
+
+	@Override
 	public void lastReturnTimer(int times) {
 		state.lastReturnTimer(times);
 	}
@@ -139,6 +133,8 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 
 		void lastCallThrow(Throwable e);
 
+		void lastCallAnswer(Answer answer);
+
 		void lastReturnTimer(int times);
 	}
 
@@ -164,6 +160,11 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 		}
 
 		@Override
+		public void lastCallAnswer(Answer answer) {
+			throw new ExpectAnswerOutsideExpectReporter();
+		}
+
+		@Override
 		public void lastReturnTimer(int times) {
 			throw new TimerOutsideExpectReporter();
 		}
@@ -184,7 +185,7 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 			resultSet = false;
 
 			createAndAddVerification(invocation, matchers);
-			return new NullExpectation(invocation).getReturnValue();
+			return new NullExpectation(invocation).getReturnValue(null);
 		}
 
 		@Override
@@ -226,6 +227,15 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 		}
 
 		@Override
+		public void lastCallAnswer(Answer answer) {
+			if (lastCall == null) {
+				throw new ExpectExceptionBeforeInvocationReporter();
+			}
+
+			lastCall.addAnswer(answer);
+		}
+
+		@Override
 		public void lastReturnTimer(int times) {
 			lastCall.answerMore(times - 1);
 			verifier.addVerificationTimes(resultSet ? times - 1 : times);
@@ -243,7 +253,7 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 		public Object methodCalled(Invocation invocation) {
 			List<Matcher<?>> matchers = getMatchers(invocation);
 			createAndAddVerification(invocation, matchers);
-			return new NullExpectation(invocation).getReturnValue();
+			return new NullExpectation(invocation).getReturnValue(null);
 		}
 
 		@Override
@@ -254,6 +264,11 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 		@Override
 		public void lastCallThrow(Throwable e) {
 			throw new ExpectThrowOutsideExpectReporter();
+		}
+
+		@Override
+		public void lastCallAnswer(Answer answer) {
+			throw new ExpectAnswerOutsideExpectReporter();
 		}
 
 		@Override

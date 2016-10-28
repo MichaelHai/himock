@@ -1,5 +1,6 @@
 package cn.michaelwang.himock.process;
 
+import cn.michaelwang.himock.Answer;
 import cn.michaelwang.himock.Invocation;
 import cn.michaelwang.himock.Matcher;
 
@@ -13,10 +14,8 @@ public interface Expectation {
     void addException(Throwable toThrow);
 
     void answerMore(int i);
-    
-    boolean hasMultipleAnswer();
-    
-    Object getReturnValue() throws Throwable;
+        
+    Object getReturnValue(Object[] params) throws Throwable;
     
     Invocation getInvocation();
 
@@ -24,7 +23,9 @@ public interface Expectation {
 
     boolean equals(Invocation invocation, List<Matcher<?>> matchers);
 
-    interface Answer {
-        Object doAnswer() throws Throwable;
+    void addAnswer(Answer answer);
+
+    interface ExpectedAnswer {
+        Object doAnswer(Object[] params) throws Throwable;
     }
 }

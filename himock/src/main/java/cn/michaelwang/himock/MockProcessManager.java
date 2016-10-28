@@ -17,6 +17,8 @@ public interface MockProcessManager {
 
     void lastCallThrow(Throwable e);
 
+    void lastCallAnswer(Answer answer);
+
     void lastReturnTimer(int times);
 
     void doVerify();

@@ -1,5 +1,6 @@
 package cn.michaelwang.himock.process;
 
+import cn.michaelwang.himock.Answer;
 import cn.michaelwang.himock.Invocation;
 import cn.michaelwang.himock.Matcher;
 import cn.michaelwang.himock.process.exceptions.ExceptionTypeIsNotSuitableException;
@@ -12,8 +13,8 @@ import java.util.List;
 import java.util.Queue;
 
 public class ExpectationImpl implements Expectation {
-	private Queue<Answer> returnValue = new LinkedList<>();
-	private Answer lastAnswer;
+	private Queue<ExpectedAnswer> returnValue = new LinkedList<>();
+	private ExpectedAnswer lastAnswer;
 
 	private Invocation invocation;
 	private Matchers matchers;
@@ -65,17 +66,12 @@ public class ExpectationImpl implements Expectation {
 	}
 
 	@Override
-	public boolean hasMultipleAnswer() {
-		return returnValue.size() > 1;
-	}
-
-	@Override
-	public Object getReturnValue() throws Throwable {
+	public Object getReturnValue(Object[] params) throws Throwable {
 		if (!returnValue.isEmpty()) {
 			lastAnswer = returnValue.poll();
 		}
 
-		return lastAnswer == null ? nullValue() : lastAnswer.doAnswer();
+		return lastAnswer == null ? nullValue() : lastAnswer.doAnswer(params);
 	}
 
 	@Override
@@ -86,6 +82,12 @@ public class ExpectationImpl implements Expectation {
 	@Override
 	public List<Matcher<?>> getMatchers() {
 		return matchers.getMatchers();
+	}
+
+	@Override
+	public void addAnswer(Answer answer) {
+		lastAnswer = new DelegatedAnswer(answer);
+		returnValue.offer(lastAnswer);
 	}
 
 	@Override
@@ -119,7 +121,7 @@ public class ExpectationImpl implements Expectation {
 		return false;
 	}
 
-	private class ReturnAnswer implements Answer {
+	private class ReturnAnswer implements ExpectedAnswer {
 		private Object returnValue;
 
 		ReturnAnswer(Object returnValue) {
@@ -127,12 +129,12 @@ public class ExpectationImpl implements Expectation {
 		}
 
 		@Override
-		public Object doAnswer() {
+		public Object doAnswer(Object[] params) {
 			return returnValue;
 		}
 	}
 
-	private class ThrowAnswer implements Answer {
+	private class ThrowAnswer implements ExpectedAnswer {
 		private Throwable toThrow;
 
 		ThrowAnswer(Throwable toThrow) {
@@ -140,8 +142,20 @@ public class ExpectationImpl implements Expectation {
 		}
 
 		@Override
-		public Object doAnswer() throws Throwable {
+		public Object doAnswer(Object[] params) throws Throwable {
 			throw toThrow;
+		}
+	}
+
+	private class DelegatedAnswer implements ExpectedAnswer {
+		private Answer answer;
+		public DelegatedAnswer(Answer answer) {
+			this.answer = answer;
+		}
+
+		@Override
+		public Object doAnswer(Object[] params) throws Throwable {
+			return answer.answer(params);
 		}
 	}
 }

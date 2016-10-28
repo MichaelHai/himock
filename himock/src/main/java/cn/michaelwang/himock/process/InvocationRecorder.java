@@ -16,8 +16,8 @@ public class InvocationRecorder {
 		return expectedInvocations.stream()
 				.filter(expectation -> expectation.match(invocation))
 				.findFirst()
-				.orElseThrow(() -> new NoExpectedInvocationException())
-				.getReturnValue();
+				.orElseThrow(NoExpectedInvocationException::new)
+				.getReturnValue(invocation.getArguments());
 	}
 
 	public Expectation expect(Invocation invocation, List<Matcher<?>> matchers) {

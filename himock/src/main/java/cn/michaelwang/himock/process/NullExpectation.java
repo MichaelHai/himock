@@ -10,7 +10,7 @@ public class NullExpectation extends ExpectationImpl {
     }
 
     @Override
-    public Object getReturnValue() {
+    public Object getReturnValue(Object[] params) {
         return nullValue();
     }
 }
