@@ -21,7 +21,7 @@ public class HiMock {
         InvocationRecorder invocationRecorder = new InvocationRecorder();
         mockProcessManager = new MockStateManager(invocationRecorder, matcherIndex);
     }
-    
+
     protected static void injectFields(Object testSuits) throws IllegalArgumentException, IllegalAccessException {
         AnnotationHandler annotationHandler = new DefaultAnnotationHandler();
         annotationHandler.process(testSuits);
@@ -30,9 +30,9 @@ public class HiMock {
     public static <T> T mock(Class<T> mockedType) {
         return mockProcessManager.mock(mockedType);
     }
-    
+
     public static <T> T mock(Class<T> mockedType, Object... constructorParameters) {
-    	return mockProcessManager.mock(mockedType, constructorParameters);
+        return mockProcessManager.mock(mockedType, constructorParameters);
     }
 
     public static void expect(Expectation expectation) {
@@ -47,7 +47,7 @@ public class HiMock {
         mockProcessManager.toNormalState();
     }
 
-    public static void weakExpect(Expectation expectation ) {
+    public static void weakExpect(Expectation expectation) {
         mockProcessManager.toWeakExpectState();
         try {
             expectation.expect();
@@ -166,7 +166,17 @@ public class HiMock {
     }
 
     public static <T> MatcherCondition<T> any() {
-        return obj -> true;
+        return new MatcherCondition<T>() {
+            @Override
+            public boolean isMatch(T actual) {
+                return true;
+            }
+
+            @Override
+            public String toString() {
+                return "predefined-'any'";
+            }
+        };
     }
 
     public static void verify() {
@@ -216,7 +226,11 @@ public class HiMock {
 
         @Override
         public String toString() {
-            return "'matcher'";
+            if (condition.toString().startsWith("predefined-")) {
+                return condition.toString().substring(11);
+            } else {
+                return "'matcher'";
+            }
         }
     }
 }
