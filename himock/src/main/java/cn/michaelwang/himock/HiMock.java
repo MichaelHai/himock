@@ -114,6 +114,10 @@ public class HiMock {
         mockProcessManager.lastReturnTimer(times);
     }
 
+    public static void never() {
+        times(0);
+    }
+
     public static <T> T match(MatcherCondition<T> matcher) {
         mockProcessManager.addMatcher(new ConditionMatcher<>(matcher));
         return null;

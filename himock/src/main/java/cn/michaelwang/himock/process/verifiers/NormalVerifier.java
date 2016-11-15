@@ -1,10 +1,6 @@
 package cn.michaelwang.himock.process.verifiers;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import cn.michaelwang.himock.Invocation;
@@ -22,13 +18,13 @@ public class NormalVerifier implements Verifier {
 	@Override
 	public void addVerification(Verification verification) {
 		verifications.add(verification);
-		verificationCount.put(verification, 0);
+		verificationCount.put(verification, null);
 		this.lastVerification = verification;
 	}
 
 	@Override
 	public void verify(List<Invocation> toBeVerified) {
-		verificationCount.replaceAll((key, value) -> value == 0 ? 1 : value);
+		verificationCount.replaceAll((key, value) -> value == null ? 1 : value);
 
 		Map<Verification, Integer> actuallyCounts = countInvocations(toBeVerified, verificationCount);
 		Map<Invocation, int[]> invocationDiff = calculateDiff(actuallyCounts, verificationCount);
@@ -80,7 +76,7 @@ public class NormalVerifier implements Verifier {
 				verifications.remove(verification);
 			}
 
-			if (expectedCount != 0 && expectedCount != actuallyCount) {
+			if (!Objects.equals(expectedCount, actuallyCount)) {
 				invocationDiff.put(verification.getVerifiedInvocation(), new int[] { expectedCount, actuallyCount });
 			}
 		});
@@ -91,9 +87,7 @@ public class NormalVerifier implements Verifier {
 			Map<Invocation, int[]> invocationDiff) {
 		List<VerificationFailure> failures = new ArrayList<>();
 
-		invocationDiff.forEach((invocation, count) -> {
-			failures.add(new ExpectedTimesNotSatisfiedFailure(invocation, count[0], count[1]));
-		});
+		invocationDiff.forEach((invocation, count) -> failures.add(new ExpectedTimesNotSatisfiedFailure(invocation, count[0], count[1])));
 
 		Iterator<Verification> iter = notSatisfied.iterator();
 		while (iter.hasNext()) {
@@ -120,7 +114,7 @@ public class NormalVerifier implements Verifier {
 
 	@Override
 	public void addVerificationTimes(int times) {
-		int count = verificationCount.get(lastVerification);
+		int count = Optional.ofNullable(verificationCount.get(lastVerification) ).orElse(0);
 		count += times;
 		verificationCount.put(lastVerification, count);
 	}

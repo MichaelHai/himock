@@ -1,5 +1,7 @@
 package cn.michaelwang.himock;
 
+import cn.michaelwang.himock.process.verifiers.VerificationFailedReporter;
+import cn.michaelwang.himock.report.HiMockReporter;
 import org.junit.Test;
 
 import static cn.michaelwang.himock.HiMock.*;
@@ -76,5 +78,33 @@ public class HiMockTimerTest extends HiMockBaseTest {
 				+ "\t\t   at cn.michaelwang.himock.HiMockTimerTest.lambda$testTimesExpectedButNotEnoughShouldReportError$?(HiMockTimerTest.java:?)\n"
 				+ "\t\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n"
 				+ "\t\t   at cn.michaelwang.himock.HiMockTimerTest.testTimesExpectedButNotEnoughShouldReportError(HiMockTimerTest.java:?)\n");
+	}
+
+	@Test(expected = HiMockReporter.class)
+	public void testTimes0ButCalledShouldFail() {
+		MockedInterface dummy = mock(MockedInterface.class);
+
+		expect(() -> {
+			dummy.returnInt();
+			times(0);
+		});
+
+		dummy.returnInt();
+
+		verify();
+	}
+
+	@Test(expected = HiMockReporter.class)
+	public void testNeverButCalledShouldFail() {
+		MockedInterface dummy = mock(MockedInterface.class);
+
+		expect(() -> {
+			dummy.returnInt();
+			never();
+		});
+
+		dummy.returnInt();
+
+		verify();
 	}
 }

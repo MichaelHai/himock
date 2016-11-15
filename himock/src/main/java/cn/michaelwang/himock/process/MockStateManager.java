@@ -239,6 +239,8 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 			}
 
 			lastCall.addAnswer(answer);
+			resultSet = true;
+			verifier.addVerificationTimes(1);
 		}
 
 		@Override
