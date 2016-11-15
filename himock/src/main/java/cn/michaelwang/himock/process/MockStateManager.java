@@ -9,6 +9,7 @@ import cn.michaelwang.himock.process.exceptions.NoReturnTypeException;
 import cn.michaelwang.himock.process.exceptions.ReturnTypeIsNotSuitableException;
 import cn.michaelwang.himock.process.mockup.MockFactoryImpl;
 import cn.michaelwang.himock.process.reporters.*;
+import cn.michaelwang.himock.process.verifiers.AlwaysValidVerifier;
 import cn.michaelwang.himock.process.verifiers.InOrderVerifier;
 import cn.michaelwang.himock.process.verifiers.NormalVerifier;
 import cn.michaelwang.himock.utils.Utils;
@@ -40,6 +41,11 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 	@Override
 	public void toExpectState() {
 		this.state = new ExpectState(verifier);
+	}
+
+	@Override
+	public void toWeakExpectState() {
+		this.state = new ExpectState(new AlwaysValidVerifier());
 	}
 
 	@Override

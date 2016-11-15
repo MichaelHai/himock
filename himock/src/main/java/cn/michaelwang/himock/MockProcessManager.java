@@ -5,6 +5,8 @@ public interface MockProcessManager {
 
     void toExpectState();
 
+    void toWeakExpectState();
+
     void toVerifyState();
 
     void toOrderedVerifyState();

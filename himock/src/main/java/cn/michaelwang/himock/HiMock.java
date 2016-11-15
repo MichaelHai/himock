@@ -47,6 +47,18 @@ public class HiMock {
         mockProcessManager.toNormalState();
     }
 
+    public static void weakExpect(Expectation expectation ) {
+        mockProcessManager.toWeakExpectState();
+        try {
+            expectation.expect();
+        } catch (HiMockReporter reporter) {
+            throw reporter;
+        } catch (Throwable throwable) {
+            // do nothing
+        }
+        mockProcessManager.toNormalState();
+    }
+
     public static <T> void willReturn(T returnValue) {
         mockProcessManager.lastCallReturn(returnValue, returnValue.getClass());
     }
