@@ -153,6 +153,10 @@ public class HiMock {
         return 0;
     }
 
+    public static <T> MatcherCondition<T> any() {
+        return obj -> true;
+    }
+
     public static void verify() {
         mockProcessManager.doVerify();
     }

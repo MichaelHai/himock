@@ -170,7 +170,7 @@ public class HiMockArgMatcherTest extends HiMockBaseTest {
 
 		verify(() -> {
 			String strMatcher = match(arg -> arg.length() == 5);
-			dummy.withObjectArguments(match(arg -> "hello".equals(arg)), strMatcher);
+			dummy.withObjectArguments(match("hello"::equals), strMatcher);
 		});
 	}
 
