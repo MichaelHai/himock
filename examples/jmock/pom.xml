@@ -41,7 +41,7 @@
                 <configuration>
                     <includes>
                         <include>**/*Tests.java</include>
-                        <include>**/GettingStarted*</include>
+                        <include>**/*GettingStarted*</include>
                     </includes>
                 </configuration>
             </plugin>
