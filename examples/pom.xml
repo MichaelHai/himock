@@ -11,6 +11,7 @@
 
     <modules>
         <module>easymock</module>
+        <module>jmock</module>
     </modules>
 
     <properties>
