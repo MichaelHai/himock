@@ -43,4 +43,9 @@ public class HiMockAnnotationWithTestRunnerTest extends HiMockBaseTest {
 	public void testMockedObjectCanBeCreatedByParameter(@Mock MockedInterface dummyInParameter) {
 		assertNotNull(dummyInParameter);
 	}
+
+	@Test(expected = TestSuitNotAnnotatedException.class)
+	public void testNotAnnotatedTestParameter(MockedInterface dummy) {
+		fail("the case should not even started with " + dummy);
+	}
 }
