@@ -1,7 +1,6 @@
 package cn.michaelwang.himock;
 
 import cn.michaelwang.himock.report.HiMockReporter;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static cn.michaelwang.himock.HiMock.*;
