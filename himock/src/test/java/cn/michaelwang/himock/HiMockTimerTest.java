@@ -80,7 +80,6 @@ public class HiMockTimerTest extends HiMockBaseTest {
 				+ "\t\t   at cn.michaelwang.himock.HiMockTimerTest.testTimesExpectedButNotEnoughShouldReportError(HiMockTimerTest.java:?)\n");
 	}
 
-	@Ignore
 	@Test(expected = HiMockReporter.class)
 	public void testTimes0ButCalledShouldFail() {
 		MockedInterface dummy = mock(MockedInterface.class);
@@ -95,19 +94,25 @@ public class HiMockTimerTest extends HiMockBaseTest {
 		verify();
 	}
 
-	@Ignore
-	@Test(expected = HiMockReporter.class)
+	@Test
 	public void testNeverButCalledShouldFail() {
 		MockedInterface dummy = mock(MockedInterface.class);
 
-		expect(() -> {
+		reportTest(() -> {
+			expect(() -> {
+				dummy.returnInt();
+				never();
+			});
+
 			dummy.returnInt();
-			never();
-		});
 
-		dummy.returnInt();
-
-		verify();
+			verify();
+		}, "Verification failed:\n" +
+				"\tunexpected invocation happened:\n" +
+				"\t\tcn.michaelwang.himock.MockedInterface.returnInt()\n" +
+				"\t\t-> at cn.michaelwang.himock.HiMockTimerTest.lambda$testNeverButCalledShouldFail$?(HiMockTimerTest.java:?)\n" +
+				"\t\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n" +
+				"\t\t   at cn.michaelwang.himock.HiMockTimerTest.testNeverButCalledShouldFail(HiMockTimerTest.java:?)\n");
 	}
 
 	@Ignore

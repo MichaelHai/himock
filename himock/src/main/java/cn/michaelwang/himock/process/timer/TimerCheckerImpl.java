@@ -14,11 +14,13 @@ public class TimerCheckerImpl implements TimerChecker {
     private boolean hitAtLeastOnce;
     private int hit = 0;
 
-    @Override public boolean check() {
-        return hitAtLeastOnce && index >= timers.size();
+    @Override
+    public boolean check() {
+        return hitAtLeastOnce && (index >= timers.size() || timers.get(timers.size() - 1) instanceof NeverTimer);
     }
 
-    @Override public void hit() {
+    @Override
+    public void hit() {
         hitAtLeastOnce = true;
         try {
             if (!timers.isEmpty() && timers.get(index).hit()) {
@@ -31,7 +33,8 @@ public class TimerCheckerImpl implements TimerChecker {
         hit++;
     }
 
-    @Override public void addTimer(Timer timer) {
+    @Override
+    public void addTimer(Timer timer) {
         int lastIndex = timers.size() - 1;
         if (!timers.isEmpty() && (timers.get(lastIndex) instanceof NewAnswerTimer)) {
             if (!(timer instanceof NewAnswerTimer)) {
@@ -54,7 +57,7 @@ public class TimerCheckerImpl implements TimerChecker {
         timers.forEach(timer -> {
             String times = timer.getTimes();
             try {
-               exactTimes.add(Integer.parseInt(times));
+                exactTimes.add(Integer.parseInt(times));
             } catch (NumberFormatException e) {
                 otherTimes.add(times);
             }

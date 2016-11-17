@@ -6,6 +6,7 @@ import cn.michaelwang.himock.preprocess.Preprocessor;
 import cn.michaelwang.himock.process.InvocationRecorder;
 import cn.michaelwang.himock.process.MockStateManager;
 import cn.michaelwang.himock.process.timer.ExactTimer;
+import cn.michaelwang.himock.process.timer.NeverTimer;
 import cn.michaelwang.himock.report.HiMockReporter;
 
 public class HiMock {
@@ -113,11 +114,15 @@ public class HiMock {
     }
 
     public static void times(int times) {
-        mockProcessManager.lastReturnTimer(new ExactTimer(times));
+        if (times == 0) {
+            never();
+        } else {
+            mockProcessManager.lastReturnTimer(new ExactTimer(times));
+        }
     }
 
     public static void never() {
-        times(0);
+        mockProcessManager.lastReturnTimer(new NeverTimer());
     }
 
     public static void timesMoreThan(int minTimes) {

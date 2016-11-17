@@ -1,8 +1,8 @@
 package cn.michaelwang.himock.process.verifiers;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
+import cn.michaelwang.himock.HitNeverTimerException;
 import cn.michaelwang.himock.Invocation;
 import cn.michaelwang.himock.process.Verification;
 import cn.michaelwang.himock.process.Verifier;
@@ -12,6 +12,7 @@ import cn.michaelwang.himock.process.timer.TimerCheckerImpl;
 import cn.michaelwang.himock.process.verifiers.failures.ArgumentsNotMatchFailure;
 import cn.michaelwang.himock.process.verifiers.failures.ExpectedInvocationNotHappenedFailure;
 import cn.michaelwang.himock.process.verifiers.failures.ExpectedTimesNotSatisfiedFailure;
+import cn.michaelwang.himock.process.verifiers.failures.UnexpectedInvocationHappenedFailure;
 
 public class NormalVerifier implements Verifier {
     private List<Verification> verifications = new ArrayList<>();
@@ -35,7 +36,13 @@ public class NormalVerifier implements Verifier {
                 .filter(verification -> verification.satisfyWith(invocation))
                 .filter(verification -> !verificationTimerCheckerMap.get(verification).check())
                 .findFirst()
-                .ifPresent(verification ->verificationTimerCheckerMap.get(verification).hit()));
+                .ifPresent(verification -> {
+                    try {
+                        verificationTimerCheckerMap.get(verification).hit();
+                    } catch (HitNeverTimerException e) {
+                        failures.add(new UnexpectedInvocationHappenedFailure(invocation));
+                    }
+                }));
 
         verificationTimerCheckerMap.forEach((verification, checker) -> {
             if (!checker.check()) {
