@@ -1,5 +1,7 @@
 package cn.michaelwang.himock;
 
+import cn.michaelwang.himock.process.Timer;
+
 public interface MockProcessManager {
     void toNormalState();
 
@@ -21,7 +23,7 @@ public interface MockProcessManager {
 
     void lastCallAnswer(Answer answer);
 
-    void lastReturnTimer(int times);
+    void lastReturnTimer(Timer timer);
 
     void doVerify();
 

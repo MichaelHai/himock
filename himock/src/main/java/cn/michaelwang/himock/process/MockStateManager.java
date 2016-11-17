@@ -9,6 +9,7 @@ import cn.michaelwang.himock.process.exceptions.NoReturnTypeException;
 import cn.michaelwang.himock.process.exceptions.ReturnTypeIsNotSuitableException;
 import cn.michaelwang.himock.process.mockup.MockFactoryImpl;
 import cn.michaelwang.himock.process.reporters.*;
+import cn.michaelwang.himock.process.timer.NewAnswerTimer;
 import cn.michaelwang.himock.process.verifiers.AlwaysValidVerifier;
 import cn.michaelwang.himock.process.verifiers.InOrderVerifier;
 import cn.michaelwang.himock.process.verifiers.NormalVerifier;
@@ -86,8 +87,8 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 	}
 
 	@Override
-	public void lastReturnTimer(int times) {
-		state.lastReturnTimer(times);
+	public void lastReturnTimer(Timer timer) {
+		state.lastReturnTimer(timer);
 	}
 
 	@Override
@@ -141,7 +142,7 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 
 		void lastCallAnswer(Answer answer);
 
-		void lastReturnTimer(int times);
+		void lastReturnTimer(Timer timer);
 	}
 
 	private class NormalState implements MockState {
@@ -171,14 +172,13 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 		}
 
 		@Override
-		public void lastReturnTimer(int times) {
+		public void lastReturnTimer(Timer timer) {
 			throw new TimerOutsideExpectReporter();
 		}
 	}
 
 	private class ExpectState extends VerificationState {
 		private Expectation lastCall;
-		private boolean resultSet;
 
 		public ExpectState(Verifier verifier) {
 			super(verifier);
@@ -188,7 +188,6 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 		public Object methodCalled(Invocation invocation) {
 			List<Matcher<?>> matchers = getMatchers(invocation);
 			lastCall = invocationRecorder.expect(invocation, matchers);
-			resultSet = false;
 
 			createAndAddVerification(invocation, matchers);
 			return new NullExpectation(invocation).getReturnValue(null);
@@ -202,7 +201,6 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 
 			try {
 				lastCall.addReturnValue(returnValue, type);
-				resultSet = true;
 			} catch (NoReturnTypeException e) {
 				throw new NoReturnTypeReporter(e.getInvocation());
 			} catch (ReturnTypeIsNotSuitableException e) {
@@ -213,7 +211,7 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 				}
 			}
 
-			verifier.addVerificationTimes(1);
+			verifier.addVerificationTimes(new NewAnswerTimer());
 		}
 
 		@Override
@@ -224,12 +222,11 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 
 			try {
 				lastCall.addException(toThrow);
-				resultSet = true;
 			} catch (ExceptionTypeIsNotSuitableException e) {
 				throw new ExceptionTypeIsNotSuitableReporter(e.getInvocation(), e.getToThrow());
 			}
 
-			verifier.addVerificationTimes(1);
+			verifier.addVerificationTimes(new NewAnswerTimer());
 		}
 
 		@Override
@@ -239,14 +236,13 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 			}
 
 			lastCall.addAnswer(answer);
-			resultSet = true;
-			verifier.addVerificationTimes(1);
+			verifier.addVerificationTimes(new NewAnswerTimer());
 		}
 
 		@Override
-		public void lastReturnTimer(int times) {
-			lastCall.answerMore(times - 1);
-			verifier.addVerificationTimes(resultSet ? times - 1 : times);
+		public void lastReturnTimer(Timer timer) {
+			lastCall.answerMore(timer.copy());
+			verifier.addVerificationTimes(timer.copy());
 		}
 	}
 
@@ -280,8 +276,8 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 		}
 
 		@Override
-		public void lastReturnTimer(int times) {
-			verifier.addVerificationTimes(times);
+		public void lastReturnTimer(Timer timer) {
+			verifier.addVerificationTimes(timer.copy());
 		}
 
 		protected void createAndAddVerification(Invocation invocation, List<Matcher<?>> matchers) {

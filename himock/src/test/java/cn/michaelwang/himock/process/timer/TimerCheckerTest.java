@@ -1,5 +1,6 @@
 package cn.michaelwang.himock.process.timer;
 
+import cn.michaelwang.himock.process.TimerChecker;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -7,17 +8,19 @@ import static org.junit.Assert.*;
 public class TimerCheckerTest {
     @Test
     public void testNoTimerShouldBeHitOnce() {
-        TimerChecker checker = new TimerChecker();
+        TimerChecker checker = new TimerCheckerImpl();
 
         assertFalse(checker.check());
 
         checker.hit();
         assertTrue(checker.check());
+
+        assertEquals(1, checker.getHitTimes());
     }
 
     @Test
     public void testTimerCheckerWithExactTimer() {
-        TimerChecker checker = new TimerChecker();
+        TimerChecker checker = new TimerCheckerImpl();
         checker.addTimer(new ExactTimer(2));
 
         assertFalse(checker.check());
@@ -29,22 +32,26 @@ public class TimerCheckerTest {
         assertTrue(checker.check());
 
         assertHitMore(checker, "The timer(s) are hit more than expected times.");
+
+        assertEquals(2, checker.getHitTimes());
     }
 
     @Test
     public void testTimerCheckerWithNewAnswerTimer() {
-        TimerChecker checker = new TimerChecker();
+        TimerChecker checker = new TimerCheckerImpl();
         checker.addTimer(new NewAnswerTimer());
 
         assertFalse(checker.check());
 
         checker.hit();
         assertTrue(checker.check());
+
+        assertEquals(1, checker.getHitTimes());
     }
 
     @Test
     public void testTimerCheckerWithNewAnswerTimerAndExactTimer() {
-        TimerChecker checker = new TimerChecker();
+        TimerChecker checker = new TimerCheckerImpl();
         checker.addTimer(new NewAnswerTimer());
         checker.addTimer(new ExactTimer(2));
 
@@ -55,11 +62,13 @@ public class TimerCheckerTest {
 
         checker.hit();
         assertTrue(checker.check());
+
+        assertEquals(2, checker.getHitTimes());
     }
 
     @Test
     public void testTimerCheckerWithContinuesMultipleNewAnswerTimer() {
-        TimerChecker checker = new TimerChecker();
+        TimerChecker checker = new TimerCheckerImpl();
         checker.addTimer(new NewAnswerTimer());
         checker.addTimer(new NewAnswerTimer());
         checker.addTimer(new ExactTimer(2));
@@ -78,11 +87,13 @@ public class TimerCheckerTest {
 
         checker.hit();
         assertTrue(checker.check());
+
+        assertEquals(4, checker.getHitTimes());
     }
 
     @Test
     public void testTimerCheckerWithContinuesMultipleNewAnswerTimerWithExactTimerBetween() {
-        TimerChecker checker = new TimerChecker();
+        TimerChecker checker = new TimerCheckerImpl();
         checker.addTimer(new NewAnswerTimer());
         checker.addTimer(new NewAnswerTimer());
         checker.addTimer(new NewAnswerTimer());
@@ -97,6 +108,8 @@ public class TimerCheckerTest {
 
         checker.hit();
         assertTrue(checker.check());
+
+        assertEquals(3, checker.getHitTimes());
     }
 
     private void assertHitMore(TimerChecker checker, String message) {

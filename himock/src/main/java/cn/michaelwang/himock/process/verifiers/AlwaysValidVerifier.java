@@ -3,6 +3,7 @@ package cn.michaelwang.himock.process.verifiers;
 import cn.michaelwang.himock.Invocation;
 import cn.michaelwang.himock.process.Verification;
 import cn.michaelwang.himock.process.Verifier;
+import cn.michaelwang.himock.process.Timer;
 
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class AlwaysValidVerifier implements Verifier {
     }
 
     @Override
-    public void addVerificationTimes(int times) {
+    public void addVerificationTimes(Timer timer) {
         // do nothing
     }
 }

@@ -1,5 +1,6 @@
 package cn.michaelwang.himock.process.timer;
 
+import cn.michaelwang.himock.process.Timer;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

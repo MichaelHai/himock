@@ -6,14 +6,13 @@ import cn.michaelwang.himock.report.ReportBuilder;
 
 public class ExpectedTimesNotSatisfiedFailure implements VerificationFailure {
 	private Invocation invocation;
-	private int expectedCount;
+	private String expect;
 	private int actuallyCount;
 
-	public ExpectedTimesNotSatisfiedFailure(Invocation invocation, int expectedCount, int actuallyCount) {
+	public ExpectedTimesNotSatisfiedFailure(Invocation invocation, String expect, int actuallyCount) {
 		this.invocation = invocation;
-		this.expectedCount = expectedCount;
+		this.expect = expect;
 		this.actuallyCount = actuallyCount;
-
 	}
 
 	@Override
@@ -22,7 +21,7 @@ public class ExpectedTimesNotSatisfiedFailure implements VerificationFailure {
 
 		reportBuilder.buildNextLevel(
 				(levelBuilder) -> {
-					levelBuilder.appendLine("expected: " + expectedCount + " time" + (expectedCount > 1 ? "s" : ""));
+					levelBuilder.appendLine("expected: " + expect);
 					levelBuilder.appendLine("actually: " + actuallyCount + " time" + (actuallyCount > 1 ? "s" : ""));
 					levelBuilder.appendLine("expected invocation:");
 					levelBuilder.appendInvocationDetail(invocation.getMethodName(), invocation.getArguments(),

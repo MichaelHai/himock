@@ -6,15 +6,18 @@ import cn.michaelwang.himock.Matcher;
 import cn.michaelwang.himock.process.exceptions.ExceptionTypeIsNotSuitableException;
 import cn.michaelwang.himock.process.exceptions.NoReturnTypeException;
 import cn.michaelwang.himock.process.exceptions.ReturnTypeIsNotSuitableException;
+import cn.michaelwang.himock.process.timer.TimerCheckerImpl;
 import cn.michaelwang.himock.utils.Utils;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 public class ExpectationImpl implements Expectation {
 	private Queue<ExpectedAnswer> returnValue = new LinkedList<>();
+	private Map<ExpectedAnswer, TimerChecker> answerTimerMap = new HashMap<>();
+	// the last answer set
 	private ExpectedAnswer lastAnswer;
+	// the current answer returned for mocking invocation
+	private ExpectedAnswer currentAnswer;
 
 	private Invocation invocation;
 	private Matchers matchers;
@@ -22,6 +25,8 @@ public class ExpectationImpl implements Expectation {
 	public ExpectationImpl(Invocation invocation, List<Matcher<?>> matchers) {
 		this.invocation = invocation;
 		this.matchers = new Matchers(matchers);
+		// the default timer checker
+		answerTimerMap.put(null, new TimerCheckerImpl());
 	}
 
 	@Override
@@ -37,6 +42,7 @@ public class ExpectationImpl implements Expectation {
 		if (isSuitableType(toSet.getClass(), returnType)) {
 			lastAnswer = new ReturnAnswer(toSet);
 			returnValue.offer(lastAnswer);
+			answerTimerMap.put(lastAnswer, new TimerCheckerImpl());
 		} else if (returnType == Void.TYPE) {
 			throw new NoReturnTypeException(invocation);
 		} else {
@@ -53,25 +59,36 @@ public class ExpectationImpl implements Expectation {
 						.anyMatch(exceptionType -> exceptionType.isAssignableFrom(toThrow.getClass()))) {
 			lastAnswer = new ThrowAnswer(toThrow);
 			returnValue.offer(lastAnswer);
+			answerTimerMap.put(lastAnswer, new TimerCheckerImpl());
 		} else {
 			throw new ExceptionTypeIsNotSuitableException(invocation, toThrow);
 		}
 	}
 
 	@Override
-	public void answerMore(int times) {
-		for (int i = 0; i < times; i++) {
-			returnValue.offer(lastAnswer);
-		}
+	public void answerMore(Timer timer) {
+		TimerChecker checker = answerTimerMap.get(lastAnswer);
+		checker.addTimer(timer);
 	}
 
 	@Override
 	public Object getReturnValue(Object[] params) throws Throwable {
-		if (!returnValue.isEmpty()) {
-			lastAnswer = returnValue.poll();
+		if (currentAnswer == null) {
+			currentAnswer = returnValue.poll();
 		}
 
-		return lastAnswer == null ? nullValue() : lastAnswer.doAnswer(params);
+		if (currentAnswer == null || answerTimerMap.get(currentAnswer).check()) {
+			if (!returnValue.isEmpty()) {
+				currentAnswer = returnValue.poll();
+			}
+		}
+
+		if (currentAnswer != null) {
+			answerTimerMap.get(currentAnswer).hit();
+			return currentAnswer.doAnswer(params);
+		} else {
+			return nullValue();
+		}
 	}
 
 	@Override
@@ -88,6 +105,7 @@ public class ExpectationImpl implements Expectation {
 	public void addAnswer(Answer answer) {
 		lastAnswer = new DelegatedAnswer(answer);
 		returnValue.offer(lastAnswer);
+		answerTimerMap.put(lastAnswer, new TimerCheckerImpl());
 	}
 
 	@Override

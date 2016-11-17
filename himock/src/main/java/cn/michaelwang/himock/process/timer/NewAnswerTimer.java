@@ -1,5 +1,7 @@
 package cn.michaelwang.himock.process.timer;
 
+import cn.michaelwang.himock.process.Timer;
+
 public class NewAnswerTimer implements Timer {
     private boolean hit = false;
 
@@ -10,5 +12,15 @@ public class NewAnswerTimer implements Timer {
         }
         hit = true;
         return true;
+    }
+
+    @Override
+    public Timer copy() {
+        return new NewAnswerTimer();
+    }
+
+    @Override
+    public String getTimes() {
+        return "1";
     }
 }

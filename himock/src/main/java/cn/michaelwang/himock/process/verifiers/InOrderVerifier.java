@@ -3,37 +3,48 @@ package cn.michaelwang.himock.process.verifiers;
 import cn.michaelwang.himock.Invocation;
 import cn.michaelwang.himock.process.Verification;
 import cn.michaelwang.himock.process.Verifier;
+import cn.michaelwang.himock.process.Timer;
+import cn.michaelwang.himock.process.TimerChecker;
+import cn.michaelwang.himock.process.timer.TimerCheckerImpl;
 import cn.michaelwang.himock.process.verifiers.failures.OrderFailure;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class InOrderVerifier implements Verifier {
 	private List<Verification> orderedVerifications = new ArrayList<>();
+	private Map<Verification, TimerChecker> verificationTimerMap = new HashMap<>();
 	private Verification lastVerification;
 
 	@Override
 	public void addVerification(Verification verification) {
 		orderedVerifications.add(verification);
 		this.lastVerification = verification;
+		verificationTimerMap.put(verification, new TimerCheckerImpl());
 	}
 
 	@Override
 	public void verify(List<Invocation> toBeVerified) {
-		int index = -1;
+		int toBeVerifiedIndex = 0;
 		Set<Integer> foundIndexes = new HashSet<>();
 		for (int i = 0; i < orderedVerifications.size(); i++) {
 			Verification verification = orderedVerifications.get(i);
+			TimerChecker timerChecker = verificationTimerMap.get(verification);
 
-			index = findAfter(index, toBeVerified, verification);
-			if (index == -1) {
-				OrderFailure failure = generateFailure(toBeVerified, foundIndexes, i, verification);
-				throw new VerificationFailedReporter(failure);
-			} else {
-				foundIndexes.add(index);
+			while (!timerChecker.check()) {
+				if (toBeVerifiedIndex >= toBeVerified.size()) {
+					OrderFailure failure = generateFailure(toBeVerified, foundIndexes, i, verification);
+					throw new VerificationFailedReporter(failure);
+				}
+
+				Invocation invocation = toBeVerified.get(toBeVerifiedIndex);
+
+				if (verification.satisfyWith(invocation)) {
+					timerChecker.hit();
+					foundIndexes.add(toBeVerifiedIndex);
+				}
+
+				toBeVerifiedIndex++;
 			}
 		}
 	}
@@ -68,9 +79,8 @@ public class InOrderVerifier implements Verifier {
 	}
 
 	@Override
-	public void addVerificationTimes(int times) {
-		for (int i = 0; i < times - 1; i++) {
-			this.addVerification(lastVerification);
-		}
+	public void addVerificationTimes(Timer timer) {
+		TimerChecker checker = verificationTimerMap.get(lastVerification);
+		checker.addTimer(timer);
 	}
 }

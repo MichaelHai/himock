@@ -4,13 +4,11 @@ import cn.michaelwang.himock.Invocation;
 import cn.michaelwang.himock.process.verifiers.VerificationFailure;
 import cn.michaelwang.himock.report.ReportBuilder;
 
-import java.util.List;
-
 public class ExpectedInvocationNotHappenedFailure implements VerificationFailure {
-    private final List<Invocation> missedInvocations;
+    private final Invocation missedInvocation;
 
-    public ExpectedInvocationNotHappenedFailure(List<Invocation> missedInvocations) {
-        this.missedInvocations = missedInvocations;
+    public ExpectedInvocationNotHappenedFailure(Invocation missedInvocations) {
+        this.missedInvocation = missedInvocations;
     }
 
     @Override
@@ -18,11 +16,10 @@ public class ExpectedInvocationNotHappenedFailure implements VerificationFailure
         reportBuilder.appendLine("expected invocation not happened:");
 
         reportBuilder.buildNextLevel(
-                (levelBuilder) -> missedInvocations.forEach(
-                        invocation -> levelBuilder.appendInvocationDetail(
-                                invocation.getMethodName(),
-                                invocation.getArguments(),
-                                invocation.getInvocationStackTrace()))
+                (levelBuilder) -> levelBuilder.appendInvocationDetail(
+                        missedInvocation.getMethodName(),
+                        missedInvocation.getArguments(),
+                        missedInvocation.getInvocationStackTrace())
         );
     }
 }

@@ -5,6 +5,7 @@ import cn.michaelwang.himock.annotations.DefaultAnnotationHandler;
 import cn.michaelwang.himock.preprocess.Preprocessor;
 import cn.michaelwang.himock.process.InvocationRecorder;
 import cn.michaelwang.himock.process.MockStateManager;
+import cn.michaelwang.himock.process.timer.ExactTimer;
 import cn.michaelwang.himock.report.HiMockReporter;
 
 public class HiMock {
@@ -42,7 +43,8 @@ public class HiMock {
         } catch (HiMockReporter reporter) {
             throw reporter;
         } catch (Throwable throwable) {
-            // do nothing
+            // do nothing, this line is for debug use.
+            throwable.getMessage();
         }
         mockProcessManager.toNormalState();
     }
@@ -111,11 +113,15 @@ public class HiMock {
     }
 
     public static void times(int times) {
-        mockProcessManager.lastReturnTimer(times);
+        mockProcessManager.lastReturnTimer(new ExactTimer(times));
     }
 
     public static void never() {
         times(0);
+    }
+
+    public static void timesMoreThan(int minTimes) {
+
     }
 
     public static <T> T match(MatcherCondition<T> matcher) {

@@ -13,7 +13,7 @@ public interface Expectation {
 
     void addException(Throwable toThrow);
 
-    void answerMore(int i);
+    void answerMore(Timer timer);
         
     Object getReturnValue(Object[] params) throws Throwable;
     

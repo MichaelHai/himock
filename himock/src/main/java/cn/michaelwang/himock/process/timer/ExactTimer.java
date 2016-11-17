@@ -1,5 +1,7 @@
 package cn.michaelwang.himock.process.timer;
 
+import cn.michaelwang.himock.process.Timer;
+
 public class ExactTimer implements Timer {
     private final int times;
     private int hit;
@@ -17,5 +19,15 @@ public class ExactTimer implements Timer {
         }
 
         return hit == times;
+    }
+
+    @Override
+    public Timer copy() {
+        return new ExactTimer(times);
+    }
+
+    @Override
+    public String getTimes() {
+        return times + "";
     }
 }
