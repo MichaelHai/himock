@@ -115,7 +115,6 @@ public class HiMockTimerTest extends HiMockBaseTest {
 				"\t\t   at cn.michaelwang.himock.HiMockTimerTest.testNeverButCalledShouldFail(HiMockTimerTest.java:?)\n");
 	}
 
-	@Ignore
 	@Test
 	public void testUseTimesMoreThanButNotMeetShouldReportError() {
 		MockedInterface dummy = mock(MockedInterface.class);
@@ -132,7 +131,7 @@ public class HiMockTimerTest extends HiMockBaseTest {
 		}, "Verification failed:\n"
 				+ "\texpected invocation times not satisfied:\n"
 				+ "\t\texpected: more than 2 times\n"
-				+ "\t\tactually: 1 times\n"
+				+ "\t\tactually: 1 time\n"
 				+ "\t\texpected invocation:\n"
 				+ "\t\tcn.michaelwang.himock.MockedInterface.returnInt()\n"
 				+ "\t\t-> at cn.michaelwang.himock.HiMockTimerTest.lambda$null$?(HiMockTimerTest.java:?)\n"

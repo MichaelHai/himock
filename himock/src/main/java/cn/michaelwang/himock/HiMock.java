@@ -6,6 +6,7 @@ import cn.michaelwang.himock.preprocess.Preprocessor;
 import cn.michaelwang.himock.process.InvocationRecorder;
 import cn.michaelwang.himock.process.MockStateManager;
 import cn.michaelwang.himock.process.timer.ExactTimer;
+import cn.michaelwang.himock.process.timer.MoreThanTimer;
 import cn.michaelwang.himock.process.timer.NeverTimer;
 import cn.michaelwang.himock.report.HiMockReporter;
 
@@ -126,7 +127,7 @@ public class HiMock {
     }
 
     public static void timesMoreThan(int minTimes) {
-
+        mockProcessManager.lastReturnTimer(new MoreThanTimer(minTimes));
     }
 
     public static <T> T match(MatcherCondition<T> matcher) {
