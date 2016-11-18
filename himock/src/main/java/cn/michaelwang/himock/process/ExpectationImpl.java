@@ -7,6 +7,7 @@ import cn.michaelwang.himock.Matcher;
 import cn.michaelwang.himock.process.exceptions.ExceptionTypeIsNotSuitableException;
 import cn.michaelwang.himock.process.exceptions.NoReturnTypeException;
 import cn.michaelwang.himock.process.exceptions.ReturnTypeIsNotSuitableException;
+import cn.michaelwang.himock.process.timer.HitMoreThanExpectedTimesException;
 import cn.michaelwang.himock.process.timer.TimerCheckerImpl;
 import cn.michaelwang.himock.utils.Utils;
 
@@ -86,7 +87,7 @@ public class ExpectationImpl implements Expectation {
 
         try {
             answerTimerMap.get(currentAnswer).hit();
-        } catch (HitNeverTimerException ignore) {
+        } catch (HitNeverTimerException | HitMoreThanExpectedTimesException ignore) {
             // ignore this exception when execute the product code
         }
         if (currentAnswer != null) {

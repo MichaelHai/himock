@@ -25,4 +25,14 @@ public class MoreThanTimer implements Timer {
     public String getTimes() {
         return "more than " + minTimes + " time" + (minTimes > 1 ? "s" : "");
     }
+
+    @Override
+    public boolean pass() {
+        return hit > minTimes;
+    }
+
+    @Override
+    public boolean hitMore() {
+        return true;
+    }
 }

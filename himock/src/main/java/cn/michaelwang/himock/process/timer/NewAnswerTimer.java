@@ -23,4 +23,14 @@ public class NewAnswerTimer implements Timer {
     public String getTimes() {
         return "1";
     }
+
+    @Override
+    public boolean pass() {
+        return hit;
+    }
+
+    @Override
+    public boolean hitMore() {
+        return !hit;
+    }
 }

@@ -32,20 +32,22 @@ public class NormalVerifier implements Verifier {
     public void verify(List<Invocation> toBeVerified) {
         List<VerificationFailure> failures = new ArrayList<>();
 
+        List<Verification> failedVerifications = new ArrayList<>();
         toBeVerified.forEach(invocation -> verifications.stream()
                 .filter(verification -> verification.satisfyWith(invocation))
-                .filter(verification -> !verificationTimerCheckerMap.get(verification).check())
+                .filter(verification -> verificationTimerCheckerMap.get(verification).hitMore())
                 .findFirst()
                 .ifPresent(verification -> {
                     try {
                         verificationTimerCheckerMap.get(verification).hit();
                     } catch (HitNeverTimerException e) {
+                        failedVerifications.add(verification);
                         failures.add(new UnexpectedInvocationHappenedFailure(invocation));
                     }
                 }));
 
         verificationTimerCheckerMap.forEach((verification, checker) -> {
-            if (!checker.check()) {
+            if (!failedVerifications.contains(verification) && !checker.check()) {
                 int hitTimes = checker.getHitTimes();
                 if (hitTimes != 0) {
                     failures.add(new ExpectedTimesNotSatisfiedFailure(verification.getVerifiedInvocation(), checker.getExpect(), hitTimes));

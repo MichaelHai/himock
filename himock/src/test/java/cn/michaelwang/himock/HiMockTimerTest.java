@@ -115,6 +115,22 @@ public class HiMockTimerTest extends HiMockBaseTest {
 	}
 
 	@Test
+	public void testTimesMoreThanAndMeetShouldPass() {
+		MockedInterface dummy = mock(MockedInterface.class);
+
+		expect(() -> {
+			dummy.returnInt();
+			timesMoreThan(2);
+		});
+
+		dummy.returnInt();
+		dummy.returnInt();
+		dummy.returnInt();
+
+		verify();
+	}
+
+	@Test
 	public void testUseTimesMoreThanButNotMeetShouldReportError() {
 		MockedInterface dummy = mock(MockedInterface.class);
 
@@ -137,5 +153,45 @@ public class HiMockTimerTest extends HiMockBaseTest {
 				+ "\t\t   at cn.michaelwang.himock.HiMockTimerTest.lambda$testUseTimesMoreThanButNotMeetShouldReportError$?(HiMockTimerTest.java:?)\n"
 				+ "\t\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n"
 				+ "\t\t   at cn.michaelwang.himock.HiMockTimerTest.testUseTimesMoreThanButNotMeetShouldReportError(HiMockTimerTest.java:?)\n");
+	}
+
+	@Test
+	public void testTimesLessThanAndMeetShouldPass() {
+		MockedInterface dummy = mock(MockedInterface.class);
+
+		expect(() -> {
+			dummy.returnInt();
+			timesLessThan(2);
+		});
+
+		dummy.returnInt();
+
+		verify();
+	}
+
+	@Test
+	public void testUseTimesLessThanButNotMeetShouldReportError() {
+		MockedInterface dummy = mock(MockedInterface.class);
+
+		reportTest(() -> {
+			expect(() -> {
+				dummy.returnInt();
+				timesLessThan(2);
+			});
+
+			dummy.returnInt();
+			dummy.returnInt();
+
+			verify();
+		}, "Verification failed:\n"
+				+ "\texpected invocation times not satisfied:\n"
+				+ "\t\texpected: less than 2 times\n"
+				+ "\t\tactually: 2 times\n"
+				+ "\t\texpected invocation:\n"
+				+ "\t\tcn.michaelwang.himock.MockedInterface.returnInt()\n"
+				+ "\t\t-> at cn.michaelwang.himock.HiMockTimerTest.lambda$null$?(HiMockTimerTest.java:?)\n"
+				+ "\t\t   at cn.michaelwang.himock.HiMockTimerTest.lambda$testUseTimesLessThanButNotMeetShouldReportError$?(HiMockTimerTest.java:?)\n"
+				+ "\t\t   at cn.michaelwang.himock.HiMockBaseTest.reportTest(HiMockBaseTest.java:?)\n"
+				+ "\t\t   at cn.michaelwang.himock.HiMockTimerTest.testUseTimesLessThanButNotMeetShouldReportError(HiMockTimerTest.java:?)\n");
 	}
 }

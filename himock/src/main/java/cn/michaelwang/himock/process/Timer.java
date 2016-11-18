@@ -9,4 +9,8 @@ public interface Timer {
     Timer copy();
 
     String getTimes();
+
+    boolean pass();
+
+    boolean hitMore();
 }

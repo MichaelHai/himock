@@ -10,4 +10,6 @@ public interface TimerChecker {
     int getHitTimes();
 
     String getExpect();
+
+    boolean hitMore();
 }

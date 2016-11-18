@@ -30,4 +30,14 @@ public class ExactTimer implements Timer {
     public String getTimes() {
         return times + "";
     }
+
+    @Override
+    public boolean pass() {
+        return hit == times;
+    }
+
+    @Override
+    public boolean hitMore() {
+        return hit < times;
+    }
 }

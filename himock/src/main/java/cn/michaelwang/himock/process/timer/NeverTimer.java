@@ -4,9 +4,11 @@ import cn.michaelwang.himock.HitNeverTimerException;
 import cn.michaelwang.himock.process.Timer;
 
 public class NeverTimer implements Timer {
+    private boolean hit = false;
 
     @Override
     public boolean hit() {
+        hit = true;
         throw new HitNeverTimerException();
     }
 
@@ -18,5 +20,16 @@ public class NeverTimer implements Timer {
     @Override
     public String getTimes() {
         return "never";
+    }
+
+    @Override
+    public boolean pass() {
+        return !hit;
+    }
+
+    @Override
+    public boolean hitMore() {
+        // receive one hit to check
+        return !hit;
     }
 }

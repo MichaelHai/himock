@@ -16,7 +16,12 @@ public class TimerCheckerImpl implements TimerChecker {
 
     @Override
     public boolean check() {
-        return hitAtLeastOnce && (index >= timers.size() || timers.get(timers.size() - 1) instanceof NeverTimer);
+        return hitAtLeastOnce && timers.stream().allMatch(Timer::pass);
+    }
+
+    @Override
+    public boolean hitMore() {
+        return !hitAtLeastOnce || (index < timers.size() && timers.get(index).hitMore());
     }
 
     @Override
