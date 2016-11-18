@@ -7,7 +7,7 @@ public class NeverTimer implements Timer {
     private boolean hit = false;
 
     @Override
-    public boolean hit() {
+    public void hit() {
         hit = true;
         throw new HitNeverTimerException();
     }

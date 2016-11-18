@@ -10,9 +10,12 @@ public class TimerTest {
     public void testExactTimerShouldBeHitTheGivenTimes() {
         ExactTimer exactTimer = new ExactTimer(3);
 
-        assertFalse(exactTimer.hit());
-        assertFalse(exactTimer.hit());
-        assertTrue(exactTimer.hit());
+        exactTimer.hit();
+        assertFalse(exactTimer.pass());
+        exactTimer.hit();
+        assertFalse(exactTimer.pass());
+        exactTimer.hit();
+        assertTrue(exactTimer.pass());
 
         assertHitMore(exactTimer, "Timer should be hit exactly 3 times");
     }
@@ -20,7 +23,8 @@ public class TimerTest {
     @Test
     public void testNewAnswerTimerShouldBeHitOnlyOnceWithoutOtherTimers() {
         NewAnswerTimer newAnswerTimer = new NewAnswerTimer();
-        assertTrue(newAnswerTimer.hit());
+        newAnswerTimer.hit();
+        assertTrue(newAnswerTimer.pass());
         assertHitMore(newAnswerTimer, "NewAnswerTimer should be hit only once.");
     }
 

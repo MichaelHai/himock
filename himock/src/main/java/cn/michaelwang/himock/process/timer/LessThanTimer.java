@@ -11,18 +11,12 @@ public class LessThanTimer implements Timer {
     }
 
     @Override
-    public boolean hit() {
+    public void hit() {
         if (hit >= maxTimes) {
             throw new HitMoreThanExpectedTimesException();
         } else {
             hit++;
         }
-
-        /*
-         * this timer should check weather the hit times less than expected,
-         * in this case, all hit should come to this timer.
-         */
-        return false;
     }
 
     @Override

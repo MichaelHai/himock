@@ -28,14 +28,19 @@ public class TimerCheckerImpl implements TimerChecker {
     public void hit() {
         hitAtLeastOnce = true;
         try {
-            if (!timers.isEmpty() && timers.get(index).hit()) {
-                index++;
+            if (!timers.isEmpty()) {
+                Timer timer = timers.get(index);
+                if (timer.hitMore()) {
+                    timer.hit();
+                    hit++;
+                } else {
+                    index++;
+                    hit();
+                }
             }
         } catch (IndexOutOfBoundsException e) {
             throw new HitMoreThanExpectedTimesException();
         }
-
-        hit++;
     }
 
     @Override
@@ -51,7 +56,11 @@ public class TimerCheckerImpl implements TimerChecker {
 
     @Override
     public int getHitTimes() {
-        return hit;
+        if (hit == 0) {
+            return hitAtLeastOnce ? 1 : 0;
+        } else {
+            return hit;
+        }
     }
 
     @Override

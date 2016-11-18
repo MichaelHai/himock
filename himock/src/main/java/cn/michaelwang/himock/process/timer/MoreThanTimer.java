@@ -11,9 +11,8 @@ public class MoreThanTimer implements Timer {
     }
 
     @Override
-    public boolean hit() {
+    public void hit() {
         hit++;
-        return hit > minTimes;
     }
 
     @Override

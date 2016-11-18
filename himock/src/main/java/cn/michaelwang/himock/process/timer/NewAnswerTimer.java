@@ -6,12 +6,11 @@ public class NewAnswerTimer implements Timer {
     private boolean hit = false;
 
     @Override
-    public boolean hit() {
+    public void hit() {
         if (hit) {
             throw new HitMoreThanExpectedTimesException("NewAnswerTimer should be hit only once.");
         }
         hit = true;
-        return true;
     }
 
     @Override

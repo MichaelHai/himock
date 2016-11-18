@@ -11,14 +11,12 @@ public class ExactTimer implements Timer {
     }
 
     @Override
-    public boolean hit() {
+    public void hit() {
         if (hit == times) {
             throw new HitMoreThanExpectedTimesException("Timer should be hit exactly " + times + " times");
         } else {
             hit++;
         }
-
-        return hit == times;
     }
 
     @Override
