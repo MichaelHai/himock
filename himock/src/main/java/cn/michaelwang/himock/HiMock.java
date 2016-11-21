@@ -206,14 +206,22 @@ public class HiMock {
 
     public static void verify(Verification verification) {
         mockProcessManager.toVerifyState();
-        verification.record();
+        try {
+            verification.record();
+        } catch (Throwable ignore) {
+            // to ignore the checked exception defined by the called method in verification
+        }
         mockProcessManager.toNormalState();
         verify();
     }
 
     public static void verifyInOrder(Verification verification) {
         mockProcessManager.toOrderedVerifyState();
-        verification.record();
+        try {
+            verification.record();
+        } catch (Throwable ignore) {
+            // to ignore the checked exception defined by the called method in verification
+        }
         mockProcessManager.toNormalState();
         verify();
     }
@@ -225,7 +233,7 @@ public class HiMock {
 
     @FunctionalInterface
     public interface Verification {
-        void record();
+        void record() throws Throwable;
     }
 
     @FunctionalInterface
