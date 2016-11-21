@@ -14,17 +14,23 @@ public class InterfaceMockBuilder<T> extends BaseInvocationBuilder<T> {
 	@SuppressWarnings("unchecked")
 	@Override
 	public T createMock(int id) {
+		// thi can not convert to lambda or else effect the line number retrieved in InvocationImpl.
+		//noinspection Convert2Lambda
 		return ((T) Proxy.newProxyInstance(
 				mockedType.getClassLoader(),
 				new Class<?>[] { mockedType },
-				(proxy, method, args) -> {
-                    InvocationImpl invocation = InvocationFactory.getInstance().create(id, method, args);
-                    try {
-                        return invocationListener.methodCalled(invocation);
-                    } catch (NoExpectedInvocationException ex) {
-                        return Utils.nullValue(invocation.getReturnType());
-                    }
-                }));
+				new java.lang.reflect.InvocationHandler() {
+					@Override
+					public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+						InvocationImpl invocation = InvocationFactory.getInstance().create(id, method, args);
+						try {
+							return invocationListener.methodCalled(invocation);
+						} catch (NoExpectedInvocationException ex) {
+							return Utils.nullValue(invocation.getReturnType());
+						}
+					}
+
+				}));
 	}
 
 }

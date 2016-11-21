@@ -20,8 +20,7 @@ public class ClassMockWithConstructorBuilder<T> extends BaseInvocationBuilder<T>
 		e.setSuperclass(mockedType);
 		e.setCallback(new ClassMockInterceptor(id, invocationListener));
 		Class<?>[] types = new Class<?>[constructorParameters.length];
-		Arrays.asList(constructorParameters)
-				.stream()
+		Arrays.stream(constructorParameters)
 				.map(Object::getClass)
 				.collect(Collectors.toList())
 				.toArray(types);
