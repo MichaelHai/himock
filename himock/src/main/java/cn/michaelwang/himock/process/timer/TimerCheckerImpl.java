@@ -36,12 +36,10 @@ public class TimerCheckerImpl implements TimerChecker {
         try {
             if (!timers.isEmpty()) {
                 Timer timer = timers.get(index);
-                if (timer.hitMore()) {
-                    timer.hit();
-                    hit++;
-                } else {
+                timer.hit();
+                hit++;
+                if (!timer.hitMore()) {
                     index++;
-                    hit();
                 }
             }
         } catch (IndexOutOfBoundsException e) {

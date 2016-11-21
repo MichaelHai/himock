@@ -1,9 +1,8 @@
 package cn.michaelwang.himock.process;
 
-import java.util.Arrays;
-
 import cn.michaelwang.himock.Matcher;
-import jdk.internal.org.objectweb.asm.tree.analysis.Value;
+
+import java.util.Arrays;
 
 public class ValueMatcher<T> implements Matcher<T> {
     private T value;

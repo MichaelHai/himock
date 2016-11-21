@@ -112,6 +112,34 @@ public class TimerCheckerTest {
         assertEquals(3, checker.getHitTimes());
     }
 
+    @Test
+    public void testTimerCheckerWithExactTimerAndMultipleNewAnswerTimer() {
+        TimerChecker checker = new TimerCheckerImpl();
+        checker.addTimer(new ExactTimer(3));
+        checker.addTimer(new NewAnswerTimer());
+        checker.addTimer(new NewAnswerTimer());
+
+        assertFalse(checker.check());
+
+        checker.hit();
+        assertFalse(checker.check());
+
+        checker.hit();
+        assertFalse(checker.check());
+
+        checker.hit();
+        assertFalse(checker.check());
+
+        checker.hit();
+        assertFalse(checker.check());
+
+        checker.hit();
+        assertTrue(checker.check());
+
+        assertEquals(5, checker.getHitTimes());
+
+    }
+
     private void assertHitMore(TimerChecker checker, String message) {
         try {
             checker.hit();
