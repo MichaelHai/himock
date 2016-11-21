@@ -79,6 +79,18 @@ public class HiMockTimerTest extends HiMockBaseTest {
 				+ "\t\t   at cn.michaelwang.himock.HiMockTimerTest.testTimesExpectedButNotEnoughShouldReportError(HiMockTimerTest.java:?)\n");
 	}
 
+	@Test
+	public void testNeverExpectedAndNotCalledShouldPass() {
+		MockedInterface dummy = mock(MockedInterface.class);
+
+		expect(() -> {
+			dummy.returnInt();
+			never();
+		});
+
+		verify();
+	}
+
 	@Test(expected = HiMockReporter.class)
 	public void testTimes0ButCalledShouldFail() {
 		MockedInterface dummy = mock(MockedInterface.class);

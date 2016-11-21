@@ -56,6 +56,6 @@ public class InvocationWithMatchers implements Invocation {
 
 	@Override
 	public boolean sameMethod(Invocation invocation) {
-		return invocation.sameMethod(invocation);
+		return this.invocation.sameMethod(invocation);
 	}
 }

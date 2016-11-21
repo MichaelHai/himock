@@ -2,8 +2,6 @@ package cn.michaelwang.himock.process.timer;
 
 import cn.michaelwang.himock.process.Timer;
 import cn.michaelwang.himock.process.TimerChecker;
-import cn.michaelwang.himock.process.timer.HitMoreThanExpectedTimesException;
-import cn.michaelwang.himock.process.timer.NewAnswerTimer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +14,15 @@ public class TimerCheckerImpl implements TimerChecker {
 
     @Override
     public boolean check() {
+        return isAllNeverTimer() || isAllPassWithOneHit();
+    }
+
+    private boolean isAllPassWithOneHit() {
         return hitAtLeastOnce && timers.stream().allMatch(Timer::pass);
+    }
+
+    private boolean isAllNeverTimer() {
+        return (!timers.isEmpty()) && timers.stream().allMatch(timer -> timer instanceof NeverTimer);
     }
 
     @Override

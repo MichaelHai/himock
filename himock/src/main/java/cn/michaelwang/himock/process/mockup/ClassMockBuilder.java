@@ -19,7 +19,7 @@ public class ClassMockBuilder<T> extends BaseInvocationBuilder<T> {
 
 	private class NoExpectationListener implements InvocationListener {
 		@Override
-		public Object methodCalled(Invocation invocation) throws NoExpectedInvocationException, Throwable {
+		public Object methodCalled(Invocation invocation) throws NoExpectedInvocationException {
 			throw new NoExpectedInvocationException();
 		}
 	}
