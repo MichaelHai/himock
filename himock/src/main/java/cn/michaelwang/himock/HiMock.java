@@ -4,7 +4,6 @@ import cn.michaelwang.himock.annotations.AnnotationHandler;
 import cn.michaelwang.himock.annotations.DefaultAnnotationHandler;
 import cn.michaelwang.himock.preprocess.Preprocessor;
 import cn.michaelwang.himock.process.InvocationRecorder;
-import cn.michaelwang.himock.process.MockFactory;
 import cn.michaelwang.himock.process.MockStateManager;
 import cn.michaelwang.himock.process.timer.ExactTimer;
 import cn.michaelwang.himock.process.timer.LessThanTimer;

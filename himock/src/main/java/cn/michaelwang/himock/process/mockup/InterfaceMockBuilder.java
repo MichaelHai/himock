@@ -1,10 +1,9 @@
 package cn.michaelwang.himock.process.mockup;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-
 import cn.michaelwang.himock.process.exceptions.NoExpectedInvocationException;
 import cn.michaelwang.himock.utils.Utils;
+
+import java.lang.reflect.Proxy;
 
 public class InterfaceMockBuilder<T> extends BaseInvocationBuilder<T> {
 	protected InterfaceMockBuilder(Class<T> mockedType, Class<?> testSuit) {
