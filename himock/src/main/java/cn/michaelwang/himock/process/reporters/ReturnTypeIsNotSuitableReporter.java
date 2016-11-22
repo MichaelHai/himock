@@ -5,9 +5,9 @@ import cn.michaelwang.himock.report.ReportBuilder;
 
 public class ReturnTypeIsNotSuitableReporter extends MockProcessErrorReporter {
 	private static final long serialVersionUID = 504650906917138729L;
-	
-	private Invocation invocation;
-    private Class<?> setAgain;
+
+    private final Invocation invocation;
+    private final Class<?> setAgain;
 
     public ReturnTypeIsNotSuitableReporter(Invocation invocation, Class<?> setAgain) {
         this.invocation = invocation;

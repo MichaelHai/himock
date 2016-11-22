@@ -2,9 +2,10 @@ package cn.michaelwang.himock;
 
 import org.junit.runner.Description;
 
+@SuppressWarnings("unused") // not tested
 public class InjectFieldRule extends HiMockTestRule {
 
-	private Object testSuits;
+    private final Object testSuits;
 
 	public InjectFieldRule(Object testSuits) {
 		this.testSuits = testSuits;

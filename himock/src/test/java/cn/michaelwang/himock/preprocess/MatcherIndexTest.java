@@ -1,13 +1,10 @@
 package cn.michaelwang.himock.preprocess;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
+import cn.michaelwang.himock.Matcher;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import cn.michaelwang.himock.Matcher;
+import static org.junit.Assert.*;
 
 public class MatcherIndexTest {
 	@Test
@@ -50,8 +47,8 @@ public class MatcherIndexTest {
 	}
 
 	@Test
-	public void testMixMatchersWithNonMatchersInInovcation() {
-		Matcher<?> aMatcher = Mockito.mock(Matcher.class);
+    public void testMixMatchersWithNonMatchersInInvocation() {
+        Matcher<?> aMatcher = Mockito.mock(Matcher.class);
 
 		MatcherIndex matchers = new MatcherIndex();
 		matchers.markMatcher(3, "aMatcherName");

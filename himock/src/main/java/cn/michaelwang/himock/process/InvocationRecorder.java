@@ -1,15 +1,15 @@
 package cn.michaelwang.himock.process;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import cn.michaelwang.himock.Invocation;
 import cn.michaelwang.himock.Matcher;
 import cn.michaelwang.himock.process.exceptions.NoExpectedInvocationException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class InvocationRecorder {
-	private List<Expectation> expectedInvocations = new ArrayList<>();
-	private List<Invocation> actuallyInvocations = new ArrayList<>();
+    private final List<Expectation> expectedInvocations = new ArrayList<>();
+    private final List<Invocation> actuallyInvocations = new ArrayList<>();
 
 	public Object actuallyCall(Invocation invocation) throws Throwable {
 		actuallyInvocations.add(invocation);

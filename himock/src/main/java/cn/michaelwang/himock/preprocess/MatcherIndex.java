@@ -1,18 +1,18 @@
 package cn.michaelwang.himock.preprocess;
 
+import cn.michaelwang.himock.IMatcherIndex;
+import cn.michaelwang.himock.Matcher;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
-import cn.michaelwang.himock.IMatcherIndex;
-import cn.michaelwang.himock.Matcher;
-
 public class MatcherIndex implements IMatcherIndex {
-	private Map<Integer, Queue<String>> marks = new HashMap<>();
-	private Map<String, Matcher<?>> matchers = new HashMap<>();
+    private final Map<Integer, Queue<String>> marks = new HashMap<>();
+    private final Map<String, Matcher<?>> matchers = new HashMap<>();
 
-	private Map<Integer, Map<String, Queue<String[]>>> matcherUsages = new HashMap<>();
+    private final Map<Integer, Map<String, Queue<String[]>>> matcherUsages = new HashMap<>();
 
 	@Override
 	public void markMatcher(int lineNumber, String mark) {

@@ -17,5 +17,5 @@ public interface InvocationListener {
 	 * @throws Throwable
 	 *             The invocation can throw exceptions if set in the
 	 */
-	Object methodCalled(Invocation invocation) throws NoExpectedInvocationException, Throwable;
+    Object methodCalled(Invocation invocation) throws Throwable;
 }

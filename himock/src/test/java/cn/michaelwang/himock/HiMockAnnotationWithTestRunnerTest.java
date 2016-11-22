@@ -1,17 +1,17 @@
 package cn.michaelwang.himock;
 
-import static cn.michaelwang.himock.HiMock.*;
-import static org.junit.Assert.*;
-
+import cn.michaelwang.himock.annotations.Mock;
 import org.junit.Test;
 
-import cn.michaelwang.himock.annotations.Mock;
+import static cn.michaelwang.himock.HiMock.*;
+import static org.junit.Assert.*;
 
 /*
  * The tests in this suit should be run together for cross UTs tests.
  */
 public class HiMockAnnotationWithTestRunnerTest extends HiMockBaseTest {
-	@Mock
+    @SuppressWarnings("CanBeFinal")
+    @Mock
 	private MockedInterface dummy;
 
 	@Test

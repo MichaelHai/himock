@@ -4,8 +4,8 @@ import cn.michaelwang.himock.process.InvocationListener;
 
 public abstract class BaseInvocationBuilder<T> implements MockBuilder<T> {
 	protected final Class<?> testSuit;
+	protected final Class<T> mockedType;
 	protected InvocationListener invocationListener;
-	protected Class<T> mockedType;
 
 	protected BaseInvocationBuilder(Class<T> mockedType, Class<?> testSuit) {
 		this.mockedType = mockedType;

@@ -1,11 +1,11 @@
 package cn.michaelwang.himock.process;
 
-import java.util.List;
-
 import cn.michaelwang.himock.Matcher;
 
+import java.util.List;
+
 public class Matchers {
-	private List<Matcher<?>> matchers;
+    private final List<Matcher<?>> matchers;
 
 	public Matchers(List<Matcher<?>> matchers) {
 		this.matchers = matchers;

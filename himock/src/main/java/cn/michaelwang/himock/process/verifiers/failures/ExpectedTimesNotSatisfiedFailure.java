@@ -5,9 +5,9 @@ import cn.michaelwang.himock.process.verifiers.VerificationFailure;
 import cn.michaelwang.himock.report.ReportBuilder;
 
 public class ExpectedTimesNotSatisfiedFailure implements VerificationFailure {
-	private Invocation invocation;
-	private String expect;
-	private int actuallyCount;
+    private final Invocation invocation;
+    private final String expect;
+    private final int actuallyCount;
 
 	public ExpectedTimesNotSatisfiedFailure(Invocation invocation, String expect, int actuallyCount) {
 		this.invocation = invocation;

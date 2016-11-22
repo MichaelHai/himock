@@ -1,14 +1,12 @@
 package cn.michaelwang.himock;
 
-import static cn.michaelwang.himock.HiMock.expect;
-import static cn.michaelwang.himock.HiMock.mock;
-import static cn.michaelwang.himock.HiMock.verify;
-import static org.junit.Assert.assertEquals;
-
+import cn.michaelwang.himock.report.HiMockReporter;
 import org.junit.Test;
 
-import cn.michaelwang.himock.report.HiMockReporter;
+import static cn.michaelwang.himock.HiMock.*;
+import static org.junit.Assert.assertEquals;
 
+@SuppressWarnings("CodeBlock2Expr")
 public class MockClassTest extends HiMockBaseTest {
 	@Test
 	public void testMockedClassCanBeExpected() {

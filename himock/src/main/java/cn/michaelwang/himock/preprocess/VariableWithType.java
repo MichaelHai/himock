@@ -1,8 +1,8 @@
 package cn.michaelwang.himock.preprocess;
 
 public class VariableWithType {
-    private VariableType type;
-    private String name;
+    private final VariableType type;
+    private final String name;
 
     public VariableWithType(String name, VariableType type) {
         this.name = name;

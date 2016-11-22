@@ -1,13 +1,13 @@
 package cn.michaelwang.himock.process;
 
-import java.util.List;
-
 import cn.michaelwang.himock.Invocation;
+
+import java.util.List;
 
 public class InvocationWithMatchers implements Invocation {
 
-	private Invocation invocation;
-	private Matchers matchers;
+    private final Invocation invocation;
+    private final Matchers matchers;
 
 	public InvocationWithMatchers(Invocation original, Matchers matchers) {
 		this.invocation = original;

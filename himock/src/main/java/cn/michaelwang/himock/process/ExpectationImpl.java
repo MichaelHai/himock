@@ -14,15 +14,14 @@ import cn.michaelwang.himock.utils.Utils;
 import java.util.*;
 
 public class ExpectationImpl implements Expectation {
-    private Queue<ExpectedAnswer> returnValue = new LinkedList<>();
-    private Map<ExpectedAnswer, TimerChecker> answerTimerMap = new HashMap<>();
+    private final Queue<ExpectedAnswer> returnValue = new LinkedList<>();
+    private final Map<ExpectedAnswer, TimerChecker> answerTimerMap = new HashMap<>();
+    private final Invocation invocation;
+    private final Matchers matchers;
     // the last answer set
     private ExpectedAnswer lastAnswer;
     // the current answer returned for mocking invocation
     private ExpectedAnswer currentAnswer;
-
-    private Invocation invocation;
-    private Matchers matchers;
 
     public ExpectationImpl(Invocation invocation, List<Matcher<?>> matchers) {
         this.invocation = invocation;
@@ -98,16 +97,6 @@ public class ExpectationImpl implements Expectation {
     }
 
     @Override
-    public Invocation getInvocation() {
-        return invocation;
-    }
-
-    @Override
-    public List<Matcher<?>> getMatchers() {
-        return matchers.getMatchers();
-    }
-
-    @Override
     public void addAnswer(Answer answer) {
         lastAnswer = new DelegatedAnswer(answer);
         returnValue.offer(lastAnswer);
@@ -146,7 +135,7 @@ public class ExpectationImpl implements Expectation {
     }
 
     private class ReturnAnswer implements ExpectedAnswer {
-        private Object returnValue;
+        private final Object returnValue;
 
         ReturnAnswer(Object returnValue) {
             this.returnValue = returnValue;
@@ -159,7 +148,7 @@ public class ExpectationImpl implements Expectation {
     }
 
     private class ThrowAnswer implements ExpectedAnswer {
-        private Throwable toThrow;
+        private final Throwable toThrow;
 
         ThrowAnswer(Throwable toThrow) {
             this.toThrow = toThrow;
@@ -172,7 +161,7 @@ public class ExpectationImpl implements Expectation {
     }
 
     private class DelegatedAnswer implements ExpectedAnswer {
-        private Answer answer;
+        private final Answer answer;
 
         public DelegatedAnswer(Answer answer) {
             this.answer = answer;

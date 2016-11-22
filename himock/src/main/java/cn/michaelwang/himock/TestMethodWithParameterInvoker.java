@@ -1,15 +1,14 @@
 package cn.michaelwang.himock;
 
-import java.lang.reflect.Parameter;
-
+import cn.michaelwang.himock.annotations.Mock;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 
-import cn.michaelwang.himock.annotations.Mock;
+import java.lang.reflect.Parameter;
 
 public class TestMethodWithParameterInvoker extends Statement {
-	private FrameworkMethod method;
-	private Object test;
+    private final FrameworkMethod method;
+    private final Object test;
 
 	public TestMethodWithParameterInvoker(FrameworkMethod method, Object test) {
 		this.method = method;

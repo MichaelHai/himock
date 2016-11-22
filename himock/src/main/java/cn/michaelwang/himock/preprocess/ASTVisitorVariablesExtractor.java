@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 public class ASTVisitorVariablesExtractor extends DepthFirstAstVisitor<Object, Object> implements VariablesExtractor {
-	private List<VariableWithType> allVariables = new ArrayList<>();
-	private List<VariableWithType> members = new ArrayList<>();
-	private Map<String, List<VariableWithType>> localVariables = new HashMap<>();
+    private final List<VariableWithType> allVariables = new ArrayList<>();
+    private final List<VariableWithType> members = new ArrayList<>();
+    private final Map<String, List<VariableWithType>> localVariables = new HashMap<>();
 
 	private String currentMethod = null;
 

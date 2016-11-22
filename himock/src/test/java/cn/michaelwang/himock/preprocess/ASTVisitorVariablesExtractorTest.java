@@ -1,7 +1,8 @@
 package cn.michaelwang.himock.preprocess;
 
-import java.util.List;
 import org.junit.Test;
+
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -9,8 +10,8 @@ import static org.junit.Assert.assertEquals;
 public class ASTVisitorVariablesExtractorTest {
 	@Test
 	public void testExtractLocalVariablesInMethod() {
-		@SuppressWarnings("unused")
-		class LocalVariablesInMethod {
+        @SuppressWarnings({"unused", "UnusedAssignment"})
+        class LocalVariablesInMethod {
 			public void aMethodWithLocalVariables() {
 				String localVariable = "hello";
 				String anotherLocalVariable = "world";
@@ -29,8 +30,8 @@ public class ASTVisitorVariablesExtractorTest {
 
 	@Test
 	public void testExtractLocalVariablesInMultipleMethods() {
-		@SuppressWarnings("unused")
-		class LocalVariablesInMultipleMethods {
+        @SuppressWarnings({"unused", "UnusedAssignment"})
+        class LocalVariablesInMultipleMethods {
 			public void aMethodWithLocalVariables() {
 				String localVariable = "hello";
 				String anotherLocalVariable = "world";
@@ -58,8 +59,8 @@ public class ASTVisitorVariablesExtractorTest {
 
 	@Test
 	public void testExtractLocalVariablesWithTheSameNameInMultipleMethods() {
-		@SuppressWarnings("unused")
-		class LocalVariablesWithTheSameNameInMultipleMethods {
+        @SuppressWarnings({"unused", "UnusedAssignment"})
+        class LocalVariablesWithTheSameNameInMultipleMethods {
 			public void aMethodWithLocalVariables() {
 				String localVariable = "hello";
 				String anotherLocalVariable = "world";
@@ -88,8 +89,8 @@ public class ASTVisitorVariablesExtractorTest {
 
 	@Test
 	public void testExtractLocalVariablesOfDifferentTypesInMethod() {
-		@SuppressWarnings("unused")
-		class LocalVariablesInMethod {
+        @SuppressWarnings({"unused", "UnusedAssignment"})
+        class LocalVariablesInMethod {
 			public void aMethodWithLocalVariables() {
 				String objectVariable = "hello";
 				int intVariable = 0;
@@ -126,8 +127,8 @@ public class ASTVisitorVariablesExtractorTest {
 
 	@Test
 	public void testExtractBothClassMembersAndLocalVariable() {
-		@SuppressWarnings("unused")
-		class ClassWithMemberAndLocalVariable {
+        @SuppressWarnings({"unused", "UnusedAssignment"})
+        class ClassWithMemberAndLocalVariable {
 			private String objectMember;
 			private int intMember = 1;
 
@@ -157,8 +158,8 @@ public class ASTVisitorVariablesExtractorTest {
 
 	@Test
 	public void testGetVariablesViaMethodName() {
-		@SuppressWarnings("unused")
-		class LocalVariablesInMultipleMethods {
+        @SuppressWarnings({"unused", "UnusedAssignment"})
+        class LocalVariablesInMultipleMethods {
 			public void aMethodWithLocalVariables() {
 				String localVariable = "hello";
 				String anotherLocalVariable = "world";

@@ -1,7 +1,8 @@
 package cn.michaelwang.himock;
 
+@SuppressWarnings("ALL")
 public class MockedClassWithoutDefaultConstructor {
-	private String o;
+    private final String o;
 
 	public MockedClassWithoutDefaultConstructor(String o) {
 		this.o = o;

@@ -5,7 +5,7 @@ import cn.michaelwang.himock.Matcher;
 import java.util.Arrays;
 
 public class ValueMatcher<T> implements Matcher<T> {
-    private T value;
+    private final T value;
 
     public ValueMatcher(T value) {
         this.value = value;

@@ -1,14 +1,14 @@
 package cn.michaelwang.himock.preprocess;
 
+import cn.michaelwang.himock.IMatcherIndex;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import cn.michaelwang.himock.IMatcherIndex;
-
 public class MatcherIndexRepository {
 	private static MatcherIndexRepository instance;
-	
-	private Map<Class<?>, IMatcherIndex> matcherIndexes = new HashMap<>();
+
+    private final Map<Class<?>, IMatcherIndex> matcherIndexes = new HashMap<>();
 
 	private MatcherIndexRepository() {
 	}

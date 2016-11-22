@@ -1,5 +1,6 @@
 package cn.michaelwang.himock;
 
+@SuppressWarnings("ALL")
 public interface MockedInterface {
     void doNothing();
 

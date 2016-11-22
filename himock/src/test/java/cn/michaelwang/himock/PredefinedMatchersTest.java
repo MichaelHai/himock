@@ -8,6 +8,7 @@ import static org.junit.Assert.assertEquals;
 
 @SuppressWarnings("CodeBlock2Expr")
 public class PredefinedMatchersTest extends HiMockBaseTest {
+    @SuppressWarnings("CanBeFinal")
     @Mock
     private MockedInterface dummy;
 

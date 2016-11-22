@@ -1,8 +1,8 @@
 package cn.michaelwang.himock.annotations;
 
-import java.lang.reflect.Field;
-
 import cn.michaelwang.himock.HiMock;
+
+import java.lang.reflect.Field;
 
 public class DefaultAnnotationHandler implements AnnotationHandler {
 
@@ -12,12 +12,12 @@ public class DefaultAnnotationHandler implements AnnotationHandler {
 		for (Field field : fields) {
 			if (field.isAnnotationPresent(Mock.class)) {
 				Class<?> fieldType = (Class<?>) field.getGenericType();
-				boolean accessable = field.isAccessible();
-				field.setAccessible(true);
+                boolean accessible = field.isAccessible();
+                field.setAccessible(true);
 				Object mockedObject = HiMock.mock(fieldType);
 				field.set(testSuit, mockedObject);
-				field.setAccessible(accessable);
-			}
+                field.setAccessible(accessible);
+            }
 		}
 	}
 

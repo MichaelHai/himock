@@ -6,8 +6,8 @@ import cn.michaelwang.himock.report.ReportBuilder;
 import cn.michaelwang.himock.utils.Utils;
 
 public class ArgumentsNotMatchFailure implements VerificationFailure {
-    private Invocation actuallyInvocation;
-    private Invocation expectedInvocation;
+    private final Invocation actuallyInvocation;
+    private final Invocation expectedInvocation;
 
     public ArgumentsNotMatchFailure(Invocation actuallyInvocation, Invocation expectedInvocation) {
         this.actuallyInvocation = actuallyInvocation;

@@ -1,36 +1,19 @@
 package cn.michaelwang.himock.preprocess;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
+import cn.michaelwang.himock.IMatcherIndex;
 import com.strobel.assembler.ir.attributes.AttributeNames;
 import com.strobel.assembler.ir.attributes.LineNumberTableAttribute;
 import com.strobel.assembler.ir.attributes.SourceAttribute;
 import com.strobel.assembler.metadata.MethodDefinition;
 import com.strobel.decompiler.languages.java.LineNumberTableConverter;
 import com.strobel.decompiler.languages.java.OffsetToLineNumberConverter;
-import com.strobel.decompiler.languages.java.ast.AssignmentExpression;
-import com.strobel.decompiler.languages.java.ast.AstNode;
-import com.strobel.decompiler.languages.java.ast.CastExpression;
-import com.strobel.decompiler.languages.java.ast.CompilationUnit;
-import com.strobel.decompiler.languages.java.ast.ConstructorDeclaration;
-import com.strobel.decompiler.languages.java.ast.DepthFirstAstVisitor;
-import com.strobel.decompiler.languages.java.ast.Expression;
-import com.strobel.decompiler.languages.java.ast.InvocationExpression;
-import com.strobel.decompiler.languages.java.ast.Keys;
-import com.strobel.decompiler.languages.java.ast.LambdaExpression;
-import com.strobel.decompiler.languages.java.ast.MethodDeclaration;
+import com.strobel.decompiler.languages.java.ast.*;
 
-import cn.michaelwang.himock.IMatcherIndex;
+import java.util.*;
 
 public class MatcherFinder {
-	private IMatcherIndex matcherIndex;
-	private CompilationUnit ast;
-	public SourceAttribute lineNumberTable;
+	private final IMatcherIndex matcherIndex;
+	private final CompilationUnit ast;
 
 	public MatcherFinder(Class<?> clazz, IMatcherIndex matcherIndex) {
 		this.matcherIndex = matcherIndex;
@@ -43,8 +26,8 @@ public class MatcherFinder {
 	}
 
 	class MatcherVisitor extends DepthFirstAstVisitor<Object, Object> {
-		private IMatcherIndex matcherIndex;
-		private Map<String, Integer> markIds = new HashMap<>();
+		private final IMatcherIndex matcherIndex;
+		private final Map<String, Integer> markIds = new HashMap<>();
 		private OffsetToLineNumberConverter converter;
 
 		public MatcherVisitor(IMatcherIndex matcherIndex) {
@@ -95,7 +78,7 @@ public class MatcherFinder {
 			LineNumberTableAttribute lineNumberTable = SourceAttribute.find(
 					AttributeNames.LineNumberTable,
 					method != null ? method.getSourceAttributes()
-							: Collections.<SourceAttribute> emptyList());
+							: Collections.emptyList());
 			if (lineNumberTable != null) {
 				converter = new LineNumberTableConverter(lineNumberTable);
 			}
@@ -106,8 +89,7 @@ public class MatcherFinder {
 			if (offset < 0) {
 				offset = 0;
 			}
-			int lineNumber = converter.getLineForOffset(offset);
-			return lineNumber;
+			return converter.getLineForOffset(offset);
 		}
 
 		private Object markMatcher(InvocationExpression node, int lineNumber) {

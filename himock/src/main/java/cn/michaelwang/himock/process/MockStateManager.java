@@ -1,8 +1,5 @@
 package cn.michaelwang.himock.process;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import cn.michaelwang.himock.*;
 import cn.michaelwang.himock.process.exceptions.ExceptionTypeIsNotSuitableException;
 import cn.michaelwang.himock.process.exceptions.NoReturnTypeException;
@@ -15,15 +12,16 @@ import cn.michaelwang.himock.process.verifiers.InOrderVerifier;
 import cn.michaelwang.himock.process.verifiers.NormalVerifier;
 import cn.michaelwang.himock.utils.Utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MockStateManager implements MockProcessManager, InvocationListener {
-	private MockFactory mockFactory;
-	private InvocationRecorder invocationRecorder;
-	private IMatcherIndex matcherIndex;
-
+	private final MockFactory mockFactory;
+	private final InvocationRecorder invocationRecorder;
+	private final IMatcherIndex matcherIndex;
+	private final List<Verifier> verifiers = new ArrayList<>();
+	private final Verifier verifier;
 	private MockState state = new NormalState();
-
-	private List<Verifier> verifiers = new ArrayList<>();
-	private Verifier verifier;
 
 	public MockStateManager(Class<?> testSuit, InvocationRecorder invocationRecorder,
 			IMatcherIndex matcherIndex) {
@@ -247,7 +245,7 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 	}
 
 	private class VerificationState implements MockState {
-		protected Verifier verifier;
+		protected final Verifier verifier;
 
 		public VerificationState(Verifier verifier) {
 			this.verifier = verifier;

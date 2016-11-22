@@ -1,21 +1,19 @@
 package cn.michaelwang.himock;
 
-import static cn.michaelwang.himock.HiMock.expect;
-import static cn.michaelwang.himock.HiMock.verify;
-import static cn.michaelwang.himock.HiMock.willReturn;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
+import cn.michaelwang.himock.annotations.Mock;
 import org.junit.Rule;
 import org.junit.Test;
 
-import cn.michaelwang.himock.annotations.Mock;
+import static cn.michaelwang.himock.HiMock.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class HiMockInjectFieldRuleTest {
 	@Rule
 	public InjectFieldRule injectFiledRule = new InjectFieldRule(this);
-	
-	@Mock
+
+    @SuppressWarnings("CanBeFinal")
+    @Mock
 	private MockedInterface dummy;
 
 	@Test

@@ -142,7 +142,7 @@ public class HiMockExceptionTest extends HiMockBaseTest {
 
         try {
             dummy.throwException();
-        } catch (UserException ex) {
+        } catch (UserException ignore) {
         }
 
         dummy.throwException();

@@ -7,8 +7,8 @@ import cn.michaelwang.himock.report.ReportBuilder;
 import java.util.List;
 
 public class OrderFailure implements VerificationFailure {
-    private List<Invocation> expected;
-    private List<Invocation> actually;
+    private final List<Invocation> expected;
+    private final List<Invocation> actually;
 
     public OrderFailure(List<Invocation> expected, List<Invocation> actually) {
         this.expected = expected;

@@ -8,8 +8,8 @@ import java.util.List;
 
 public class VerificationFailedReporter extends HiMockReporter {
 	private static final long serialVersionUID = -3120362566885275449L;
-	
-	private List<VerificationFailure> failures;
+
+    private final List<VerificationFailure> failures;
 
     public VerificationFailedReporter(VerificationFailure failure) {
         failures = new ArrayList<>();

@@ -1,10 +1,10 @@
 package cn.michaelwang.himock.process.verifiers;
 
 import cn.michaelwang.himock.Invocation;
-import cn.michaelwang.himock.process.Verification;
-import cn.michaelwang.himock.process.Verifier;
 import cn.michaelwang.himock.process.Timer;
 import cn.michaelwang.himock.process.TimerChecker;
+import cn.michaelwang.himock.process.Verification;
+import cn.michaelwang.himock.process.Verifier;
 import cn.michaelwang.himock.process.timer.TimerCheckerImpl;
 import cn.michaelwang.himock.process.verifiers.failures.OrderFailure;
 
@@ -12,9 +12,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class InOrderVerifier implements Verifier {
-	private List<Verification> orderedVerifications = new ArrayList<>();
-	private Map<Verification, TimerChecker> verificationTimerMap = new HashMap<>();
-	private Verification lastVerification;
+    private final List<Verification> orderedVerifications = new ArrayList<>();
+    private final Map<Verification, TimerChecker> verificationTimerMap = new HashMap<>();
+    private Verification lastVerification;
 
 	@Override
 	public void addVerification(Verification verification) {

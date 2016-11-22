@@ -1,20 +1,20 @@
 package cn.michaelwang.himock.process.mockup;
 
+import cn.michaelwang.himock.Invocation;
+
 import java.util.Arrays;
 import java.util.List;
 
-import cn.michaelwang.himock.Invocation;
-
 public class InvocationImpl implements Invocation {
-    private int objectId;
-    private String methodName;
-    private Class<?>[] parameterTypes;
-    private Object[] args;
-    private Class<?> returnType;
-    private List<Class<Throwable>> exceptionTypes;
+    private final int objectId;
+    private final String methodName;
+    private final Class<?>[] parameterTypes;
+    private final Object[] args;
+    private final Class<?> returnType;
+    private final List<Class<Throwable>> exceptionTypes;
 
-    private StackTraceElement[] stackTraceElements;
-	private int lineNumber;
+    private final StackTraceElement[] stackTraceElements;
+    private final int lineNumber;
 
     public InvocationImpl(int objectId, String methodName, Class<?>[] parameterTypes, Object[] args, Class<?> returnType, List<Class<Throwable>> exceptionTypes, int lineNumber) {
         this.objectId = objectId;

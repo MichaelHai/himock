@@ -7,9 +7,9 @@ import java.util.List;
 
 public class ExceptionTypeIsNotSuitableReporter extends MockProcessErrorReporter {
 	private static final long serialVersionUID = -6402248681173019841L;
-	
-	private Invocation invocation;
-    private Class<?> toSet;
+
+    private final Invocation invocation;
+    private final Class<?> toSet;
 
     public ExceptionTypeIsNotSuitableReporter(Invocation invocation, Throwable toSet) {
         this.invocation = invocation;

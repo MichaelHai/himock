@@ -4,6 +4,7 @@ import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
+@SuppressWarnings("unused") // not tested
 public class HiMockTestRule implements TestRule {
 	
     @Override

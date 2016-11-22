@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TimerCheckerImpl implements TimerChecker {
-    private List<Timer> timers = new ArrayList<>();
+    private final List<Timer> timers = new ArrayList<>();
     private int index = 0;
     private boolean hitAtLeastOnce;
     private int hit = 0;

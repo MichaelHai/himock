@@ -1,12 +1,12 @@
 package cn.michaelwang.himock.process.mockup;
 
+import net.sf.cglib.proxy.Enhancer;
+
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import net.sf.cglib.proxy.Enhancer;
-
 public class ClassMockWithConstructorBuilder<T> extends BaseInvocationBuilder<T> {
-	private Object[] constructorParameters;
+    private final Object[] constructorParameters;
 
 	protected ClassMockWithConstructorBuilder(Class<T> mockedType, Object[] constructorParameters, Class<?> testSuit) {
 		super(mockedType, testSuit);

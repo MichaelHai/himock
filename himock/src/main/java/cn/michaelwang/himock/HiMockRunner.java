@@ -1,7 +1,5 @@
 package cn.michaelwang.himock;
 
-import java.util.List;
-
 import org.junit.Test;
 import org.junit.runner.Description;
 import org.junit.runner.notification.RunListener;
@@ -11,16 +9,13 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 
+import java.util.List;
+
 public class HiMockRunner extends BlockJUnit4ClassRunner {
 	private Object testSuit;
 
 	public HiMockRunner(Class<?> testClass) throws InitializationError {
         super(testClass);
-    }
-
-    @Override
-    public Description getDescription() {
-        return super.getDescription();
     }
     
 	@Override

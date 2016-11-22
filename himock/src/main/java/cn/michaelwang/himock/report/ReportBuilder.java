@@ -6,8 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ReportBuilder {
-    private final String LEVEL_INDICATOR = "\t";
-    private StringBuilder sb = new StringBuilder();
+    private final StringBuilder sb = new StringBuilder();
 
     private int level = 0;
 
@@ -17,7 +16,8 @@ public class ReportBuilder {
         levelEnd();
     }
 
-    public <T> void appendLine(@SuppressWarnings("unchecked") T... lines) {
+    @SafeVarargs
+    public final <T> void appendLine(T... lines) {
         lineStart();
         for (T line : lines) {
             append(line);
@@ -81,6 +81,7 @@ public class ReportBuilder {
 
     private void lineStart() {
         for (int i = 0; i < level; i++) {
+            String LEVEL_INDICATOR = "\t";
             sb.append(LEVEL_INDICATOR);
         }
     }

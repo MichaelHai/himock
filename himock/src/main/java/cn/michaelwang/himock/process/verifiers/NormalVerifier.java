@@ -1,29 +1,27 @@
 package cn.michaelwang.himock.process.verifiers;
 
-import java.util.*;
-
 import cn.michaelwang.himock.HitNeverTimerException;
 import cn.michaelwang.himock.Invocation;
-import cn.michaelwang.himock.process.Verification;
-import cn.michaelwang.himock.process.Verifier;
 import cn.michaelwang.himock.process.Timer;
 import cn.michaelwang.himock.process.TimerChecker;
+import cn.michaelwang.himock.process.Verification;
+import cn.michaelwang.himock.process.Verifier;
 import cn.michaelwang.himock.process.timer.TimerCheckerImpl;
 import cn.michaelwang.himock.process.verifiers.failures.ArgumentsNotMatchFailure;
 import cn.michaelwang.himock.process.verifiers.failures.ExpectedInvocationNotHappenedFailure;
 import cn.michaelwang.himock.process.verifiers.failures.ExpectedTimesNotSatisfiedFailure;
 import cn.michaelwang.himock.process.verifiers.failures.UnexpectedInvocationHappenedFailure;
 
+import java.util.*;
+
 public class NormalVerifier implements Verifier {
-    private List<Verification> verifications = new ArrayList<>();
-    private Map<Verification, Integer> verificationCount = new HashMap<>();
-    private Map<Verification, TimerChecker> verificationTimerCheckerMap = new HashMap<>();
+    private final List<Verification> verifications = new ArrayList<>();
+    private final Map<Verification, TimerChecker> verificationTimerCheckerMap = new HashMap<>();
     private Verification lastVerification;
 
     @Override
     public void addVerification(Verification verification) {
         verifications.add(verification);
-        verificationCount.put(verification, null);
         verificationTimerCheckerMap.put(verification, new TimerCheckerImpl());
         this.lastVerification = verification;
     }

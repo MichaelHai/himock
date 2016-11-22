@@ -16,10 +16,6 @@ public interface Expectation {
     void answerMore(Timer timer);
         
     Object getReturnValue(Object[] params) throws Throwable;
-    
-    Invocation getInvocation();
-
-	List<Matcher<?>> getMatchers();
 
     boolean equals(Invocation invocation, List<Matcher<?>> matchers);
 

@@ -31,7 +31,7 @@ public class TimerCheckerTest {
         checker.hit();
         assertTrue(checker.check());
 
-        assertHitMore(checker, "The timer(s) are hit more than expected times.");
+        assertHitMore(checker);
 
         assertEquals(2, checker.getHitTimes());
     }
@@ -140,12 +140,12 @@ public class TimerCheckerTest {
 
     }
 
-    private void assertHitMore(TimerChecker checker, String message) {
+    private void assertHitMore(TimerChecker checker) {
         try {
             checker.hit();
             fail("HitMoreThanExpectedTimesException should be thrown");
         } catch (HitMoreThanExpectedTimesException e) {
-            assertEquals(message, e.getMessage());
+            assertEquals("The timer(s) are hit more than expected times.", e.getMessage());
         }
     }
 

@@ -17,7 +17,7 @@ public class HiMock {
     private HiMock() {
     }
 
-    public static void setup(Class<?> testSuits) throws IllegalArgumentException, IllegalAccessException {
+    public static void setup(Class<?> testSuits) throws IllegalArgumentException {
         Preprocessor preprocessor = new Preprocessor(testSuits);
         preprocessor.doPreprocess();
 
@@ -127,11 +127,11 @@ public class HiMock {
         mockProcessManager.lastReturnTimer(new NeverTimer());
     }
 
-    public static void timesMoreThan(int minTimes) {
+    public static void timesMoreThan(@SuppressWarnings("SameParameterValue") int minTimes) {
         mockProcessManager.lastReturnTimer(new MoreThanTimer(minTimes));
     }
 
-    public static void timesLessThan(int maxTimes) {
+    public static void timesLessThan(@SuppressWarnings("SameParameterValue") int maxTimes) {
         mockProcessManager.lastReturnTimer(new LessThanTimer(maxTimes));
     }
 
@@ -145,19 +145,19 @@ public class HiMock {
         return false;
     }
 
-    @SuppressWarnings("unused") // simple function not tested
+    @SuppressWarnings({"unused"}) // simple function not tested
     public static byte matchByte(MatcherCondition<Byte> matcher) {
         mockProcessManager.addMatcher(new ConditionMatcher<>(matcher));
         return 0;
     }
 
-    @SuppressWarnings("unused") // simple function not tested
+    @SuppressWarnings({"unused"}) // simple function not tested
     public static char matchChar(MatcherCondition<Character> matcher) {
         mockProcessManager.addMatcher(new ConditionMatcher<>(matcher));
         return 0;
     }
 
-    @SuppressWarnings("unused") // simple function not tested
+    @SuppressWarnings({"unused"}) // simple function not tested
     public static short matchShort(MatcherCondition<Short> matcher) {
         mockProcessManager.addMatcher(new ConditionMatcher<>(matcher));
         return 0;
@@ -168,19 +168,19 @@ public class HiMock {
         return 0;
     }
 
-    @SuppressWarnings("unused") // simple function not tested
+    @SuppressWarnings({"unused"}) // simple function not tested
     public static long matchLong(MatcherCondition<Long> matcher) {
         mockProcessManager.addMatcher(new ConditionMatcher<>(matcher));
         return 0;
     }
 
-    @SuppressWarnings("unused") // simple function not tested
+    @SuppressWarnings({"unused"}) // simple function not tested
     public static float matchFloat(MatcherCondition<Float> matcher) {
         mockProcessManager.addMatcher(new ConditionMatcher<>(matcher));
         return 0;
     }
 
-    @SuppressWarnings("unused") // simple function not tested
+    @SuppressWarnings({"unused"}) // simple function not tested
     public static double matchDouble(MatcherCondition<Double> matcher) {
         mockProcessManager.addMatcher(new ConditionMatcher<>(matcher));
         return 0;
@@ -233,16 +233,16 @@ public class HiMock {
 
     @FunctionalInterface
     public interface Verification {
-        void record() throws Throwable;
+        void record();
     }
 
     @FunctionalInterface
     public interface MatcherCondition<T> {
-        boolean isMatch(T actual);
+        boolean isMatch(@SuppressWarnings("UnusedParameters") T actual);
     }
 
     private static class ConditionMatcher<T> implements Matcher<T> {
-        private MatcherCondition<T> condition;
+        private final MatcherCondition<T> condition;
 
         ConditionMatcher(MatcherCondition<T> condition) {
             this.condition = condition;
