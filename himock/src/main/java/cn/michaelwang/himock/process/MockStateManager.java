@@ -25,9 +25,9 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 	private List<Verifier> verifiers = new ArrayList<>();
 	private Verifier verifier;
 
-	public MockStateManager(InvocationRecorder invocationRecorder,
+	public MockStateManager(Class<?> testSuit, InvocationRecorder invocationRecorder,
 			IMatcherIndex matcherIndex) {
-		this.mockFactory = MockFactoryImpl.getInstance();
+		this.mockFactory = new MockFactoryImpl(testSuit);
 		this.invocationRecorder = invocationRecorder;
 		this.matcherIndex = matcherIndex;
 		this.verifier = new NormalVerifier();

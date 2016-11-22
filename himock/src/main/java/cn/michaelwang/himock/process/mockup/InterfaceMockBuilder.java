@@ -7,8 +7,8 @@ import cn.michaelwang.himock.process.exceptions.NoExpectedInvocationException;
 import cn.michaelwang.himock.utils.Utils;
 
 public class InterfaceMockBuilder<T> extends BaseInvocationBuilder<T> {
-	protected InterfaceMockBuilder(Class<T> mockedType) {
-		super(mockedType);
+	protected InterfaceMockBuilder(Class<T> mockedType, Class<?> testSuit) {
+		super(mockedType, testSuit);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -22,7 +22,8 @@ public class InterfaceMockBuilder<T> extends BaseInvocationBuilder<T> {
 				new java.lang.reflect.InvocationHandler() {
 					@Override
 					public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-						InvocationImpl invocation = InvocationFactory.getInstance().create(id, method, args);
+						int lineNumber = Utils.getLineNumberInTestSuit(testSuit);
+						InvocationImpl invocation = InvocationFactory.getInstance().create(id, method, args, lineNumber);
 						try {
 							return invocationListener.methodCalled(invocation);
 						} catch (NoExpectedInvocationException ex) {

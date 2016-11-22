@@ -4,18 +4,11 @@ import cn.michaelwang.himock.process.InvocationListener;
 import cn.michaelwang.himock.process.MockFactory;
 
 public class MockFactoryImpl implements MockFactory {
-	private static MockFactoryImpl instance;
+	private final Class<?> testSuit;
 	private int id = 0;
 
-	private MockFactoryImpl() {
-	}
-
-	public static MockFactoryImpl getInstance() {
-		if (instance == null) {
-			instance = new MockFactoryImpl();
-		}
-
-		return instance;
+	public MockFactoryImpl(Class<?> testSuit) {
+		this.testSuit = testSuit;
 	}
 
 	@Override
@@ -28,7 +21,7 @@ public class MockFactoryImpl implements MockFactory {
 	@Override
 	public <T> T createMock(Class<T> mockedType, InvocationListener invocationListener,
 			Object[] constructorParameters) {
-		MockBuilder<T> builder = new ClassMockWithConstructorBuilder<>(mockedType, constructorParameters);
+		MockBuilder<T> builder = new ClassMockWithConstructorBuilder<>(mockedType, constructorParameters, testSuit);
 
 		return create(builder, invocationListener);
 	}
@@ -43,9 +36,9 @@ public class MockFactoryImpl implements MockFactory {
 
 	private <T> MockBuilder<T> getBuilder(Class<T> mocked) {
 		if (mocked.isInterface()) {
-			return new InterfaceMockBuilder<>(mocked);
+			return new InterfaceMockBuilder<>(mocked, testSuit);
 		} else {
-			return new ClassMockBuilder<>(mocked);
+			return new ClassMockBuilder<>(mocked, testSuit);
 		}
 	}
 }

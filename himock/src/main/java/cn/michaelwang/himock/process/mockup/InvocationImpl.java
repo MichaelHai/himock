@@ -16,7 +16,7 @@ public class InvocationImpl implements Invocation {
     private StackTraceElement[] stackTraceElements;
 	private int lineNumber;
 
-    public InvocationImpl(int objectId, String methodName, Class<?>[] parameterTypes, Object[] args, Class<?> returnType, List<Class<Throwable>> exceptionTypes) {
+    public InvocationImpl(int objectId, String methodName, Class<?>[] parameterTypes, Object[] args, Class<?> returnType, List<Class<Throwable>> exceptionTypes, int lineNumber) {
         this.objectId = objectId;
         this.methodName = methodName;
         this.parameterTypes = parameterTypes == null ? new Class<?>[0] : parameterTypes;
@@ -24,14 +24,7 @@ public class InvocationImpl implements Invocation {
         this.returnType = returnType;
         this.exceptionTypes = exceptionTypes;
         this.stackTraceElements = new Exception().getStackTrace();
-        /*
-         * 0: here
-         * 1: factory
-         * 2: handler
-         * 3: mocked object
-         * 4: code in test
-         */
-        this.lineNumber = stackTraceElements[4].getLineNumber();
+        this.lineNumber = lineNumber;
     }
 
     @Override

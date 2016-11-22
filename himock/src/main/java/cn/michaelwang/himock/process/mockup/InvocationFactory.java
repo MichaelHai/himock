@@ -8,7 +8,7 @@ public class InvocationFactory {
 	private static InvocationFactory instance;
 
 	private InvocationFactory() {
-	};
+	}
 
 	public static InvocationFactory getInstance() {
 		if (instance == null) {
@@ -18,11 +18,10 @@ public class InvocationFactory {
 		return instance;
 	}
 
-	public InvocationImpl create(int id, Method method, Object[] args) {
+	public InvocationImpl create(int id, Method method, Object[] args, int lineNumber) {
 		List<Class<Throwable>> typeChecked = getExceptions(method);
-		InvocationImpl invocation = new InvocationImpl(id, getInvocationName(method), method.getParameterTypes(), args,
-				method.getReturnType(), typeChecked);
-		return invocation;
+		return new InvocationImpl(id, getInvocationName(method), method.getParameterTypes(), args,
+				method.getReturnType(), typeChecked, lineNumber);
 	}
 
 	@SuppressWarnings("unchecked")

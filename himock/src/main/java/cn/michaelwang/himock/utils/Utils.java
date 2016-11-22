@@ -31,4 +31,15 @@ public class Utils {
 
 		return null;
     }
+
+    public static int getLineNumberInTestSuit(Class<?> testSuit) {
+        StackTraceElement[] stackTrace = new Exception().getStackTrace();
+        for (StackTraceElement aStackTrace : stackTrace) {
+            if (aStackTrace.getClassName().equals(testSuit.getCanonicalName())) {
+                return aStackTrace.getLineNumber();
+            }
+        }
+
+        return -1;
+    }
 }

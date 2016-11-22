@@ -11,18 +11,21 @@ import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
 public class ClassMockInterceptor implements MethodInterceptor {
+	private final Class<?> testSuit;
 	private int id;
 	private InvocationListener invocationListener;
 
-	public ClassMockInterceptor(int id, InvocationListener invocationListener) {
+	public ClassMockInterceptor(int id, InvocationListener invocationListener, Class<?> testSuit) {
 		this.id = id;
 		this.invocationListener = invocationListener;
+		this.testSuit = testSuit;
 	}
 
 	@Override
 	public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
 		try {
-			Invocation invocation = InvocationFactory.getInstance().create(id, method, args);
+			int lineNumber = Utils.getLineNumberInTestSuit(testSuit);
+			Invocation invocation = InvocationFactory.getInstance().create(id, method, args, lineNumber);
 			return invocationListener.methodCalled(invocation);
 		} catch (NoExpectedInvocationException ex) {
 			int modifierMod = method.getModifiers();

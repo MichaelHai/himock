@@ -59,4 +59,11 @@ public class UtilsTest {
     	assertEquals(0, Utils.nullValue(Double.class));
     	assertEquals(false, Utils.nullValue(Boolean.class));
     }
+
+    @Test
+    public void testGetLineNumber() {
+        int lineNumber = Utils.getLineNumberInTestSuit(this.getClass());
+        // This test will fail if the above line number is changed.
+        assertEquals(65, lineNumber);
+    }
 }
