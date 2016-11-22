@@ -1,10 +1,9 @@
 package cn.michaelwang.himock.preprocess;
 
+import cn.michaelwang.himock.IMatcherIndex;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
-
-import cn.michaelwang.himock.IMatcherIndex;
 
 public class MatcherFinderTest {
 	@Test
@@ -15,7 +14,7 @@ public class MatcherFinderTest {
 		finder.find();
 
 		Mockito.verify(matcherIndex).markMatcher(13, "a0");
-		Mockito.verify(matcherIndex).markMatcher(16, "anonymous0");
+		Mockito.verify(matcherIndex).markMatcher(20, "anonymous0");
 		Mockito.verify(matcherIndex).markMatcher(26, "anonymous1");
 		Mockito.verify(matcherIndex).markMatcher(37, "anonymous2");
 		Mockito.verify(matcherIndex).markMatcher(56, "anonymous3");
