@@ -245,6 +245,9 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 	}
 
 	private class VerificationState implements MockState {
+	    // It is a but of IDEA to warn this is a WeakerAccess
+		// this field should be used in the subclass ExpectationState.
+		@SuppressWarnings("WeakerAccess")
 		protected final Verifier verifier;
 
 		VerificationState(Verifier verifier) {
