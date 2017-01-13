@@ -233,7 +233,7 @@ public class HiMock {
 
     @FunctionalInterface
     public interface Verification {
-        void record();
+        void record() throws Exception;
     }
 
     @FunctionalInterface
