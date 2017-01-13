@@ -178,7 +178,7 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 	private class ExpectState extends VerificationState {
 		private Expectation lastCall;
 
-		public ExpectState(Verifier verifier) {
+		ExpectState(Verifier verifier) {
 			super(verifier);
 		}
 
@@ -247,7 +247,7 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 	private class VerificationState implements MockState {
 		protected final Verifier verifier;
 
-		public VerificationState(Verifier verifier) {
+		VerificationState(Verifier verifier) {
 			this.verifier = verifier;
 		}
 
@@ -278,7 +278,7 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 			verifier.addVerificationTimes(timer.copy());
 		}
 
-		protected void createAndAddVerification(Invocation invocation, List<Matcher<?>> matchers) {
+		void createAndAddVerification(Invocation invocation, List<Matcher<?>> matchers) {
 			Verification verification = new VerificationImpl(invocation, matchers);
 			verifier.addVerification(verification);
 		}
