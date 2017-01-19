@@ -281,7 +281,7 @@ public class MockStateManager implements MockProcessManager, InvocationListener 
 			verifier.addVerificationTimes(timer.copy());
 		}
 
-		void createAndAddVerification(Invocation invocation, List<Matcher<?>> matchers) {
+		protected void createAndAddVerification(Invocation invocation, List<Matcher<?>> matchers) {
 			Verification verification = new VerificationImpl(invocation, matchers);
 			verifier.addVerification(verification);
 		}
