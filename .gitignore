@@ -13,3 +13,6 @@ target/
 .project
 .settings/
 .classpath
+
+# Sonar report
+.sonar/
